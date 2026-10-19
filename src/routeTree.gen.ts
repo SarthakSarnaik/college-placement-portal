@@ -10,33 +10,345 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/admin/route'
+import { Route as AuthenticatedAnnouncementsRouteImport } from './routes/_authenticated/announcements'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedDsaRouteImport } from './routes/_authenticated/dsa'
+import { Route as AuthenticatedPrepRouteImport } from './routes/_authenticated/prep'
+import { Route as AuthenticatedQuestionsRouteImport } from './routes/_authenticated/questions'
+import { Route as AuthenticatedRoundsRouteImport } from './routes/_authenticated/rounds'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
+import { Route as AuthenticatedAdminAnnouncementsRouteImport } from './routes/_authenticated/admin/announcements'
+import { Route as AuthenticatedAdminCompaniesRouteImport } from './routes/_authenticated/admin/companies'
+import { Route as AuthenticatedAdminCriteriaRouteImport } from './routes/_authenticated/admin/criteria'
+import { Route as AuthenticatedAdminDsaRouteImport } from './routes/_authenticated/admin/dsa'
+import { Route as AuthenticatedAdminHistoryRouteImport } from './routes/_authenticated/admin/history'
+import { Route as AuthenticatedAdminQuestionsRouteImport } from './routes/_authenticated/admin/questions'
+import { Route as AuthenticatedAdminRolesRouteImport } from './routes/_authenticated/admin/roles'
+import { Route as AuthenticatedAdminRoundsRouteImport } from './routes/_authenticated/admin/rounds'
+import { Route as AuthenticatedAdminSourcesRouteImport } from './routes/_authenticated/admin/sources'
+import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin/users'
+import { Route as AuthenticatedCompaniesIndexRouteImport } from './routes/_authenticated/companies.index'
+import { Route as AuthenticatedCompaniesIdRouteImport } from './routes/_authenticated/companies.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAdminRouteRoute = AuthenticatedAdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAnnouncementsRoute =
+  AuthenticatedAnnouncementsRouteImport.update({
+    id: '/announcements',
+    path: '/announcements',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDsaRoute = AuthenticatedDsaRouteImport.update({
+  id: '/dsa',
+  path: '/dsa',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedPrepRoute = AuthenticatedPrepRouteImport.update({
+  id: '/prep',
+  path: '/prep',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedQuestionsRoute = AuthenticatedQuestionsRouteImport.update({
+  id: '/questions',
+  path: '/questions',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedRoundsRoute = AuthenticatedRoundsRouteImport.update({
+  id: '/rounds',
+  path: '/rounds',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAdminRouteRoute,
+} as any)
+const AuthenticatedAdminAnnouncementsRoute =
+  AuthenticatedAdminAnnouncementsRouteImport.update({
+    id: '/announcements',
+    path: '/announcements',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminCompaniesRoute =
+  AuthenticatedAdminCompaniesRouteImport.update({
+    id: '/companies',
+    path: '/companies',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminCriteriaRoute =
+  AuthenticatedAdminCriteriaRouteImport.update({
+    id: '/criteria',
+    path: '/criteria',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminDsaRoute = AuthenticatedAdminDsaRouteImport.update({
+  id: '/dsa',
+  path: '/dsa',
+  getParentRoute: () => AuthenticatedAdminRouteRoute,
+} as any)
+const AuthenticatedAdminHistoryRoute =
+  AuthenticatedAdminHistoryRouteImport.update({
+    id: '/history',
+    path: '/history',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminQuestionsRoute =
+  AuthenticatedAdminQuestionsRouteImport.update({
+    id: '/questions',
+    path: '/questions',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminRolesRoute = AuthenticatedAdminRolesRouteImport.update({
+  id: '/roles',
+  path: '/roles',
+  getParentRoute: () => AuthenticatedAdminRouteRoute,
+} as any)
+const AuthenticatedAdminRoundsRoute =
+  AuthenticatedAdminRoundsRouteImport.update({
+    id: '/rounds',
+    path: '/rounds',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminSourcesRoute =
+  AuthenticatedAdminSourcesRouteImport.update({
+    id: '/sources',
+    path: '/sources',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AuthenticatedAdminRouteRoute,
+} as any)
+const AuthenticatedCompaniesIndexRoute =
+  AuthenticatedCompaniesIndexRouteImport.update({
+    id: '/companies/',
+    path: '/companies/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedCompaniesIdRoute =
+  AuthenticatedCompaniesIdRouteImport.update({
+    id: '/companies/$id',
+    path: '/companies/$id',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/terms': typeof TermsRoute
+  '/admin': typeof AuthenticatedAdminRouteRouteWithChildren
+  '/announcements': typeof AuthenticatedAnnouncementsRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/dsa': typeof AuthenticatedDsaRoute
+  '/prep': typeof AuthenticatedPrepRoute
+  '/questions': typeof AuthenticatedQuestionsRoute
+  '/rounds': typeof AuthenticatedRoundsRoute
+  '/admin/announcements': typeof AuthenticatedAdminAnnouncementsRoute
+  '/admin/companies': typeof AuthenticatedAdminCompaniesRoute
+  '/admin/criteria': typeof AuthenticatedAdminCriteriaRoute
+  '/admin/dsa': typeof AuthenticatedAdminDsaRoute
+  '/admin/history': typeof AuthenticatedAdminHistoryRoute
+  '/admin/questions': typeof AuthenticatedAdminQuestionsRoute
+  '/admin/roles': typeof AuthenticatedAdminRolesRoute
+  '/admin/rounds': typeof AuthenticatedAdminRoundsRoute
+  '/admin/sources': typeof AuthenticatedAdminSourcesRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/companies/$id': typeof AuthenticatedCompaniesIdRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/companies/': typeof AuthenticatedCompaniesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/terms': typeof TermsRoute
+  '/announcements': typeof AuthenticatedAnnouncementsRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/dsa': typeof AuthenticatedDsaRoute
+  '/prep': typeof AuthenticatedPrepRoute
+  '/questions': typeof AuthenticatedQuestionsRoute
+  '/rounds': typeof AuthenticatedRoundsRoute
+  '/admin/announcements': typeof AuthenticatedAdminAnnouncementsRoute
+  '/admin/companies': typeof AuthenticatedAdminCompaniesRoute
+  '/admin/criteria': typeof AuthenticatedAdminCriteriaRoute
+  '/admin/dsa': typeof AuthenticatedAdminDsaRoute
+  '/admin/history': typeof AuthenticatedAdminHistoryRoute
+  '/admin/questions': typeof AuthenticatedAdminQuestionsRoute
+  '/admin/roles': typeof AuthenticatedAdminRolesRoute
+  '/admin/rounds': typeof AuthenticatedAdminRoundsRoute
+  '/admin/sources': typeof AuthenticatedAdminSourcesRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/companies/$id': typeof AuthenticatedCompaniesIdRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
+  '/companies': typeof AuthenticatedCompaniesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/terms': typeof TermsRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteRouteWithChildren
+  '/_authenticated/announcements': typeof AuthenticatedAnnouncementsRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/dsa': typeof AuthenticatedDsaRoute
+  '/_authenticated/prep': typeof AuthenticatedPrepRoute
+  '/_authenticated/questions': typeof AuthenticatedQuestionsRoute
+  '/_authenticated/rounds': typeof AuthenticatedRoundsRoute
+  '/_authenticated/admin/announcements': typeof AuthenticatedAdminAnnouncementsRoute
+  '/_authenticated/admin/companies': typeof AuthenticatedAdminCompaniesRoute
+  '/_authenticated/admin/criteria': typeof AuthenticatedAdminCriteriaRoute
+  '/_authenticated/admin/dsa': typeof AuthenticatedAdminDsaRoute
+  '/_authenticated/admin/history': typeof AuthenticatedAdminHistoryRoute
+  '/_authenticated/admin/questions': typeof AuthenticatedAdminQuestionsRoute
+  '/_authenticated/admin/roles': typeof AuthenticatedAdminRolesRoute
+  '/_authenticated/admin/rounds': typeof AuthenticatedAdminRoundsRoute
+  '/_authenticated/admin/sources': typeof AuthenticatedAdminSourcesRoute
+  '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/_authenticated/companies/$id': typeof AuthenticatedCompaniesIdRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/companies/': typeof AuthenticatedCompaniesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/privacy'
+    | '/reset-password'
+    | '/terms'
+    | '/admin'
+    | '/announcements'
+    | '/dashboard'
+    | '/dsa'
+    | '/prep'
+    | '/questions'
+    | '/rounds'
+    | '/admin/announcements'
+    | '/admin/companies'
+    | '/admin/criteria'
+    | '/admin/dsa'
+    | '/admin/history'
+    | '/admin/questions'
+    | '/admin/roles'
+    | '/admin/rounds'
+    | '/admin/sources'
+    | '/admin/users'
+    | '/companies/$id'
+    | '/admin/'
+    | '/companies/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/privacy'
+    | '/reset-password'
+    | '/terms'
+    | '/announcements'
+    | '/dashboard'
+    | '/dsa'
+    | '/prep'
+    | '/questions'
+    | '/rounds'
+    | '/admin/announcements'
+    | '/admin/companies'
+    | '/admin/criteria'
+    | '/admin/dsa'
+    | '/admin/history'
+    | '/admin/questions'
+    | '/admin/roles'
+    | '/admin/rounds'
+    | '/admin/sources'
+    | '/admin/users'
+    | '/companies/$id'
+    | '/admin'
+    | '/companies'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/privacy'
+    | '/reset-password'
+    | '/terms'
+    | '/_authenticated/admin'
+    | '/_authenticated/announcements'
+    | '/_authenticated/dashboard'
+    | '/_authenticated/dsa'
+    | '/_authenticated/prep'
+    | '/_authenticated/questions'
+    | '/_authenticated/rounds'
+    | '/_authenticated/admin/announcements'
+    | '/_authenticated/admin/companies'
+    | '/_authenticated/admin/criteria'
+    | '/_authenticated/admin/dsa'
+    | '/_authenticated/admin/history'
+    | '/_authenticated/admin/questions'
+    | '/_authenticated/admin/roles'
+    | '/_authenticated/admin/rounds'
+    | '/_authenticated/admin/sources'
+    | '/_authenticated/admin/users'
+    | '/_authenticated/companies/$id'
+    | '/_authenticated/admin/'
+    | '/_authenticated/companies/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  PrivacyRoute: typeof PrivacyRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  TermsRoute: typeof TermsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +360,252 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/announcements': {
+      id: '/_authenticated/announcements'
+      path: '/announcements'
+      fullPath: '/announcements'
+      preLoaderRoute: typeof AuthenticatedAnnouncementsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dsa': {
+      id: '/_authenticated/dsa'
+      path: '/dsa'
+      fullPath: '/dsa'
+      preLoaderRoute: typeof AuthenticatedDsaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/prep': {
+      id: '/_authenticated/prep'
+      path: '/prep'
+      fullPath: '/prep'
+      preLoaderRoute: typeof AuthenticatedPrepRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/questions': {
+      id: '/_authenticated/questions'
+      path: '/questions'
+      fullPath: '/questions'
+      preLoaderRoute: typeof AuthenticatedQuestionsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/rounds': {
+      id: '/_authenticated/rounds'
+      path: '/rounds'
+      fullPath: '/rounds'
+      preLoaderRoute: typeof AuthenticatedRoundsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/announcements': {
+      id: '/_authenticated/admin/announcements'
+      path: '/announcements'
+      fullPath: '/admin/announcements'
+      preLoaderRoute: typeof AuthenticatedAdminAnnouncementsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/companies': {
+      id: '/_authenticated/admin/companies'
+      path: '/companies'
+      fullPath: '/admin/companies'
+      preLoaderRoute: typeof AuthenticatedAdminCompaniesRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/criteria': {
+      id: '/_authenticated/admin/criteria'
+      path: '/criteria'
+      fullPath: '/admin/criteria'
+      preLoaderRoute: typeof AuthenticatedAdminCriteriaRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/dsa': {
+      id: '/_authenticated/admin/dsa'
+      path: '/dsa'
+      fullPath: '/admin/dsa'
+      preLoaderRoute: typeof AuthenticatedAdminDsaRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/history': {
+      id: '/_authenticated/admin/history'
+      path: '/history'
+      fullPath: '/admin/history'
+      preLoaderRoute: typeof AuthenticatedAdminHistoryRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/questions': {
+      id: '/_authenticated/admin/questions'
+      path: '/questions'
+      fullPath: '/admin/questions'
+      preLoaderRoute: typeof AuthenticatedAdminQuestionsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/roles': {
+      id: '/_authenticated/admin/roles'
+      path: '/roles'
+      fullPath: '/admin/roles'
+      preLoaderRoute: typeof AuthenticatedAdminRolesRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/rounds': {
+      id: '/_authenticated/admin/rounds'
+      path: '/rounds'
+      fullPath: '/admin/rounds'
+      preLoaderRoute: typeof AuthenticatedAdminRoundsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/sources': {
+      id: '/_authenticated/admin/sources'
+      path: '/sources'
+      fullPath: '/admin/sources'
+      preLoaderRoute: typeof AuthenticatedAdminSourcesRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/users': {
+      id: '/_authenticated/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/companies/': {
+      id: '/_authenticated/companies/'
+      path: '/companies'
+      fullPath: '/companies/'
+      preLoaderRoute: typeof AuthenticatedCompaniesIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/companies/$id': {
+      id: '/_authenticated/companies/$id'
+      path: '/companies/$id'
+      fullPath: '/companies/$id'
+      preLoaderRoute: typeof AuthenticatedCompaniesIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedAdminRouteRouteChildren {
+  AuthenticatedAdminAnnouncementsRoute: typeof AuthenticatedAdminAnnouncementsRoute
+  AuthenticatedAdminCompaniesRoute: typeof AuthenticatedAdminCompaniesRoute
+  AuthenticatedAdminCriteriaRoute: typeof AuthenticatedAdminCriteriaRoute
+  AuthenticatedAdminDsaRoute: typeof AuthenticatedAdminDsaRoute
+  AuthenticatedAdminHistoryRoute: typeof AuthenticatedAdminHistoryRoute
+  AuthenticatedAdminQuestionsRoute: typeof AuthenticatedAdminQuestionsRoute
+  AuthenticatedAdminRolesRoute: typeof AuthenticatedAdminRolesRoute
+  AuthenticatedAdminRoundsRoute: typeof AuthenticatedAdminRoundsRoute
+  AuthenticatedAdminSourcesRoute: typeof AuthenticatedAdminSourcesRoute
+  AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+}
+
+const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren =
+  {
+    AuthenticatedAdminAnnouncementsRoute: AuthenticatedAdminAnnouncementsRoute,
+    AuthenticatedAdminCompaniesRoute: AuthenticatedAdminCompaniesRoute,
+    AuthenticatedAdminCriteriaRoute: AuthenticatedAdminCriteriaRoute,
+    AuthenticatedAdminDsaRoute: AuthenticatedAdminDsaRoute,
+    AuthenticatedAdminHistoryRoute: AuthenticatedAdminHistoryRoute,
+    AuthenticatedAdminQuestionsRoute: AuthenticatedAdminQuestionsRoute,
+    AuthenticatedAdminRolesRoute: AuthenticatedAdminRolesRoute,
+    AuthenticatedAdminRoundsRoute: AuthenticatedAdminRoundsRoute,
+    AuthenticatedAdminSourcesRoute: AuthenticatedAdminSourcesRoute,
+    AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
+    AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+  }
+
+const AuthenticatedAdminRouteRouteWithChildren =
+  AuthenticatedAdminRouteRoute._addFileChildren(
+    AuthenticatedAdminRouteRouteChildren,
+  )
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRouteRoute: typeof AuthenticatedAdminRouteRouteWithChildren
+  AuthenticatedAnnouncementsRoute: typeof AuthenticatedAnnouncementsRoute
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDsaRoute: typeof AuthenticatedDsaRoute
+  AuthenticatedPrepRoute: typeof AuthenticatedPrepRoute
+  AuthenticatedQuestionsRoute: typeof AuthenticatedQuestionsRoute
+  AuthenticatedRoundsRoute: typeof AuthenticatedRoundsRoute
+  AuthenticatedCompaniesIdRoute: typeof AuthenticatedCompaniesIdRoute
+  AuthenticatedCompaniesIndexRoute: typeof AuthenticatedCompaniesIndexRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRouteRoute: AuthenticatedAdminRouteRouteWithChildren,
+  AuthenticatedAnnouncementsRoute: AuthenticatedAnnouncementsRoute,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDsaRoute: AuthenticatedDsaRoute,
+  AuthenticatedPrepRoute: AuthenticatedPrepRoute,
+  AuthenticatedQuestionsRoute: AuthenticatedQuestionsRoute,
+  AuthenticatedRoundsRoute: AuthenticatedRoundsRoute,
+  AuthenticatedCompaniesIdRoute: AuthenticatedCompaniesIdRoute,
+  AuthenticatedCompaniesIndexRoute: AuthenticatedCompaniesIndexRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
+  PrivacyRoute: PrivacyRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  TermsRoute: TermsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
