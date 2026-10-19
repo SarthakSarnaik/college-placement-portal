@@ -29,6 +29,7 @@ function AuthPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [done, setDone] = useState<string | null>(null);
   const navigate = useNavigate();
+  const search = Route.useSearch();
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -52,9 +53,9 @@ function AuthPage() {
       if (mode === "signin") {
         const { error } = await supabase.auth.signInWithPassword({ email: email.data, password });
         if (error) throw error;
-        const target = Route.useSearch ? undefined : undefined;
-        void target;
-        navigate({ to: "/dashboard" });
+        const r = search.redirect;
+        if (r && r.startsWith("/") && !r.startsWith("//")) navigate({ href: r });
+        else navigate({ to: "/dashboard" });
       } else if (mode === "register") {
         const { error } = await supabase.auth.signUp({
           email: email.data,
