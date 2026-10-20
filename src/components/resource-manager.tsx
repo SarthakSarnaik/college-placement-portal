@@ -15,7 +15,7 @@ import { EmptyState, ErrorState, LoadingState } from "@/components/states";
 import { PageHeader } from "@/components/labels";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Row = Record<string, any>;
+type Row = any;
 export type Field = {
   name: string;
   label: string;

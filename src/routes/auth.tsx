@@ -36,15 +36,15 @@ function AuthPage() {
     const f = new FormData(e.currentTarget);
     const email = emailSchema.safeParse(f.get("email"));
     const errs: Record<string, string> = {};
-    if (!email.success) errs.email = email.error.issues[0].message;
+    if (!email.success) errs["email"] = email.error.issues[0]!.message;
     let password = "";
     if (mode !== "forgot") {
       const pw = pwSchema.safeParse(f.get("password"));
-      if (!pw.success) errs.password = pw.error.issues[0].message;
+      if (!pw.success) errs["password"] = pw.error.issues[0]!.message;
       else password = pw.data;
     }
     const name = String(f.get("name") ?? "").trim();
-    if (mode === "register" && (name.length < 2 || name.length > 100)) errs.name = "Enter your full name";
+    if (mode === "register" && (name.length < 2 || name.length > 100)) errs["name"] = "Enter your full name";
     setErrors(errs);
     if (Object.keys(errs).length || !email.success) return;
 
@@ -111,11 +111,11 @@ function AuthPage() {
           ) : (
             <form onSubmit={onSubmit} className="mt-6 space-y-4" noValidate>
               {mode === "register" && (
-                <Field id="name" label="Full name" error={errors.name}><Input id="name" name="name" autoComplete="name" /></Field>
+                <Field id="name" label="Full name" error={errors["name"]}><Input id="name" name="name" autoComplete="name" /></Field>
               )}
-              <Field id="email" label="Email" error={errors.email}><Input id="email" name="email" type="email" autoComplete="email" /></Field>
+              <Field id="email" label="Email" error={errors["email"]}><Input id="email" name="email" type="email" autoComplete="email" /></Field>
               {mode !== "forgot" && (
-                <Field id="password" label="Password" error={errors.password}>
+                <Field id="password" label="Password" error={errors["password"]}>
                   <Input id="password" name="password" type="password" autoComplete={mode === "register" ? "new-password" : "current-password"} />
                 </Field>
               )}
@@ -137,7 +137,7 @@ function AuthPage() {
   );
 }
 
-function Field({ id, label, error, children }: { id: string; label: string; error?: string; children: React.ReactNode }) {
+function Field({ id, label, error, children }: { id: string; label: string; error?: string | undefined; children: React.ReactNode }) {
   return (
     <div className="space-y-1.5">
       <Label htmlFor={id}>{label}</Label>

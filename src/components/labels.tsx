@@ -36,7 +36,7 @@ export function DifficultyTag({ level }: { level: string }) {
   return <span className={cn(base, cls)}>{level}</span>;
 }
 
-export function PageHeader({ title, description, actions }: { title: string; description?: string; actions?: React.ReactNode }) {
+export function PageHeader({ title, description, actions }: { title: string; description?: string | undefined; actions?: React.ReactNode }) {
   return (
     <div className="mb-6 flex flex-col gap-3 border-b pb-5 sm:flex-row sm:items-end sm:justify-between">
       <div>

@@ -34,7 +34,7 @@ function Users() {
 
   async function toggle(id: string, makeAdmin: boolean) {
     const { error } = await supabase.rpc("set_admin", { _user_id: id, _make_admin: makeAdmin });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success(makeAdmin ? "Admin access granted" : "Admin access removed");
     qc.invalidateQueries({ queryKey: ["admin", "users"] });
   }
