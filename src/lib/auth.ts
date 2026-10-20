@@ -21,7 +21,7 @@ export const meQuery = {
     return {
       id: user.id,
       email: user.email ?? "",
-      fullName: profile?.full_name || (user.user_metadata?.full_name as string) || "",
+      fullName: profile?.full_name || (user.user_metadata?.["full_name"] as string) || "",
       isAdmin: !!roles?.some((r) => r.role === "admin"),
     };
   },

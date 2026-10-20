@@ -15,7 +15,7 @@ function Sources() {
   const qc = useQueryClient();
   async function setStatus(id: string, status: "verified" | "rejected") {
     const { error } = await supabase.from("sources").update({ status, reviewed_at: new Date().toISOString() }).eq("id", id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success(`Marked ${status}`);
     qc.invalidateQueries();
   }
