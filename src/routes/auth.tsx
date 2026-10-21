@@ -92,7 +92,7 @@ function AuthPage() {
     }
   }
 
-  const titles = { signin: "Sign in", register: "Create student account", forgot: "Reset password" };
+  const titles = { signin: portal === "tpo" ? "TPO / Admin sign in" : "Student sign in", register: "Create student account", forgot: "Reset password" };
 
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
@@ -111,9 +111,28 @@ function AuthPage() {
       </div>
       <div className="flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-sm">
+          {mode === "signin" && (
+            <div className="mb-6 grid grid-cols-2 gap-px border bg-border" role="tablist" aria-label="Sign in as">
+              {(["student", "tpo"] as const).map((p) => (
+                <button
+                  key={p}
+                  role="tab"
+                  aria-selected={portal === p}
+                  onClick={() => setPortal(p)}
+                  className={`px-3 py-2.5 text-sm font-medium ${portal === p ? "bg-background text-foreground" : "bg-muted text-muted-foreground hover:text-foreground"}`}
+                >
+                  {p === "student" ? "Student" : "TPO / Admin"}
+                </button>
+              ))}
+            </div>
+          )}
           <h1 className="text-2xl font-semibold">{titles[mode]}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            {mode === "register" ? "New accounts are created with student access. TPO access is granted by an administrator." : "Use your registered email address."}
+            {mode === "register"
+              ? "New accounts are created with student access. TPO access is granted by an administrator."
+              : mode === "signin" && portal === "tpo"
+                ? "For placement office staff. Admin access is granted by an existing administrator — it cannot be self-registered."
+                : "Use your registered email address."}
           </p>
           {done ? (
             <div role="status" className="mt-6 border border-success/40 bg-success/5 p-4 text-sm">
