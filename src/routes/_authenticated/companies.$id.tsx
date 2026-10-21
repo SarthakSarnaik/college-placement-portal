@@ -24,7 +24,13 @@ function Profile() {
   const cur = criteria.find((e) => e.is_current) ?? criteria[0];
   const rounds = [...(c.interview_rounds ?? [])].sort((a, b) => a.round_order - b.round_order);
   const topics = [...(c.dsa_topics ?? [])].sort((a, b) => a.priority - b.priority);
+  const fundamentals = [...(c.cs_fundamentals ?? [])].sort((a, b) => a.priority - b.priority);
   const questions = [...(c.questions ?? [])].sort((a, b) => (b.asked_on ?? "").localeCompare(a.asked_on ?? ""));
+  const topicsByCategory = (["basic", "intermediate", "advanced"] as const)
+    .map((cat) => ({ cat, items: topics.filter((t) => t.category === cat) }))
+    .filter((g) => g.items.length);
+  const uncategorised = topics.filter((t) => !["basic", "intermediate", "advanced"].includes(t.category));
+  const questionsByYear = [...Map.groupBy(questions, (x) => (x.asked_on ? new Date(x.asked_on).getFullYear() : 0)).entries()].sort((a, b) => b[0] - a[0]);
 
   return (
     <>
@@ -38,9 +44,9 @@ function Profile() {
 
       <Tabs defaultValue="overview" className="mt-6">
         <TabsList className="h-auto flex-wrap justify-start rounded-none border-b bg-transparent p-0">
-          {["overview", "eligibility", "dsa", "rounds", "questions", "history"].map((t) => (
+          {["overview", "eligibility", "dsa", "fundamentals", "rounds", "questions", "history"].map((t) => (
             <TabsTrigger key={t} value={t} className="rounded-none border-b-2 border-transparent px-4 py-2 capitalize data-[state=active]:border-primary data-[state=active]:shadow-none">
-              {t === "dsa" ? "DSA" : t === "rounds" ? "Selection rounds" : t === "history" ? "Year-wise changes" : t}
+              {t === "dsa" ? "DSA" : t === "fundamentals" ? "CS Fundamentals" : t === "rounds" ? "Selection rounds" : t === "history" ? "Year-wise changes" : t}
             </TabsTrigger>
           ))}
         </TabsList>
