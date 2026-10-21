@@ -90,9 +90,25 @@ function Profile() {
         <TabsContent value="dsa" className="mt-6">
           <div className="mb-4 flex items-center gap-2 text-sm">Overall difficulty: <DifficultyTag level={c.dsa_difficulty} /></div>
           {topics.length ? (
-            <table className="w-full border text-sm"><thead className="bg-muted text-left text-xs uppercase text-muted-foreground"><tr><th className="px-3 py-2">Priority</th><th className="px-3 py-2">Topic</th><th className="px-3 py-2">Difficulty</th><th className="px-3 py-2">Notes</th></tr></thead>
-              <tbody className="divide-y">{topics.map((t) => <tr key={t.id}><td className="px-3 py-2">{t.priority === 1 ? "High" : t.priority === 2 ? "Medium" : "Low"}</td><td className="px-3 py-2 font-medium">{t.topic}</td><td className="px-3 py-2"><DifficultyTag level={t.difficulty} /></td><td className="px-3 py-2 text-muted-foreground">{t.notes || "—"}</td></tr>)}</tbody></table>
+            <div className="space-y-6">
+              {[...topicsByCategory, ...(uncategorised.length ? [{ cat: "other" as const, items: uncategorised }] : [])].map((g) => (
+                <section key={g.cat}>
+                  <h3 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                    {g.cat === "basic" ? "Basic" : g.cat === "intermediate" ? "Intermediate" : g.cat === "advanced" ? "Advanced" : "Other"}
+                  </h3>
+                  <table className="w-full border text-sm"><thead className="bg-muted text-left text-xs uppercase text-muted-foreground"><tr><th className="px-3 py-2">Priority</th><th className="px-3 py-2">Topic</th><th className="px-3 py-2">Difficulty</th><th className="px-3 py-2">Notes</th></tr></thead>
+                    <tbody className="divide-y">{g.items.map((t) => <tr key={t.id}><td className="px-3 py-2">{t.priority === 1 ? "High" : t.priority === 2 ? "Medium" : "Low"}</td><td className="px-3 py-2 font-medium">{t.topic}</td><td className="px-3 py-2"><DifficultyTag level={t.difficulty} /></td><td className="px-3 py-2 text-muted-foreground">{t.notes || "—"}</td></tr>)}</tbody></table>
+                </section>
+              ))}
+            </div>
           ) : <EmptyState title="No DSA topics listed" />}
+        </TabsContent>
+
+        <TabsContent value="fundamentals" className="mt-6">
+          {fundamentals.length ? (
+            <table className="w-full border text-sm"><thead className="bg-muted text-left text-xs uppercase text-muted-foreground"><tr><th className="px-3 py-2">Priority</th><th className="px-3 py-2">Subject</th><th className="px-3 py-2">Subtopics</th><th className="px-3 py-2">Notes</th></tr></thead>
+              <tbody className="divide-y">{fundamentals.map((f) => <tr key={f.id}><td className="px-3 py-2">{f.priority === 1 ? "High" : f.priority === 2 ? "Medium" : "Low"}</td><td className="px-3 py-2 font-medium">{f.subject}</td><td className="px-3 py-2 text-muted-foreground">{f.subtopics || "—"}</td><td className="px-3 py-2 text-muted-foreground">{f.notes || "—"}</td></tr>)}</tbody></table>
+          ) : <EmptyState title="No CS fundamentals listed" body="The placement office has not published core subject requirements for this company yet." />}
         </TabsContent>
 
         <TabsContent value="rounds" className="mt-6">
@@ -101,18 +117,25 @@ function Profile() {
 
         <TabsContent value="questions" className="mt-6">
           {questions.length ? (
-            <ul className="divide-y border">
-              {questions.map((x) => (
-                <li key={x.id} className="p-4">
-                  <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                    <span>{x.interview_rounds?.name ?? "Round not specified"}</span>·<span>{x.topic}</span>·<DifficultyTag level={x.difficulty} />·<span>Asked {fmtDate(x.asked_on)}</span>
-                  </div>
-                  <p className="mt-1.5 font-medium">{x.question}</p>
-                  {x.experience && <p className="mt-1 text-sm text-muted-foreground">{x.experience}</p>}
-                  <p className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">Source: {x.sources?.title ?? "No source recorded"} {x.sources && <VerifyTag status={x.sources.status} />}</p>
-                </li>
+            <div className="space-y-8">
+              {questionsByYear.map(([year, items]) => (
+                <section key={year}>
+                  <h3 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">{year ? `${year} drive` : "Date not recorded"}</h3>
+                  <ul className="divide-y border">
+                    {items.map((x) => (
+                      <li key={x.id} className="p-4">
+                        <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                          <span>{x.interview_rounds?.name ?? "Round not specified"}</span>·<span>{x.topic}</span>·<DifficultyTag level={x.difficulty} />·<span>Asked {fmtDate(x.asked_on)}</span>
+                        </div>
+                        <p className="mt-1.5 font-medium">{x.question}</p>
+                        {x.experience && <p className="mt-1 text-sm text-muted-foreground">{x.experience}</p>}
+                        <p className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">Source: {x.sources?.title ?? "No source recorded"} {x.sources && <VerifyTag status={x.sources.status} />}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
               ))}
-            </ul>
+            </div>
           ) : <EmptyState title="No previous questions recorded" />}
         </TabsContent>
 
