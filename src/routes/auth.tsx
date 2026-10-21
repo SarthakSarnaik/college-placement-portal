@@ -25,6 +25,7 @@ const pwSchema = z.string().min(8, "Password must be at least 8 characters").max
 
 function AuthPage() {
   const [mode, setMode] = useState<"signin" | "register" | "forgot">("signin");
+  const [portal, setPortal] = useState<"student" | "tpo">("student");
   const [busy, setBusy] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [done, setDone] = useState<string | null>(null);
@@ -51,11 +52,24 @@ function AuthPage() {
     setBusy(true);
     try {
       if (mode === "signin") {
-        const { error } = await supabase.auth.signInWithPassword({ email: email.data, password });
+        const { data: signInData, error } = await supabase.auth.signInWithPassword({ email: email.data, password });
         if (error) throw error;
         const r = search.redirect;
-        if (r && r.startsWith("/") && !r.startsWith("//")) navigate({ href: r });
-        else navigate({ to: "/dashboard" });
+        if (r && r.startsWith("/") && !r.startsWith("//")) {
+          navigate({ href: r });
+          return;
+        }
+        if (portal === "tpo") {
+          const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", signInData.user.id);
+          if (roles?.some((x) => x.role === "admin")) {
+            navigate({ to: "/admin" });
+          } else {
+            toast.error("This account does not have TPO/Admin access. Signed in as a student.");
+            navigate({ to: "/dashboard" });
+          }
+          return;
+        }
+        navigate({ to: "/dashboard" });
       } else if (mode === "register") {
         const { error } = await supabase.auth.signUp({
           email: email.data,
