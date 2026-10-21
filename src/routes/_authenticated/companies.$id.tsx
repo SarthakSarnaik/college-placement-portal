@@ -30,7 +30,12 @@ function Profile() {
     .map((cat) => ({ cat, items: topics.filter((t) => t.category === cat) }))
     .filter((g) => g.items.length);
   const uncategorised = topics.filter((t) => !["basic", "intermediate", "advanced"].includes(t.category));
-  const questionsByYear = [...Map.groupBy(questions, (x) => (x.asked_on ? new Date(x.asked_on).getFullYear() : 0)).entries()].sort((a, b) => b[0] - a[0]);
+  const yearMap = new Map<number, typeof questions>();
+  for (const x of questions) {
+    const y = x.asked_on ? new Date(x.asked_on).getFullYear() : 0;
+    yearMap.set(y, [...(yearMap.get(y) ?? []), x]);
+  }
+  const questionsByYear = [...yearMap.entries()].sort((a, b) => b[0] - a[0]);
 
   return (
     <>
