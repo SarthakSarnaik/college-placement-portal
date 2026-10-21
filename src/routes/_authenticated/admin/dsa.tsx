@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ResourceManager, difficultyOptions } from "@/components/resource-manager";
 import { DifficultyTag } from "@/components/labels";
+import { dsaCategoryOptions } from "@/lib/queries";
 
 export const Route = createFileRoute("/_authenticated/admin/dsa")({
   head: () => ({ meta: [{ title: "DSA Topics — Placement Portal" }] }),
