@@ -147,7 +147,7 @@ function Profile() {
         <TabsContent value="history" className="mt-6">
           {criteria.length ? (
             <table className="w-full border text-sm"><thead className="bg-muted text-left text-xs uppercase text-muted-foreground"><tr><th className="px-3 py-2">Year</th><th className="px-3 py-2">Min. CGPA</th><th className="px-3 py-2">Backlogs</th><th className="px-3 py-2">Branches</th><th className="px-3 py-2">Notes</th></tr></thead>
-              <tbody className="divide-y">{criteria.map((e) => <tr key={e.id}><td className="px-3 py-2 font-medium">{e.year}{e.is_current && <span className="ml-2 text-xs text-primary">current</span>}</td><td className="px-3 py-2">{e.min_cgpa ?? "—"}</td><td className="px-3 py-2">{e.max_backlogs ?? "—"}</td><td className="px-3 py-2">{e.branches}</td><td className="px-3 py-2 text-muted-foreground">{e.notes || "—"}</td></tr>)}</tbody></table>
+              <tbody className="divide-y">{criteria.map((e) => <tr key={e.id}><td className="px-3 py-2 font-medium">{e.year}{e.is_current && <span className="ml-2 text-xs font-medium text-teal">current</span>}</td><td className="px-3 py-2">{e.min_cgpa ?? "—"}</td><td className="px-3 py-2">{e.max_backlogs ?? "—"}</td><td className="px-3 py-2">{e.branches}</td><td className="px-3 py-2 text-muted-foreground">{e.notes || "—"}</td></tr>)}</tbody></table>
           ) : <EmptyState title="No historical criteria" />}
         </TabsContent>
       </Tabs>
