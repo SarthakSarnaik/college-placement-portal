@@ -19,6 +19,7 @@ import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAnnouncementsRouteImport } from './routes/_authenticated/announcements'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedDsaRouteImport } from './routes/_authenticated/dsa'
+import { Route as AuthenticatedFundamentalsRouteImport } from './routes/_authenticated/fundamentals'
 import { Route as AuthenticatedPrepRouteImport } from './routes/_authenticated/prep'
 import { Route as AuthenticatedQuestionsRouteImport } from './routes/_authenticated/questions'
 import { Route as AuthenticatedRoundsRouteImport } from './routes/_authenticated/rounds'
@@ -27,6 +28,7 @@ import { Route as AuthenticatedAdminAnnouncementsRouteImport } from './routes/_a
 import { Route as AuthenticatedAdminCompaniesRouteImport } from './routes/_authenticated/admin/companies'
 import { Route as AuthenticatedAdminCriteriaRouteImport } from './routes/_authenticated/admin/criteria'
 import { Route as AuthenticatedAdminDsaRouteImport } from './routes/_authenticated/admin/dsa'
+import { Route as AuthenticatedAdminFundamentalsRouteImport } from './routes/_authenticated/admin/fundamentals'
 import { Route as AuthenticatedAdminHistoryRouteImport } from './routes/_authenticated/admin/history'
 import { Route as AuthenticatedAdminQuestionsRouteImport } from './routes/_authenticated/admin/questions'
 import { Route as AuthenticatedAdminRolesRouteImport } from './routes/_authenticated/admin/roles'
@@ -86,6 +88,12 @@ const AuthenticatedDsaRoute = AuthenticatedDsaRouteImport.update({
   path: '/dsa',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedFundamentalsRoute =
+  AuthenticatedFundamentalsRouteImport.update({
+    id: '/fundamentals',
+    path: '/fundamentals',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedPrepRoute = AuthenticatedPrepRouteImport.update({
   id: '/prep',
   path: '/prep',
@@ -129,6 +137,12 @@ const AuthenticatedAdminDsaRoute = AuthenticatedAdminDsaRouteImport.update({
   path: '/dsa',
   getParentRoute: () => AuthenticatedAdminRouteRoute,
 } as any)
+const AuthenticatedAdminFundamentalsRoute =
+  AuthenticatedAdminFundamentalsRouteImport.update({
+    id: '/fundamentals',
+    path: '/fundamentals',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAdminHistoryRoute =
   AuthenticatedAdminHistoryRouteImport.update({
     id: '/history',
@@ -186,6 +200,7 @@ export interface FileRoutesByFullPath {
   '/announcements': typeof AuthenticatedAnnouncementsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/dsa': typeof AuthenticatedDsaRoute
+  '/fundamentals': typeof AuthenticatedFundamentalsRoute
   '/prep': typeof AuthenticatedPrepRoute
   '/questions': typeof AuthenticatedQuestionsRoute
   '/rounds': typeof AuthenticatedRoundsRoute
@@ -193,6 +208,7 @@ export interface FileRoutesByFullPath {
   '/admin/companies': typeof AuthenticatedAdminCompaniesRoute
   '/admin/criteria': typeof AuthenticatedAdminCriteriaRoute
   '/admin/dsa': typeof AuthenticatedAdminDsaRoute
+  '/admin/fundamentals': typeof AuthenticatedAdminFundamentalsRoute
   '/admin/history': typeof AuthenticatedAdminHistoryRoute
   '/admin/questions': typeof AuthenticatedAdminQuestionsRoute
   '/admin/roles': typeof AuthenticatedAdminRolesRoute
@@ -212,6 +228,7 @@ export interface FileRoutesByTo {
   '/announcements': typeof AuthenticatedAnnouncementsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/dsa': typeof AuthenticatedDsaRoute
+  '/fundamentals': typeof AuthenticatedFundamentalsRoute
   '/prep': typeof AuthenticatedPrepRoute
   '/questions': typeof AuthenticatedQuestionsRoute
   '/rounds': typeof AuthenticatedRoundsRoute
@@ -219,6 +236,7 @@ export interface FileRoutesByTo {
   '/admin/companies': typeof AuthenticatedAdminCompaniesRoute
   '/admin/criteria': typeof AuthenticatedAdminCriteriaRoute
   '/admin/dsa': typeof AuthenticatedAdminDsaRoute
+  '/admin/fundamentals': typeof AuthenticatedAdminFundamentalsRoute
   '/admin/history': typeof AuthenticatedAdminHistoryRoute
   '/admin/questions': typeof AuthenticatedAdminQuestionsRoute
   '/admin/roles': typeof AuthenticatedAdminRolesRoute
@@ -241,6 +259,7 @@ export interface FileRoutesById {
   '/_authenticated/announcements': typeof AuthenticatedAnnouncementsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/dsa': typeof AuthenticatedDsaRoute
+  '/_authenticated/fundamentals': typeof AuthenticatedFundamentalsRoute
   '/_authenticated/prep': typeof AuthenticatedPrepRoute
   '/_authenticated/questions': typeof AuthenticatedQuestionsRoute
   '/_authenticated/rounds': typeof AuthenticatedRoundsRoute
@@ -248,6 +267,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/companies': typeof AuthenticatedAdminCompaniesRoute
   '/_authenticated/admin/criteria': typeof AuthenticatedAdminCriteriaRoute
   '/_authenticated/admin/dsa': typeof AuthenticatedAdminDsaRoute
+  '/_authenticated/admin/fundamentals': typeof AuthenticatedAdminFundamentalsRoute
   '/_authenticated/admin/history': typeof AuthenticatedAdminHistoryRoute
   '/_authenticated/admin/questions': typeof AuthenticatedAdminQuestionsRoute
   '/_authenticated/admin/roles': typeof AuthenticatedAdminRolesRoute
@@ -270,6 +290,7 @@ export interface FileRouteTypes {
     | '/announcements'
     | '/dashboard'
     | '/dsa'
+    | '/fundamentals'
     | '/prep'
     | '/questions'
     | '/rounds'
@@ -277,6 +298,7 @@ export interface FileRouteTypes {
     | '/admin/companies'
     | '/admin/criteria'
     | '/admin/dsa'
+    | '/admin/fundamentals'
     | '/admin/history'
     | '/admin/questions'
     | '/admin/roles'
@@ -296,6 +318,7 @@ export interface FileRouteTypes {
     | '/announcements'
     | '/dashboard'
     | '/dsa'
+    | '/fundamentals'
     | '/prep'
     | '/questions'
     | '/rounds'
@@ -303,6 +326,7 @@ export interface FileRouteTypes {
     | '/admin/companies'
     | '/admin/criteria'
     | '/admin/dsa'
+    | '/admin/fundamentals'
     | '/admin/history'
     | '/admin/questions'
     | '/admin/roles'
@@ -324,6 +348,7 @@ export interface FileRouteTypes {
     | '/_authenticated/announcements'
     | '/_authenticated/dashboard'
     | '/_authenticated/dsa'
+    | '/_authenticated/fundamentals'
     | '/_authenticated/prep'
     | '/_authenticated/questions'
     | '/_authenticated/rounds'
@@ -331,6 +356,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/companies'
     | '/_authenticated/admin/criteria'
     | '/_authenticated/admin/dsa'
+    | '/_authenticated/admin/fundamentals'
     | '/_authenticated/admin/history'
     | '/_authenticated/admin/questions'
     | '/_authenticated/admin/roles'
@@ -423,6 +449,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDsaRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/fundamentals': {
+      id: '/_authenticated/fundamentals'
+      path: '/fundamentals'
+      fullPath: '/fundamentals'
+      preLoaderRoute: typeof AuthenticatedFundamentalsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/prep': {
       id: '/_authenticated/prep'
       path: '/prep'
@@ -477,6 +510,13 @@ declare module '@tanstack/react-router' {
       path: '/dsa'
       fullPath: '/admin/dsa'
       preLoaderRoute: typeof AuthenticatedAdminDsaRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/fundamentals': {
+      id: '/_authenticated/admin/fundamentals'
+      path: '/fundamentals'
+      fullPath: '/admin/fundamentals'
+      preLoaderRoute: typeof AuthenticatedAdminFundamentalsRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
     '/_authenticated/admin/history': {
@@ -543,6 +583,7 @@ interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminCompaniesRoute: typeof AuthenticatedAdminCompaniesRoute
   AuthenticatedAdminCriteriaRoute: typeof AuthenticatedAdminCriteriaRoute
   AuthenticatedAdminDsaRoute: typeof AuthenticatedAdminDsaRoute
+  AuthenticatedAdminFundamentalsRoute: typeof AuthenticatedAdminFundamentalsRoute
   AuthenticatedAdminHistoryRoute: typeof AuthenticatedAdminHistoryRoute
   AuthenticatedAdminQuestionsRoute: typeof AuthenticatedAdminQuestionsRoute
   AuthenticatedAdminRolesRoute: typeof AuthenticatedAdminRolesRoute
@@ -558,6 +599,7 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
     AuthenticatedAdminCompaniesRoute: AuthenticatedAdminCompaniesRoute,
     AuthenticatedAdminCriteriaRoute: AuthenticatedAdminCriteriaRoute,
     AuthenticatedAdminDsaRoute: AuthenticatedAdminDsaRoute,
+    AuthenticatedAdminFundamentalsRoute: AuthenticatedAdminFundamentalsRoute,
     AuthenticatedAdminHistoryRoute: AuthenticatedAdminHistoryRoute,
     AuthenticatedAdminQuestionsRoute: AuthenticatedAdminQuestionsRoute,
     AuthenticatedAdminRolesRoute: AuthenticatedAdminRolesRoute,
@@ -577,6 +619,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAnnouncementsRoute: typeof AuthenticatedAnnouncementsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDsaRoute: typeof AuthenticatedDsaRoute
+  AuthenticatedFundamentalsRoute: typeof AuthenticatedFundamentalsRoute
   AuthenticatedPrepRoute: typeof AuthenticatedPrepRoute
   AuthenticatedQuestionsRoute: typeof AuthenticatedQuestionsRoute
   AuthenticatedRoundsRoute: typeof AuthenticatedRoundsRoute
@@ -589,6 +632,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAnnouncementsRoute: AuthenticatedAnnouncementsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDsaRoute: AuthenticatedDsaRoute,
+  AuthenticatedFundamentalsRoute: AuthenticatedFundamentalsRoute,
   AuthenticatedPrepRoute: AuthenticatedPrepRoute,
   AuthenticatedQuestionsRoute: AuthenticatedQuestionsRoute,
   AuthenticatedRoundsRoute: AuthenticatedRoundsRoute,

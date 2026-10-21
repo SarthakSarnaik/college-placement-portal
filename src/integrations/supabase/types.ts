@@ -97,8 +97,47 @@ export type Database = {
         }
         Relationships: []
       }
+      cs_fundamentals: {
+        Row: {
+          company_id: string
+          created_at: string
+          id: string
+          notes: string | null
+          priority: number
+          subject: string
+          subtopics: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          priority?: number
+          subject: string
+          subtopics?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          priority?: number
+          subject?: string
+          subtopics?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cs_fundamentals_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       dsa_topics: {
         Row: {
+          category: string
           company_id: string
           difficulty: Database["public"]["Enums"]["difficulty"]
           id: string
@@ -107,6 +146,7 @@ export type Database = {
           topic: string
         }
         Insert: {
+          category?: string
           company_id: string
           difficulty?: Database["public"]["Enums"]["difficulty"]
           id?: string
@@ -115,6 +155,7 @@ export type Database = {
           topic: string
         }
         Update: {
+          category?: string
           company_id?: string
           difficulty?: Database["public"]["Enums"]["difficulty"]
           id?: string

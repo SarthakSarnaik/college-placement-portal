@@ -3,7 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import {
   LayoutDashboard, Building2, Code2, ListOrdered, MessageSquareText, BookOpen, Megaphone,
-  ShieldCheck, Briefcase, ClipboardCheck, History, Users, FileCheck2, LogOut, Menu, X, ListChecks,
+  ShieldCheck, Briefcase, ClipboardCheck, History, Users, FileCheck2, LogOut, Menu, X, ListChecks, GraduationCap,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMe } from "@/lib/auth";
@@ -22,6 +22,7 @@ const studentNav = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/companies", label: "Companies", icon: Building2 },
   { to: "/dsa", label: "DSA Requirements", icon: Code2 },
+  { to: "/fundamentals", label: "CS Fundamentals", icon: GraduationCap },
   { to: "/rounds", label: "Interview Rounds", icon: ListOrdered },
   { to: "/questions", label: "Previous Questions", icon: MessageSquareText },
   { to: "/prep", label: "Preparation Guide", icon: BookOpen },
@@ -34,6 +35,7 @@ const adminNav = [
   { to: "/admin/roles", label: "Job Roles", icon: Briefcase },
   { to: "/admin/criteria", label: "Eligibility Criteria", icon: ClipboardCheck },
   { to: "/admin/dsa", label: "DSA Topics", icon: Code2 },
+  { to: "/admin/fundamentals", label: "CS Fundamentals", icon: GraduationCap },
   { to: "/admin/rounds", label: "Interview Rounds", icon: ListChecks },
   { to: "/admin/questions", label: "Questions", icon: MessageSquareText },
   { to: "/admin/sources", label: "Source Verification", icon: FileCheck2 },

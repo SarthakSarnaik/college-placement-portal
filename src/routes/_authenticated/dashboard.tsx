@@ -32,7 +32,7 @@ function Dashboard() {
           {journey.map((j, i) => (
             <li key={j.to} className="bg-background">
               <Link to={j.to} className="group flex h-full flex-col p-5 hover:bg-muted">
-                <span className="text-xs font-semibold text-muted-foreground">STEP {i + 1}</span>
+                <span className="text-xs font-semibold text-teal">STEP {i + 1}</span>
                 <j.icon className="mt-3 size-5 text-primary" strokeWidth={1.5} />
                 <span className="mt-2 font-medium">{j.title}</span>
                 <span className="mt-1 text-sm text-muted-foreground">{j.body}</span>

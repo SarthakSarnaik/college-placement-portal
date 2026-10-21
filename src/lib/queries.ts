@@ -25,7 +25,7 @@ export const companyQuery = (id: string) =>
       const { data, error } = await supabase
         .from("companies")
         .select(
-          "*, job_roles(*), eligibility_criteria(*), dsa_topics(*), interview_rounds(*), questions(*, sources(title, status, source_type), interview_rounds(name))",
+          "*, job_roles(*), eligibility_criteria(*), dsa_topics(*), cs_fundamentals(*), interview_rounds(*), questions(*, sources(title, status, source_type), interview_rounds(name))",
         )
         .eq("id", id)
         .maybeSingle();
@@ -38,6 +38,17 @@ export const dsaQuery = queryOptions({
   queryKey: ["dsa_all"],
   queryFn: () => run(supabase.from("dsa_topics").select("*, companies(id, name, is_demo)").order("priority")),
 });
+
+export const csQuery = queryOptions({
+  queryKey: ["cs_all"],
+  queryFn: () => run(supabase.from("cs_fundamentals").select("*, companies(id, name, is_demo)").order("priority")),
+});
+
+export const dsaCategoryOptions = [
+  { value: "basic", label: "Basic" },
+  { value: "intermediate", label: "Intermediate" },
+  { value: "advanced", label: "Advanced" },
+];
 
 export const roundsQuery = queryOptions({
   queryKey: ["rounds_all"],

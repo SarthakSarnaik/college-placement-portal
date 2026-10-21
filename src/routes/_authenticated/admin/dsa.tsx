@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ResourceManager, difficultyOptions } from "@/components/resource-manager";
 import { DifficultyTag } from "@/components/labels";
+import { dsaCategoryOptions } from "@/lib/queries";
 
 export const Route = createFileRoute("/_authenticated/admin/dsa")({
   head: () => ({ meta: [{ title: "DSA Topics — Placement Portal" }] }),
@@ -10,10 +11,11 @@ export const Route = createFileRoute("/_authenticated/admin/dsa")({
       table="dsa_topics"
       order={{ column: "priority", ascending: true }}
       searchKeys={["topic", "notes"]}
-      defaults={{ priority: 2, difficulty: "medium" }}
+      defaults={{ priority: 2, difficulty: "medium", category: "intermediate" }}
       fields={[
         { name: "company_id", label: "Company", type: "company", required: true },
         { name: "topic", label: "Topic", required: true },
+        { name: "category", label: "Category", type: "select", options: dsaCategoryOptions, render: (r) => <span className="capitalize">{r.category}</span> },
         { name: "difficulty", label: "Difficulty", type: "select", options: difficultyOptions, render: (r) => <DifficultyTag level={r.difficulty} /> },
         { name: "priority", label: "Priority", type: "select", options: [{ value: "1", label: "High" }, { value: "2", label: "Medium" }, { value: "3", label: "Low" }] },
         { name: "notes", label: "Notes", type: "textarea" },
