@@ -99,6 +99,48 @@ export const announcementsQuery = queryOptions({
     ),
 });
 
+export const dsaDayOptions = [
+  { value: "1", label: "Day 01: Arrays & Two Pointers" },
+  { value: "2", label: "Day 02: Strings & Hashing" },
+  { value: "3", label: "Day 03: Binary Search" },
+  { value: "4", label: "Day 04: Binary Trees" },
+  { value: "5", label: "Day 05: 1D Dynamic Programming" },
+];
+
+export const questionTypeOptions = [
+  { value: "dsa_sheet", label: "DSA Practice Sheet Problem" },
+  { value: "interview_question", label: "Campus Interview Debrief" },
+];
+
+export const studentProgressQuery = (userId?: string | null) =>
+  queryOptions({
+    queryKey: ["student_progress", userId],
+    enabled: Boolean(userId),
+    queryFn: async () => {
+      if (!userId) return [];
+      try {
+        const { data, error } = await supabase
+          .from("student_question_progress")
+          .select("*")
+          .eq("user_id", userId);
+        if (error) {
+          console.warn("student_question_progress query notice:", error.message);
+          return [];
+        }
+        return (data ?? []) as Array<{
+          id: string;
+          user_id: string;
+          question_id: string;
+          is_solved: boolean;
+          is_bookmarked: boolean;
+        }>;
+      } catch (e) {
+        console.warn("student_question_progress lookup fallback:", e);
+        return [];
+      }
+    },
+  });
+
 export const fmtDate = (d?: string | null) =>
   d
     ? new Date(d).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })

@@ -341,9 +341,9 @@ function StudentAuthPage() {
               <p className="mt-1 font-serif text-lg font-semibold text-white">Curated by TPO</p>
             </div>
             <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-3.5">
-              <p className="text-xs text-slate-400">Previous Questions</p>
+              <p className="text-xs text-slate-400">DSA Sheet</p>
               <p className="mt-1 font-serif text-lg font-semibold text-white">
-                Verified Past 3 Years
+                Day-Wise & Verified
               </p>
             </div>
           </div>

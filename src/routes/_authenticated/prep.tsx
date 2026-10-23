@@ -142,7 +142,7 @@ function Prep() {
             <Link to="/dsa">Review DSA Requirements</Link>
           </Button>
           <Button asChild variant="outline" size="sm" className="text-xs">
-            <Link to="/questions">Study Questions Bank</Link>
+            <Link to="/questions">Solve DSA Sheet</Link>
           </Button>
           <Button asChild variant="outline" size="sm" className="text-xs">
             <Link to="/rounds">View Interview Rounds</Link>

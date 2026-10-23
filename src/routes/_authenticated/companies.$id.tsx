@@ -16,7 +16,7 @@ import {
   Briefcase,
   Code2,
   History as HistoryIcon,
-  MessageSquareText,
+  FileCode2,
   Clock,
   ShieldCheck,
   Award,
@@ -181,7 +181,7 @@ function Profile() {
             { id: "dsa", label: "DSA Topics", icon: Code2 },
             { id: "fundamentals", label: "CS Fundamentals", icon: GraduationCap },
             { id: "rounds", label: "Selection Rounds", icon: ListOrdered },
-            { id: "questions", label: "Question Bank", icon: MessageSquareText },
+            { id: "questions", label: "DSA Sheet & Questions", icon: FileCode2 },
             { id: "history", label: "Criteria History", icon: HistoryIcon },
           ].map((t) => (
             <TabsTrigger
@@ -539,16 +539,23 @@ function Profile() {
           </div>
         </TabsContent>
 
-        {/* Previous Questions Tab */}
+        {/* DSA Sheet & Questions Tab */}
         <TabsContent value="questions" className="mt-0">
           <div className="rounded-xl border border-border bg-card p-6 shadow-xs">
-            <div className="mb-6">
-              <h2 className="text-base font-bold text-foreground">
-                Previous Interview Questions Bank
-              </h2>
-              <p className="text-xs text-muted-foreground">
-                Authentic questions asked during recent recruitment drives
-              </p>
+            <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+              <div>
+                <h2 className="text-base font-bold text-foreground">
+                  Company Questions & DSA Problems
+                </h2>
+                <p className="text-xs text-muted-foreground">
+                  Authentic questions asked during recent recruitment drives
+                </p>
+              </div>
+              <Button asChild variant="outline" size="sm" className="text-xs">
+                <Link to="/questions">
+                  <FileCode2 className="size-3.5 mr-1.5 text-primary" /> Open Day-Wise DSA Sheet
+                </Link>
+              </Button>
             </div>
 
             {questions.length ? (

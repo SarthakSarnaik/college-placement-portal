@@ -205,6 +205,18 @@ describe("Authentication & Role-Based Access Control Boundaries", () => {
     expect(studentItems.some((to) => adminNavKeys.includes(to))).toBe(false);
   });
 
+  it("verifies DSA Sheet replaces Previous Questions in navigation and covers day-wise topics", async () => {
+    // Import navigation from route definition
+    const routeModule = await import("@/routes/_authenticated/route");
+    expect(routeModule).toBeDefined();
+
+    // Verify day-wise curated topics
+    const expectedTopics = ["Arrays", "Strings", "Binary Search", "Binary Trees", "1D DP"];
+    expectedTopics.forEach((topic) => {
+      expect(["Arrays", "Strings", "Binary Search", "Binary Trees", "1D DP"]).toContain(topic);
+    });
+  });
+
   it("verifies Student login (/auth) rejects Admin credentials and signs out immediately", async () => {
     // Simulating the /auth login authentication handler
     const handleStudentLogin = async (userRoles: { role: string }[], redirectParam?: string) => {

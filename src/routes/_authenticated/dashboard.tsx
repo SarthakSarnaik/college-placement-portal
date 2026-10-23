@@ -6,7 +6,7 @@ import {
   Building2,
   Code2,
   ListOrdered,
-  MessageSquareText,
+  FileCode2,
   GraduationCap,
   Calendar,
   CheckCircle2,
@@ -198,9 +198,16 @@ function Dashboard() {
               Follow this four-step strategy to maximize your campus placement offers
             </p>
           </div>
-          <Button asChild variant="ghost" size="sm" className="text-xs text-primary">
-            <Link to="/prep">Detailed Year Guide →</Link>
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button asChild variant="outline" size="sm" className="text-xs">
+              <Link to="/questions">
+                <FileCode2 className="size-3.5 mr-1 text-primary" /> DSA Sheet
+              </Link>
+            </Button>
+            <Button asChild variant="ghost" size="sm" className="text-xs text-primary">
+              <Link to="/prep">Year Guide →</Link>
+            </Button>
+          </div>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

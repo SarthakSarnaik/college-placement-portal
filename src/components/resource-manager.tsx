@@ -92,6 +92,9 @@ export function ResourceManager({
   readOnly,
   rowActions,
   defaults = {},
+  customFilter,
+  filterBarExtra,
+  transformPayload,
 }: {
   title: string;
   description?: string;
@@ -103,6 +106,9 @@ export function ResourceManager({
   readOnly?: boolean;
   rowActions?: (row: Row) => ReactNode;
   defaults?: Row;
+  customFilter?: (row: Row) => boolean;
+  filterBarExtra?: ReactNode;
+  transformPayload?: (payload: Row) => Row;
 }) {
   const qc = useQueryClient();
   const key = ["admin", table];
@@ -139,9 +145,10 @@ export function ResourceManager({
                 .toLowerCase()
                 .includes(term.toLowerCase()),
             )) &&
-          (!companyFilter || r.company_id === companyFilter),
+          (!companyFilter || r.company_id === companyFilter) &&
+          (!customFilter || customFilter(r)),
       ),
-    [q.data, term, companyFilter, searchKeys],
+    [q.data, term, companyFilter, searchKeys, customFilter],
   );
 
   const totalPages = Math.ceil(filteredRows.length / PAGE_SIZE) || 1;
@@ -177,12 +184,24 @@ export function ResourceManager({
       setEditing(null);
       invalidate();
     },
-    onError: (e: Error) =>
-      toast.error(
-        e.message.includes("row-level security")
-          ? "Permission denied: PostgreSQL row-level security policy rejected this modification."
-          : e.message,
-      ),
+    onError: (e: Error) => {
+      if (
+        e.message.includes("is_published") ||
+        e.message.includes("schema cache") ||
+        e.message.includes("PGRST204")
+      ) {
+        toast.error(
+          "Database schema mismatch: 'is_published' column not found in Supabase. Please apply the migration SQL in the Supabase Dashboard SQL Editor.",
+          { duration: 8000 },
+        );
+      } else if (e.message.includes("row-level security")) {
+        toast.error(
+          "Permission denied: PostgreSQL row-level security policy rejected this modification.",
+        );
+      } else {
+        toast.error(e.message);
+      }
+    },
   });
 
   const del = useMutation({
@@ -231,7 +250,10 @@ export function ResourceManager({
       } else out[f.name] = raw || (f.required ? raw : null);
     }
     setErrors(errs);
-    if (!Object.keys(errs).length) save.mutate(out);
+    if (!Object.keys(errs).length) {
+      const finalPayload = transformPayload ? transformPayload(out) : out;
+      save.mutate(finalPayload);
+    }
   }
 
   const lookupLabel = (f: Field, v: string) => {
@@ -381,6 +403,8 @@ export function ResourceManager({
               ))}
             </select>
           )}
+
+          {filterBarExtra}
         </div>
 
         <div className="text-xs font-medium text-muted-foreground">

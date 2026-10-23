@@ -314,42 +314,114 @@ export type Database = {
         };
         Relationships: [];
       };
+      question_companies: {
+        Row: {
+          company_id: string | null;
+          company_name: string;
+          created_at: string;
+          id: string;
+          question_id: string;
+        };
+        Insert: {
+          company_id?: string | null;
+          company_name: string;
+          created_at?: string;
+          id?: string;
+          question_id: string;
+        };
+        Update: {
+          company_id?: string | null;
+          company_name?: string;
+          created_at?: string;
+          id?: string;
+          question_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "question_companies_company_id_fkey";
+            columns: ["company_id"];
+            isOneToOne: false;
+            referencedRelation: "companies";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "question_companies_question_id_fkey";
+            columns: ["question_id"];
+            isOneToOne: false;
+            referencedRelation: "questions";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       questions: {
         Row: {
+          article_url: string | null;
           asked_on: string | null;
-          company_id: string;
+          company_id: string | null;
+          company_names: string | null;
           created_at: string;
+          day_number: number | null;
+          day_title: string | null;
           difficulty: Database["public"]["Enums"]["difficulty"];
           experience: string | null;
           id: string;
+          is_published: boolean;
+          is_verified: boolean;
+          notes: string | null;
+          order_index: number;
+          practice_url: string | null;
           question: string;
+          question_type: string;
           round_id: string | null;
           source_id: string | null;
           topic: string | null;
+          video_url: string | null;
         };
         Insert: {
+          article_url?: string | null;
           asked_on?: string | null;
-          company_id: string;
+          company_id?: string | null;
+          company_names?: string | null;
           created_at?: string;
+          day_number?: number | null;
+          day_title?: string | null;
           difficulty?: Database["public"]["Enums"]["difficulty"];
           experience?: string | null;
           id?: string;
+          is_published?: boolean;
+          is_verified?: boolean;
+          notes?: string | null;
+          order_index?: number;
+          practice_url?: string | null;
           question: string;
+          question_type?: string;
           round_id?: string | null;
           source_id?: string | null;
           topic?: string | null;
+          video_url?: string | null;
         };
         Update: {
+          article_url?: string | null;
           asked_on?: string | null;
-          company_id?: string;
+          company_id?: string | null;
+          company_names?: string | null;
           created_at?: string;
+          day_number?: number | null;
+          day_title?: string | null;
           difficulty?: Database["public"]["Enums"]["difficulty"];
           experience?: string | null;
           id?: string;
+          is_published?: boolean;
+          is_verified?: boolean;
+          notes?: string | null;
+          order_index?: number;
+          practice_url?: string | null;
           question?: string;
+          question_type?: string;
           round_id?: string | null;
           source_id?: string | null;
           topic?: string | null;
+          video_url?: string | null;
         };
         Relationships: [
           {
@@ -371,6 +443,47 @@ export type Database = {
             columns: ["source_id"];
             isOneToOne: false;
             referencedRelation: "sources";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      student_question_progress: {
+        Row: {
+          bookmarked_at: string | null;
+          id: string;
+          is_bookmarked: boolean;
+          is_solved: boolean;
+          question_id: string;
+          solved_at: string | null;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          bookmarked_at?: string | null;
+          id?: string;
+          is_bookmarked?: boolean;
+          is_solved?: boolean;
+          question_id: string;
+          solved_at?: string | null;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          bookmarked_at?: string | null;
+          id?: string;
+          is_bookmarked?: boolean;
+          is_solved?: boolean;
+          question_id?: string;
+          solved_at?: string | null;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "student_question_progress_question_id_fkey";
+            columns: ["question_id"];
+            isOneToOne: false;
+            referencedRelation: "questions";
             referencedColumns: ["id"];
           },
         ];

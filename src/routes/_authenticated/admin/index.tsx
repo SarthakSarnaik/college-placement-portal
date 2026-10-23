@@ -7,7 +7,7 @@ import {
   Code2,
   GraduationCap,
   ListChecks,
-  MessageSquareText,
+  FileCode2,
   FileCheck2,
   History,
   Megaphone,
@@ -75,10 +75,10 @@ const tables = [
   },
   {
     table: "questions",
-    label: "Questions Bank",
+    label: "DSA Sheet & Questions",
     to: "/admin/questions",
-    icon: MessageSquareText,
-    desc: "Previous drive questions & experiences",
+    icon: FileCode2,
+    desc: "Day-wise DSA questions & campus drive records",
   },
   {
     table: "sources",

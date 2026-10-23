@@ -5,7 +5,7 @@ import {
   Building2,
   Code2,
   ListOrdered,
-  MessageSquareText,
+  FileCode2,
   ArrowRight,
   CheckCircle2,
 } from "lucide-react";
@@ -51,10 +51,10 @@ const features = [
       "Focus on topics actually tested by each recruiter, from basic strings to dynamic programming and DBMS.",
   },
   {
-    icon: MessageSquareText,
-    title: "Verified Previous Questions",
+    icon: FileCode2,
+    title: "Curated DSA Sheet",
     description:
-      "Authentic questions reported from the last three placement years with candidate debriefs and review status.",
+      "Day-wise coding interview sheet covering Arrays, Strings, Binary Search, Trees, and DP with company tags.",
   },
 ];
 
@@ -129,7 +129,7 @@ function LandingPage() {
                 <span className="size-2 rounded-full bg-teal-500"></span> Company-wise DSA Roadmaps
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="size-2 rounded-full bg-primary"></span> 3 Years Historical
+                <span className="size-2 rounded-full bg-primary"></span> Day-Wise DSA Sheet &
                 Questions
               </div>
             </div>
