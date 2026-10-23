@@ -14,7 +14,16 @@ export const Route = createFileRoute("/_authenticated/admin/fundamentals")({
       fields={[
         { name: "company_id", label: "Company", type: "company", required: true },
         { name: "subject", label: "Subject", required: true },
-        { name: "priority", label: "Priority", type: "select", options: [{ value: "1", label: "High" }, { value: "2", label: "Medium" }, { value: "3", label: "Low" }] },
+        {
+          name: "priority",
+          label: "Priority",
+          type: "select",
+          options: [
+            { value: "1", label: "High" },
+            { value: "2", label: "Medium" },
+            { value: "3", label: "Low" },
+          ],
+        },
         { name: "subtopics", label: "Subtopics", type: "textarea" },
         { name: "notes", label: "Notes", type: "textarea", hideInTable: true },
       ]}

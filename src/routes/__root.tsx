@@ -81,7 +81,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Placement Portal" },
-      { name: "description", content: "College placement information portal for students and the Training & Placement Office." },
+      {
+        name: "description",
+        content:
+          "College placement information portal for students and the Training & Placement Office.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],

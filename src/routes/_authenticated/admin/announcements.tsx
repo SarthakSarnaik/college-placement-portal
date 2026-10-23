@@ -15,7 +15,12 @@ export const Route = createFileRoute("/_authenticated/admin/announcements")({
         { name: "title", label: "Title", required: true },
         { name: "body", label: "Message", type: "textarea", required: true },
         { name: "company_id", label: "Related company", type: "company" },
-        { name: "is_demo", label: "Demo data", type: "boolean", render: (r) => (r.is_demo ? <DemoTag /> : "No") },
+        {
+          name: "is_demo",
+          label: "Demo data",
+          type: "boolean",
+          render: (r) => (r.is_demo ? <DemoTag /> : "No"),
+        },
       ]}
     />
   ),

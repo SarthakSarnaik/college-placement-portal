@@ -15,9 +15,30 @@ export const Route = createFileRoute("/_authenticated/admin/dsa")({
       fields={[
         { name: "company_id", label: "Company", type: "company", required: true },
         { name: "topic", label: "Topic", required: true },
-        { name: "category", label: "Category", type: "select", options: dsaCategoryOptions, render: (r) => <span className="capitalize">{r.category}</span> },
-        { name: "difficulty", label: "Difficulty", type: "select", options: difficultyOptions, render: (r) => <DifficultyTag level={r.difficulty} /> },
-        { name: "priority", label: "Priority", type: "select", options: [{ value: "1", label: "High" }, { value: "2", label: "Medium" }, { value: "3", label: "Low" }] },
+        {
+          name: "category",
+          label: "Category",
+          type: "select",
+          options: dsaCategoryOptions,
+          render: (r) => <span className="capitalize">{r.category}</span>,
+        },
+        {
+          name: "difficulty",
+          label: "Difficulty",
+          type: "select",
+          options: difficultyOptions,
+          render: (r) => <DifficultyTag level={r.difficulty} />,
+        },
+        {
+          name: "priority",
+          label: "Priority",
+          type: "select",
+          options: [
+            { value: "1", label: "High" },
+            { value: "2", label: "Medium" },
+            { value: "3", label: "Low" },
+          ],
+        },
         { name: "notes", label: "Notes", type: "textarea" },
       ]}
     />

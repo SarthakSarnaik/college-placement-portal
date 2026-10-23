@@ -23,10 +23,13 @@ import { Route as AuthenticatedFundamentalsRouteImport } from './routes/_authent
 import { Route as AuthenticatedPrepRouteImport } from './routes/_authenticated/prep'
 import { Route as AuthenticatedQuestionsRouteImport } from './routes/_authenticated/questions'
 import { Route as AuthenticatedRoundsRouteImport } from './routes/_authenticated/rounds'
+import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as AuthConfirmRouteImport } from './routes/auth.confirm'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as AuthenticatedAdminAnnouncementsRouteImport } from './routes/_authenticated/admin/announcements'
 import { Route as AuthenticatedAdminCompaniesRouteImport } from './routes/_authenticated/admin/companies'
 import { Route as AuthenticatedAdminCriteriaRouteImport } from './routes/_authenticated/admin/criteria'
+import { Route as AuthenticatedAdminDashboardRouteImport } from './routes/_authenticated/admin/dashboard'
 import { Route as AuthenticatedAdminDsaRouteImport } from './routes/_authenticated/admin/dsa'
 import { Route as AuthenticatedAdminFundamentalsRouteImport } from './routes/_authenticated/admin/fundamentals'
 import { Route as AuthenticatedAdminHistoryRouteImport } from './routes/_authenticated/admin/history'
@@ -109,6 +112,16 @@ const AuthenticatedRoundsRoute = AuthenticatedRoundsRouteImport.update({
   path: '/rounds',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/admin/login',
+  path: '/admin/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthConfirmRoute = AuthConfirmRouteImport.update({
+  id: '/confirm',
+  path: '/confirm',
+  getParentRoute: () => AuthRoute,
+} as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -130,6 +143,12 @@ const AuthenticatedAdminCriteriaRoute =
   AuthenticatedAdminCriteriaRouteImport.update({
     id: '/criteria',
     path: '/criteria',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminDashboardRoute =
+  AuthenticatedAdminDashboardRouteImport.update({
+    id: '/dashboard',
+    path: '/dashboard',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
 const AuthenticatedAdminDsaRoute = AuthenticatedAdminDsaRouteImport.update({
@@ -192,7 +211,7 @@ const AuthenticatedCompaniesIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
@@ -204,9 +223,12 @@ export interface FileRoutesByFullPath {
   '/prep': typeof AuthenticatedPrepRoute
   '/questions': typeof AuthenticatedQuestionsRoute
   '/rounds': typeof AuthenticatedRoundsRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/auth/confirm': typeof AuthConfirmRoute
   '/admin/announcements': typeof AuthenticatedAdminAnnouncementsRoute
   '/admin/companies': typeof AuthenticatedAdminCompaniesRoute
   '/admin/criteria': typeof AuthenticatedAdminCriteriaRoute
+  '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/admin/dsa': typeof AuthenticatedAdminDsaRoute
   '/admin/fundamentals': typeof AuthenticatedAdminFundamentalsRoute
   '/admin/history': typeof AuthenticatedAdminHistoryRoute
@@ -221,7 +243,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
@@ -232,9 +254,12 @@ export interface FileRoutesByTo {
   '/prep': typeof AuthenticatedPrepRoute
   '/questions': typeof AuthenticatedQuestionsRoute
   '/rounds': typeof AuthenticatedRoundsRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/auth/confirm': typeof AuthConfirmRoute
   '/admin/announcements': typeof AuthenticatedAdminAnnouncementsRoute
   '/admin/companies': typeof AuthenticatedAdminCompaniesRoute
   '/admin/criteria': typeof AuthenticatedAdminCriteriaRoute
+  '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/admin/dsa': typeof AuthenticatedAdminDsaRoute
   '/admin/fundamentals': typeof AuthenticatedAdminFundamentalsRoute
   '/admin/history': typeof AuthenticatedAdminHistoryRoute
@@ -251,7 +276,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
@@ -263,9 +288,12 @@ export interface FileRoutesById {
   '/_authenticated/prep': typeof AuthenticatedPrepRoute
   '/_authenticated/questions': typeof AuthenticatedQuestionsRoute
   '/_authenticated/rounds': typeof AuthenticatedRoundsRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/auth/confirm': typeof AuthConfirmRoute
   '/_authenticated/admin/announcements': typeof AuthenticatedAdminAnnouncementsRoute
   '/_authenticated/admin/companies': typeof AuthenticatedAdminCompaniesRoute
   '/_authenticated/admin/criteria': typeof AuthenticatedAdminCriteriaRoute
+  '/_authenticated/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/_authenticated/admin/dsa': typeof AuthenticatedAdminDsaRoute
   '/_authenticated/admin/fundamentals': typeof AuthenticatedAdminFundamentalsRoute
   '/_authenticated/admin/history': typeof AuthenticatedAdminHistoryRoute
@@ -294,9 +322,12 @@ export interface FileRouteTypes {
     | '/prep'
     | '/questions'
     | '/rounds'
+    | '/admin/login'
+    | '/auth/confirm'
     | '/admin/announcements'
     | '/admin/companies'
     | '/admin/criteria'
+    | '/admin/dashboard'
     | '/admin/dsa'
     | '/admin/fundamentals'
     | '/admin/history'
@@ -322,9 +353,12 @@ export interface FileRouteTypes {
     | '/prep'
     | '/questions'
     | '/rounds'
+    | '/admin/login'
+    | '/auth/confirm'
     | '/admin/announcements'
     | '/admin/companies'
     | '/admin/criteria'
+    | '/admin/dashboard'
     | '/admin/dsa'
     | '/admin/fundamentals'
     | '/admin/history'
@@ -352,9 +386,12 @@ export interface FileRouteTypes {
     | '/_authenticated/prep'
     | '/_authenticated/questions'
     | '/_authenticated/rounds'
+    | '/admin/login'
+    | '/auth/confirm'
     | '/_authenticated/admin/announcements'
     | '/_authenticated/admin/companies'
     | '/_authenticated/admin/criteria'
+    | '/_authenticated/admin/dashboard'
     | '/_authenticated/admin/dsa'
     | '/_authenticated/admin/fundamentals'
     | '/_authenticated/admin/history'
@@ -371,10 +408,11 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthRoute: typeof AuthRoute
+  AuthRoute: typeof AuthRouteWithChildren
   PrivacyRoute: typeof PrivacyRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   TermsRoute: typeof TermsRoute
+  AdminLoginRoute: typeof AdminLoginRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -477,6 +515,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRoundsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/admin/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/confirm': {
+      id: '/auth/confirm'
+      path: '/confirm'
+      fullPath: '/auth/confirm'
+      preLoaderRoute: typeof AuthConfirmRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/_authenticated/admin/': {
       id: '/_authenticated/admin/'
       path: '/'
@@ -503,6 +555,13 @@ declare module '@tanstack/react-router' {
       path: '/criteria'
       fullPath: '/admin/criteria'
       preLoaderRoute: typeof AuthenticatedAdminCriteriaRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/dashboard': {
+      id: '/_authenticated/admin/dashboard'
+      path: '/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AuthenticatedAdminDashboardRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
     '/_authenticated/admin/dsa': {
@@ -582,6 +641,7 @@ interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminAnnouncementsRoute: typeof AuthenticatedAdminAnnouncementsRoute
   AuthenticatedAdminCompaniesRoute: typeof AuthenticatedAdminCompaniesRoute
   AuthenticatedAdminCriteriaRoute: typeof AuthenticatedAdminCriteriaRoute
+  AuthenticatedAdminDashboardRoute: typeof AuthenticatedAdminDashboardRoute
   AuthenticatedAdminDsaRoute: typeof AuthenticatedAdminDsaRoute
   AuthenticatedAdminFundamentalsRoute: typeof AuthenticatedAdminFundamentalsRoute
   AuthenticatedAdminHistoryRoute: typeof AuthenticatedAdminHistoryRoute
@@ -598,6 +658,7 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
     AuthenticatedAdminAnnouncementsRoute: AuthenticatedAdminAnnouncementsRoute,
     AuthenticatedAdminCompaniesRoute: AuthenticatedAdminCompaniesRoute,
     AuthenticatedAdminCriteriaRoute: AuthenticatedAdminCriteriaRoute,
+    AuthenticatedAdminDashboardRoute: AuthenticatedAdminDashboardRoute,
     AuthenticatedAdminDsaRoute: AuthenticatedAdminDsaRoute,
     AuthenticatedAdminFundamentalsRoute: AuthenticatedAdminFundamentalsRoute,
     AuthenticatedAdminHistoryRoute: AuthenticatedAdminHistoryRoute,
@@ -643,13 +704,24 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface AuthRouteChildren {
+  AuthConfirmRoute: typeof AuthConfirmRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthConfirmRoute: AuthConfirmRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  AuthRoute: AuthRoute,
+  AuthRoute: AuthRouteWithChildren,
   PrivacyRoute: PrivacyRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   TermsRoute: TermsRoute,
+  AdminLoginRoute: AdminLoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

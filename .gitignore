@@ -1,3 +1,12 @@
+# Environment variables and sensitive secrets
+.env
+.env.*
+!.env.example
+*.local
+credentials.json
+*.pem
+*.key
+
 # Logs
 logs
 *.log
@@ -7,6 +16,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies and build outputs
 node_modules
 dist
 dist-ssr
@@ -14,7 +24,6 @@ dist-ssr
 .vinxi
 .tanstack/**
 .nitro
-*.local
 
 # Wrangler / Cloudflare
 .wrangler/
@@ -30,3 +39,4 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+

@@ -32,18 +32,40 @@ function ResetPage() {
     setBusy(true);
     const { error } = await supabase.auth.updateUser({ password: pw });
     setBusy(false);
-    if (error) { toast.error(error.message); return; }
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     toast.success("Password updated");
+    const { data: userData } = await supabase.auth.getUser();
+    if (userData.user) {
+      const { data: roles } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userData.user.id);
+      if (roles?.some((r) => r.role === "admin")) {
+        navigate({ to: "/admin/dashboard" });
+        return;
+      }
+    }
     navigate({ to: "/dashboard" });
   }
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
       <form onSubmit={onSubmit} className="w-full max-w-sm space-y-4">
         <h1 className="text-2xl font-semibold">Set a new password</h1>
-        <div className="space-y-1.5"><Label htmlFor="password">New password</Label><Input id="password" name="password" type="password" /></div>
-        <div className="space-y-1.5"><Label htmlFor="confirm">Confirm password</Label><Input id="confirm" name="confirm" type="password" /></div>
+        <div className="space-y-1.5">
+          <Label htmlFor="password">New password</Label>
+          <Input id="password" name="password" type="password" />
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="confirm">Confirm password</Label>
+          <Input id="confirm" name="confirm" type="password" />
+        </div>
         {err && <p className="text-xs text-destructive">{err}</p>}
-        <Button type="submit" className="w-full" disabled={busy}>{busy ? "Saving…" : "Update password"}</Button>
+        <Button type="submit" className="w-full" disabled={busy}>
+          {busy ? "Saving…" : "Update password"}
+        </Button>
       </form>
     </div>
   );
