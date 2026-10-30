@@ -7,7 +7,6 @@ import {
   FileCode2,
   ExternalLink,
   Video,
-  BookOpen,
   Bookmark,
   CheckCircle2,
   Circle,
@@ -1253,7 +1252,7 @@ function DsaSheetPage() {
                           </div>
 
                           {/* Right: Action Links & Bookmark */}
-                          <div className="flex shrink-0 items-center gap-1.5">
+                          <div className="flex shrink-0 items-center gap-2">
                             {/* Bookmark Button */}
                             <Button
                               variant="ghost"
@@ -1272,32 +1271,13 @@ function DsaSheetPage() {
                               />
                             </Button>
 
-                            {/* Resource Links */}
-                            {item.articleUrl && (
-                              <Button
-                                asChild
-                                variant="outline"
-                                size="sm"
-                                className="h-8 gap-1 px-2.5 text-xs text-slate-700 dark:text-slate-300"
-                              >
-                                <a
-                                  href={item.articleUrl}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  title="Read solution article"
-                                >
-                                  <BookOpen className="size-3.5 text-primary" />
-                                  <span className="hidden sm:inline">Article</span>
-                                </a>
-                              </Button>
-                            )}
-
+                            {/* Resource Links: Video and Practice */}
                             {item.videoUrl && (
                               <Button
                                 asChild
                                 variant="outline"
                                 size="sm"
-                                className="h-8 gap-1 px-2.5 text-xs text-slate-700 dark:text-slate-300"
+                                className="h-8 gap-1.5 px-3 text-xs text-slate-700 dark:text-slate-300"
                               >
                                 <a
                                   href={item.videoUrl}
@@ -1314,7 +1294,7 @@ function DsaSheetPage() {
                             <Button
                               asChild
                               size="sm"
-                              className="h-8 gap-1 px-2.5 text-xs font-semibold"
+                              className="h-8 gap-1.5 px-3 text-xs font-semibold"
                             >
                               <a
                                 href={item.practiceUrl}
