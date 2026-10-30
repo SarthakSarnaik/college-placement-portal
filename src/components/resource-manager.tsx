@@ -55,6 +55,10 @@ export type Field = {
   hideInTable?: boolean;
   render?: (row: Row) => ReactNode;
   hint?: string;
+  min?: number;
+  max?: number;
+  step?: string;
+  validate?: (val: unknown, allValues: Row) => string | undefined;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -246,8 +250,28 @@ export function ResourceManager({
           errs[f.name] = "Must be a valid number";
           continue;
         }
-        out[f.name] = raw ? Number(raw) : null;
-      } else out[f.name] = raw || (f.required ? raw : null);
+        const val = raw !== "" ? Number(raw) : null;
+        if (val !== null) {
+          if (f.min !== undefined && val < f.min) {
+            errs[f.name] = `Must be at least ${f.min}${f.name.includes("percent") ? "%" : ""}`;
+            continue;
+          }
+          if (f.max !== undefined && val > f.max) {
+            errs[f.name] = `Must be at most ${f.max}${f.name.includes("percent") ? "%" : ""}`;
+            continue;
+          }
+        }
+        out[f.name] = val;
+      } else {
+        out[f.name] = raw || (f.required ? raw : null);
+      }
+
+      if (f.validate) {
+        const customErr = f.validate(out[f.name], out);
+        if (customErr) {
+          errs[f.name] = customErr;
+        }
+      }
     }
     setErrors(errs);
     if (!Object.keys(errs).length) {
@@ -289,7 +313,16 @@ export function ResourceManager({
       case "textarea":
         return <Textarea {...common} rows={3} className="text-xs" />;
       case "number":
-        return <Input {...common} type="number" step="any" className="h-9 text-xs" />;
+        return (
+          <Input
+            {...common}
+            type="number"
+            step={f.step || "any"}
+            min={f.min}
+            max={f.max}
+            className="h-9 text-xs"
+          />
+        );
       case "date":
         return <Input {...common} type="date" className="h-9 text-xs" />;
       case "boolean":

@@ -286,21 +286,41 @@ function Profile() {
             </h3>
             <dl className="mt-4 divide-y divide-border/60 text-xs">
               <div className="flex justify-between py-2.5">
+                <dt className="text-muted-foreground">10th Min. Percentage</dt>
+                <dd className="font-mono font-bold text-foreground">
+                  {cur?.min_10th_percentage != null
+                    ? `${cur.min_10th_percentage}%`
+                    : "Not specified"}
+                </dd>
+              </div>
+              <div className="flex justify-between py-2.5">
+                <dt className="text-muted-foreground">12th Min. Percentage</dt>
+                <dd className="font-mono font-bold text-foreground">
+                  {cur?.min_12th_percentage != null
+                    ? `${cur.min_12th_percentage}%`
+                    : "Not specified"}
+                </dd>
+              </div>
+              <div className="flex justify-between py-2.5">
                 <dt className="text-muted-foreground">Min. CGPA Cut-off</dt>
                 <dd className="font-mono font-bold text-foreground">
-                  {cur?.min_cgpa ?? "Not Specified"}
+                  {cur?.min_cgpa != null ? cur.min_cgpa : "Not specified"}
                 </dd>
               </div>
               <div className="flex justify-between py-2.5">
                 <dt className="text-muted-foreground">Max Active Backlogs</dt>
                 <dd className="font-semibold text-foreground">
-                  {cur?.max_backlogs ?? "0 permitted"}
+                  {cur?.max_backlogs != null
+                    ? cur.max_backlogs === 0
+                      ? "0 permitted"
+                      : `${cur.max_backlogs} allowed`
+                    : "Not specified"}
                 </dd>
               </div>
               <div className="flex justify-between py-2.5">
                 <dt className="text-muted-foreground">Eligible Branches</dt>
                 <dd className="text-right font-medium text-foreground max-w-36 truncate">
-                  {cur?.branches || "All branches"}
+                  {cur?.branches || "Not specified"}
                 </dd>
               </div>
               <div className="flex justify-between py-2.5">
@@ -326,57 +346,105 @@ function Profile() {
         {/* Eligibility Tab */}
         <TabsContent value="eligibility" className="mt-0">
           <div className="rounded-xl border border-border bg-card p-6 shadow-2xs">
-            <h2 className="text-base font-bold tracking-tight text-foreground">
-              Current Drive Eligibility Criteria
-            </h2>
-            <p className="text-xs text-muted-foreground">
-              Official academic cut-offs enforced for the active campus recruitment drive
-            </p>
+            <div className="border-b border-border/80 pb-4">
+              <h2 className="text-base font-bold tracking-tight text-foreground">
+                Current Drive Eligibility Criteria
+              </h2>
+              <p className="text-xs text-muted-foreground">
+                Official academic cut-offs enforced for the active campus recruitment drive
+              </p>
+            </div>
 
             {cur ? (
-              <div className="mt-5 max-w-2xl overflow-hidden rounded-xl border border-border">
-                <div className="border-b border-border bg-slate-50/80 px-5 py-3 text-xs font-bold uppercase tracking-wider text-muted-foreground dark:bg-slate-900/60 flex items-center justify-between">
-                  <span>Drive Year: {cur.year}</span>
+              <div className="mt-5 max-w-2xl overflow-hidden rounded-xl border border-border bg-card shadow-2xs">
+                <div className="flex items-center justify-between border-b border-border bg-slate-50/80 px-5 py-3 text-xs font-bold uppercase tracking-wider text-muted-foreground dark:bg-slate-900/60">
+                  <span className="flex items-center gap-2">
+                    <span>Drive Year:</span>
+                    <span className="font-mono text-sm font-bold text-foreground">{cur.year}</span>
+                  </span>
                   {cur.is_current && (
                     <span className="rounded-[4px] border border-emerald-500/25 bg-emerald-500/8 px-2 py-0.5 text-[10px] font-semibold text-emerald-800 dark:text-emerald-300">
                       Active Criteria
                     </span>
                   )}
                 </div>
-                <dl className="divide-y divide-border/60 text-xs sm:text-sm">
-                  <Row
-                    k="Minimum CGPA Cut-off"
-                    v={
-                      <span className="font-mono font-bold text-foreground">
-                        {cur.min_cgpa ?? "No cut-off specified"}
-                      </span>
-                    }
-                  />
-                  <Row
-                    k="Maximum Backlogs"
-                    v={
-                      <span className="font-semibold text-foreground">
-                        {cur.max_backlogs ?? "0 backlogs permitted"}
-                      </span>
-                    }
-                  />
-                  <Row
-                    k="Eligible Branches"
-                    v={
-                      <span className="font-medium text-foreground">
-                        {cur.branches || "All branches eligible"}
-                      </span>
-                    }
-                  />
-                  <Row
-                    k="Special Conditions & Notes"
-                    v={
-                      <span className="text-muted-foreground leading-relaxed">
-                        {cur.notes || "No special conditions recorded."}
-                      </span>
-                    }
-                  />
-                </dl>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs sm:text-sm">
+                    <thead className="border-b border-border bg-slate-50/50 text-[10px] font-bold uppercase tracking-wider text-muted-foreground dark:bg-slate-900/40">
+                      <tr>
+                        <th className="px-5 py-3 w-1/3 sm:w-2/5">Eligibility</th>
+                        <th className="px-5 py-3">Requirement</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/60">
+                      <tr className="hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors">
+                        <td className="px-5 py-3.5 font-medium text-muted-foreground">
+                          Drive Year
+                        </td>
+                        <td className="px-5 py-3.5 font-mono font-bold text-foreground">
+                          {cur.year}
+                        </td>
+                      </tr>
+                      <tr className="hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors">
+                        <td className="px-5 py-3.5 font-medium text-muted-foreground">
+                          10th Percentage
+                        </td>
+                        <td className="px-5 py-3.5 font-mono font-bold text-foreground">
+                          {cur.min_10th_percentage != null
+                            ? `${cur.min_10th_percentage}%`
+                            : "Not specified"}
+                        </td>
+                      </tr>
+                      <tr className="hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors">
+                        <td className="px-5 py-3.5 font-medium text-muted-foreground">
+                          12th Percentage
+                        </td>
+                        <td className="px-5 py-3.5 font-mono font-bold text-foreground">
+                          {cur.min_12th_percentage != null
+                            ? `${cur.min_12th_percentage}%`
+                            : "Not specified"}
+                        </td>
+                      </tr>
+                      <tr className="hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors">
+                        <td className="px-5 py-3.5 font-medium text-muted-foreground">
+                          Minimum CGPA
+                        </td>
+                        <td className="px-5 py-3.5 font-mono font-bold text-foreground">
+                          {cur.min_cgpa != null ? cur.min_cgpa : "Not specified"}
+                        </td>
+                      </tr>
+                      <tr className="hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors">
+                        <td className="px-5 py-3.5 font-medium text-muted-foreground">
+                          Maximum Backlogs
+                        </td>
+                        <td className="px-5 py-3.5 font-semibold text-foreground">
+                          {cur.max_backlogs != null
+                            ? cur.max_backlogs === 0
+                              ? "0 permitted"
+                              : `${cur.max_backlogs} allowed`
+                            : "Not specified"}
+                        </td>
+                      </tr>
+                      <tr className="hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors">
+                        <td className="px-5 py-3.5 font-medium text-muted-foreground">
+                          Eligible Branches
+                        </td>
+                        <td className="px-5 py-3.5 font-medium text-foreground">
+                          {cur.branches || "Not specified"}
+                        </td>
+                      </tr>
+                      <tr className="hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors">
+                        <td className="px-5 py-3.5 font-medium text-muted-foreground">
+                          Special Conditions & Notes
+                        </td>
+                        <td className="px-5 py-3.5 leading-relaxed text-muted-foreground">
+                          {cur.notes || "Not specified"}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             ) : (
               <div className="mt-4">
@@ -662,6 +730,8 @@ function Profile() {
                   <thead className="border-b border-border bg-slate-50/80 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground dark:bg-slate-900/60">
                     <tr>
                       <th className="px-4 py-2.5">Drive Year</th>
+                      <th className="px-4 py-2.5">10th %</th>
+                      <th className="px-4 py-2.5">12th %</th>
                       <th className="px-4 py-2.5">Min. CGPA</th>
                       <th className="px-4 py-2.5">Max Backlogs</th>
                       <th className="px-4 py-2.5">Eligible Branches</th>
@@ -683,14 +753,30 @@ function Profile() {
                           )}
                         </td>
                         <td className="px-4 py-2.5 font-mono font-bold tabular-nums text-foreground">
-                          {e.min_cgpa ?? "—"}
+                          {e.min_10th_percentage != null
+                            ? `${e.min_10th_percentage}%`
+                            : "Not specified"}
+                        </td>
+                        <td className="px-4 py-2.5 font-mono font-bold tabular-nums text-foreground">
+                          {e.min_12th_percentage != null
+                            ? `${e.min_12th_percentage}%`
+                            : "Not specified"}
+                        </td>
+                        <td className="px-4 py-2.5 font-mono font-bold tabular-nums text-foreground">
+                          {e.min_cgpa ?? "Not specified"}
                         </td>
                         <td className="px-4 py-2.5 font-mono tabular-nums text-foreground">
-                          {e.max_backlogs ?? "—"}
+                          {e.max_backlogs != null
+                            ? e.max_backlogs === 0
+                              ? "0 permitted"
+                              : e.max_backlogs
+                            : "Not specified"}
                         </td>
-                        <td className="px-4 py-2.5 text-xs text-muted-foreground">{e.branches}</td>
                         <td className="px-4 py-2.5 text-xs text-muted-foreground">
-                          {e.notes || "—"}
+                          {e.branches || "Not specified"}
+                        </td>
+                        <td className="px-4 py-2.5 text-xs text-muted-foreground">
+                          {e.notes || "Not specified"}
                         </td>
                       </tr>
                     ))}

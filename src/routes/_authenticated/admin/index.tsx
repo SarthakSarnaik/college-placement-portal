@@ -50,7 +50,7 @@ const tables = [
     label: "Eligibility Criteria",
     to: "/admin/criteria",
     icon: ClipboardCheck,
-    desc: "CGPA, backlogs & branch criteria",
+    desc: "10th/12th %, CGPA, backlogs & branch criteria",
   },
   {
     table: "dsa_topics",

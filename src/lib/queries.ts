@@ -16,7 +16,7 @@ export const companiesQuery = queryOptions({
       supabase
         .from("companies")
         .select(
-          "*, job_roles(title, hiring_year), eligibility_criteria(min_cgpa, branches, is_current, year), dsa_topics(topic)",
+          "*, job_roles(title, hiring_year), eligibility_criteria(min_cgpa, min_10th_percentage, min_12th_percentage, branches, is_current, year), dsa_topics(topic)",
         )
         .order("name"),
     ),

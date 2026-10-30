@@ -68,6 +68,8 @@ CREATE TABLE IF NOT EXISTS public.eligibility_criteria (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   company_id uuid NOT NULL REFERENCES public.companies(id) ON DELETE CASCADE,
   year int NOT NULL,
+  min_10th_percentage numeric(5,2) CHECK (min_10th_percentage IS NULL OR (min_10th_percentage >= 0 AND min_10th_percentage <= 100)),
+  min_12th_percentage numeric(5,2) CHECK (min_12th_percentage IS NULL OR (min_12th_percentage >= 0 AND min_12th_percentage <= 100)),
   min_cgpa numeric(4,2),
   max_backlogs int,
   branches text NOT NULL DEFAULT '',

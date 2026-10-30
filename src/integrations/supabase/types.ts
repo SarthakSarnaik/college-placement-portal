@@ -175,6 +175,8 @@ export type Database = {
           id: string;
           is_current: boolean;
           max_backlogs: number | null;
+          min_10th_percentage: number | null;
+          min_12th_percentage: number | null;
           min_cgpa: number | null;
           notes: string | null;
           year: number;
@@ -186,6 +188,8 @@ export type Database = {
           id?: string;
           is_current?: boolean;
           max_backlogs?: number | null;
+          min_10th_percentage?: number | null;
+          min_12th_percentage?: number | null;
           min_cgpa?: number | null;
           notes?: string | null;
           year: number;
@@ -197,6 +201,8 @@ export type Database = {
           id?: string;
           is_current?: boolean;
           max_backlogs?: number | null;
+          min_10th_percentage?: number | null;
+          min_12th_percentage?: number | null;
           min_cgpa?: number | null;
           notes?: string | null;
           year?: number;

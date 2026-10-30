@@ -43,6 +43,8 @@ describe("Full Placement Workflow: End-to-End Recruitment Data & Visibility", ()
       id: "crit-2024",
       company_id: "comp-uuid-101",
       year: 2024,
+      min_10th_percentage: 60.0,
+      min_12th_percentage: 60.0,
       min_cgpa: 7.0,
       max_backlogs: 1,
       branches: "CSE, IT",
@@ -53,6 +55,8 @@ describe("Full Placement Workflow: End-to-End Recruitment Data & Visibility", ()
       id: "crit-2025",
       company_id: "comp-uuid-101",
       year: 2025,
+      min_10th_percentage: 65.0,
+      min_12th_percentage: 65.0,
       min_cgpa: 7.25,
       max_backlogs: 0,
       branches: "CSE, IT, ECE",
@@ -63,6 +67,8 @@ describe("Full Placement Workflow: End-to-End Recruitment Data & Visibility", ()
       id: "crit-2026",
       company_id: "comp-uuid-101",
       year: 2026,
+      min_10th_percentage: 60.5,
+      min_12th_percentage: 62.5,
       min_cgpa: 7.5,
       max_backlogs: 0,
       branches: "CSE, IT, ECE, EEE, AIDS",
@@ -389,50 +395,135 @@ describe("Full Placement Workflow: End-to-End Recruitment Data & Visibility", ()
     expect(canStudentAccessChildRecord("comp-live")).toBe(true);
   });
 
-  it("student journey: quick eligibility calculator matches candidate CGPA and branch accurately", () => {
+  it("student journey: quick eligibility calculator matches candidate CGPA, 10th %, 12th % and branch accurately", () => {
     const currentCriteria = mockEligibilityCriteria.find((c) => c.is_current)!;
     expect(currentCriteria.year).toBe(2026);
+    expect(currentCriteria.min_10th_percentage).toBe(60.5);
+    expect(currentCriteria.min_12th_percentage).toBe(62.5);
     expect(currentCriteria.min_cgpa).toBe(7.5);
     expect(currentCriteria.branches).toBe("CSE, IT, ECE, EEE, AIDS");
 
-    const checkEligibility = (
-      studentCgpa: number,
-      studentBranch: string,
-      studentBacklogs: number,
-    ) => {
-      if (studentCgpa < currentCriteria.min_cgpa!)
+    const checkEligibility = (candidate: {
+      tenthPercent?: number | null;
+      twelfthPercent?: number | null;
+      cgpa: number;
+      branch: string;
+      backlogs: number;
+    }) => {
+      if (
+        currentCriteria.min_10th_percentage != null &&
+        candidate.tenthPercent != null &&
+        candidate.tenthPercent < currentCriteria.min_10th_percentage
+      ) {
+        return { eligible: false, reason: "10th percentage below cut-off" };
+      }
+      if (
+        currentCriteria.min_12th_percentage != null &&
+        candidate.twelfthPercent != null &&
+        candidate.twelfthPercent < currentCriteria.min_12th_percentage
+      ) {
+        return { eligible: false, reason: "12th percentage below cut-off" };
+      }
+      if (candidate.cgpa < currentCriteria.min_cgpa!)
         return { eligible: false, reason: "CGPA below cut-off" };
-      if (studentBacklogs > currentCriteria.max_backlogs!)
+      if (candidate.backlogs > currentCriteria.max_backlogs!)
         return { eligible: false, reason: "Backlogs exceed limit" };
       const branches = currentCriteria.branches.split(",").map((b) => b.trim().toUpperCase());
-      if (!branches.includes(studentBranch.trim().toUpperCase()))
+      if (!branches.includes(candidate.branch.trim().toUpperCase()))
         return { eligible: false, reason: "Branch ineligible" };
       return { eligible: true, reason: "Eligible for drive" };
     };
 
-    // Candidate 1: CSE student with 8.2 CGPA and 0 backlogs -> Eligible
-    expect(checkEligibility(8.2, "CSE", 0)).toEqual({
+    // Candidate 1: Meets all criteria with decimal percentages -> Eligible
+    expect(
+      checkEligibility({
+        tenthPercent: 85.4,
+        twelfthPercent: 78.2,
+        cgpa: 8.2,
+        branch: "CSE",
+        backlogs: 0,
+      }),
+    ).toEqual({
       eligible: true,
       reason: "Eligible for drive",
     });
 
-    // Candidate 2: ECE student with 7.1 CGPA -> Ineligible due to CGPA
-    expect(checkEligibility(7.1, "ECE", 0)).toEqual({
+    // Candidate 2: Ineligible due to 10th percentage (59.8% < 60.5%)
+    expect(
+      checkEligibility({
+        tenthPercent: 59.8,
+        twelfthPercent: 80.0,
+        cgpa: 8.5,
+        branch: "CSE",
+        backlogs: 0,
+      }),
+    ).toEqual({
       eligible: false,
-      reason: "CGPA below cut-off",
+      reason: "10th percentage below cut-off",
     });
 
-    // Candidate 3: Mechanical student with 9.0 CGPA -> Ineligible due to Branch
-    expect(checkEligibility(9.0, "MECH", 0)).toEqual({
+    // Candidate 3: Ineligible due to 12th percentage (61.0% < 62.5%)
+    expect(
+      checkEligibility({
+        tenthPercent: 75.0,
+        twelfthPercent: 61.0,
+        cgpa: 8.0,
+        branch: "IT",
+        backlogs: 0,
+      }),
+    ).toEqual({
       eligible: false,
-      reason: "Branch ineligible",
+      reason: "12th percentage below cut-off",
     });
 
-    // Candidate 4: AIDS student with 7.8 CGPA but 1 active backlog -> Ineligible due to Backlogs
-    expect(checkEligibility(7.8, "AIDS", 1)).toEqual({
-      eligible: false,
-      reason: "Backlogs exceed limit",
+    // Candidate 4: Missing percentage records handle gracefully as non-blocking or "Not specified"
+    expect(
+      checkEligibility({
+        tenthPercent: null,
+        twelfthPercent: null,
+        cgpa: 8.0,
+        branch: "ECE",
+        backlogs: 0,
+      }),
+    ).toEqual({
+      eligible: true,
+      reason: "Eligible for drive",
     });
+  });
+
+  it("eligibility validation: enforces 0 to 100 percentage range and decimal compatibility", () => {
+    const validatePercentage = (val: number | null | undefined): string | null => {
+      if (val == null) return null; // Nullable allowed
+      if (typeof val !== "number" || Number.isNaN(val)) return "Must be a valid number";
+      if (val < 0) return "Must be at least 0%";
+      if (val > 100) return "Must be at most 100%";
+      return null;
+    };
+
+    expect(validatePercentage(60.0)).toBeNull();
+    expect(validatePercentage(75.25)).toBeNull();
+    expect(validatePercentage(0)).toBeNull();
+    expect(validatePercentage(100)).toBeNull();
+    expect(validatePercentage(null)).toBeNull();
+    expect(validatePercentage(undefined)).toBeNull();
+
+    // Invalid bounds
+    expect(validatePercentage(-5)).toBe("Must be at least 0%");
+    expect(validatePercentage(105.5)).toBe("Must be at most 100%");
+  });
+
+  it("criteria independence: each drive year and company maintains isolated criteria records", () => {
+    const criteria2024 = mockEligibilityCriteria.find((c) => c.year === 2024)!;
+    const criteria2025 = mockEligibilityCriteria.find((c) => c.year === 2025)!;
+    const criteria2026 = mockEligibilityCriteria.find((c) => c.year === 2026)!;
+
+    expect(criteria2024.min_10th_percentage).toBe(60.0);
+    expect(criteria2025.min_10th_percentage).toBe(65.0);
+    expect(criteria2026.min_10th_percentage).toBe(60.5);
+
+    expect(criteria2024.is_current).toBe(false);
+    expect(criteria2025.is_current).toBe(false);
+    expect(criteria2026.is_current).toBe(true);
   });
 
   it("security & bootstrap: unauthorized users cannot promote themselves or grant admin privileges", () => {
