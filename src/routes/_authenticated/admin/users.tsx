@@ -108,7 +108,7 @@ function Users() {
           <div className="hidden sm:block overflow-hidden rounded-xl border border-border bg-card shadow-xs">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
-                <thead className="border-b border-border bg-slate-50 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground dark:bg-slate-900/60">
+                <thead className="border-b border-border bg-muted/40 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                   <tr>
                     <th className="px-5 py-3">User Profile</th>
                     <th className="px-5 py-3">Email Address</th>
@@ -122,16 +122,13 @@ function Users() {
                     const initials = (u.full_name || u.email || "U").slice(0, 2).toUpperCase();
 
                     return (
-                      <tr
-                        key={u.id}
-                        className="transition-colors hover:bg-slate-50/70 dark:hover:bg-slate-900/40"
-                      >
+                      <tr key={u.id} className="transition-colors hover:bg-muted/30">
                         <td className="px-5 py-3.5 font-medium text-foreground">
                           <div className="flex items-center gap-2.5">
-                            <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+                            <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-primary/10 text-xs font-bold font-mono text-primary">
                               {initials}
                             </div>
-                            <span className="font-semibold">
+                            <span className="font-semibold text-xs text-foreground">
                               {u.full_name || "Name not recorded"}
                             </span>
                           </div>
@@ -144,10 +141,10 @@ function Users() {
                         </td>
                         <td className="px-5 py-3.5">
                           <span
-                            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider ${
+                            className={`inline-flex items-center gap-1.5 rounded-[4px] border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${
                               u.isAdmin
-                                ? "bg-slate-900 text-white dark:bg-slate-800"
-                                : "bg-teal-100 text-teal-800 dark:bg-teal-950 dark:text-teal-300"
+                                ? "bg-primary text-primary-foreground border-primary"
+                                : "bg-muted/60 text-muted-foreground border-border"
                             }`}
                           >
                             {u.isAdmin ? (
@@ -155,12 +152,12 @@ function Users() {
                             ) : (
                               <User className="size-3" />
                             )}
-                            {u.isAdmin ? "TPO / Admin" : "Student"}
+                            {u.isAdmin ? "TPO Admin" : "Student"}
                           </span>
                         </td>
                         <td className="px-5 py-3.5 text-right">
                           {u.id === me?.id ? (
-                            <span className="rounded-md border border-border px-2.5 py-1 text-xs font-medium text-muted-foreground bg-slate-50 dark:bg-slate-900">
+                            <span className="rounded-md border border-border px-2.5 py-1 text-xs font-medium text-muted-foreground bg-muted/30">
                               Current Active Account
                             </span>
                           ) : u.isAdmin ? (
@@ -177,7 +174,7 @@ function Users() {
                               size="sm"
                               variant="outline"
                               onClick={() => toggle(u.id, true)}
-                              className="h-8 text-xs text-primary hover:bg-primary/10"
+                              className="h-8 text-xs text-primary hover:bg-primary/10 font-semibold"
                             >
                               Grant Admin Access
                             </Button>
@@ -190,7 +187,7 @@ function Users() {
               </table>
             </div>
 
-            <div className="border-t border-border bg-slate-50/50 px-5 py-2.5 text-xs font-medium text-muted-foreground dark:bg-slate-900/40">
+            <div className="border-t border-border bg-muted/20 px-5 py-2.5 text-xs font-medium text-muted-foreground">
               Total registered user accounts: {rows.length}
             </div>
           </div>
@@ -204,7 +201,7 @@ function Users() {
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+                    <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-primary/10 text-xs font-bold font-mono text-primary">
                       {(u.full_name || u.email || "U").slice(0, 2).toUpperCase()}
                     </div>
                     <div>
@@ -216,10 +213,10 @@ function Users() {
                   </div>
 
                   <span
-                    className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${
+                    className={`inline-flex items-center gap-1 rounded-[4px] border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${
                       u.isAdmin
-                        ? "bg-slate-900 text-white dark:bg-slate-800"
-                        : "bg-teal-100 text-teal-800 dark:bg-teal-950 dark:text-teal-300"
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "bg-muted/60 text-muted-foreground border-border"
                     }`}
                   >
                     {u.isAdmin ? "TPO Admin" : "Student"}
@@ -249,7 +246,7 @@ function Users() {
                       size="sm"
                       variant="outline"
                       onClick={() => toggle(u.id, true)}
-                      className="h-7 text-xs text-primary"
+                      className="h-7 text-xs text-primary font-semibold"
                     >
                       Grant Admin
                     </Button>

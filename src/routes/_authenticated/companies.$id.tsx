@@ -80,9 +80,11 @@ function Profile() {
 
   const initials = c.name
     ? c.name
-        .split(" ")
-        .map((w) => w[0])
+        .replace(/\(.*?\)/g, "")
+        .trim()
+        .split(/\s+/)
         .slice(0, 2)
+        .map((w) => w[0])
         .join("")
         .toUpperCase()
     : "CO";
@@ -96,40 +98,40 @@ function Profile() {
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors group"
         >
           <ChevronLeft className="size-3.5 transition-transform group-hover:-translate-x-0.5" />{" "}
-          Back to Company Directory
+          Back to Recruiter Directory
         </Link>
       </div>
 
       {/* Recruiter Header Card */}
-      <div className="rounded-xl border border-border bg-card p-6 sm:p-7 shadow-xs">
-        <div className="flex flex-col justify-between gap-6 md:flex-row md:items-start">
+      <div className="rounded-xl border border-border bg-card p-6 sm:p-8 shadow-xs">
+        <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-start">
           <div className="flex items-start gap-4 sm:gap-5">
-            <div className="flex size-14 shrink-0 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-lg font-bold text-primary shadow-xs">
+            <div className="flex size-16 shrink-0 items-center justify-center rounded-xl border border-border bg-slate-100 font-mono text-xl font-bold text-slate-800 shadow-2xs dark:bg-slate-800 dark:text-slate-100">
               {initials}
             </div>
 
-            <div>
+            <div className="space-y-1.5">
               <div className="flex flex-wrap items-center gap-2">
                 {c.is_demo && <DemoTag />}
                 <VerifyTag status={c.verification_status} />
-                <span className="rounded-md border border-border bg-slate-50 px-2 py-0.5 text-xs font-medium text-muted-foreground dark:bg-slate-900">
+                <span className="rounded-[4px] border border-border bg-slate-100/70 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground dark:bg-slate-800">
                   {c.sector || "Recruiter"}
                 </span>
               </div>
 
-              <h1 className="mt-2 font-serif text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+              <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
                 {c.name}
               </h1>
 
-              <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground pt-0.5">
                 {c.headquarters && (
                   <span className="flex items-center gap-1.5">
-                    <MapPin className="size-3.5 text-slate-400" /> {c.headquarters}
+                    <MapPin className="size-3.5 text-muted-foreground" /> {c.headquarters}
                   </span>
                 )}
                 {c.first_visit_year && (
                   <span className="flex items-center gap-1.5">
-                    <Calendar className="size-3.5 text-slate-400" /> Recruiting on campus since{" "}
+                    <Calendar className="size-3.5 text-muted-foreground" /> Recruiting since{" "}
                     {c.first_visit_year}
                   </span>
                 )}
@@ -138,18 +140,18 @@ function Profile() {
                     href={c.website}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-1 font-medium text-primary hover:underline"
+                    className="flex items-center gap-1 font-semibold text-primary hover:underline"
                   >
-                    <Globe className="size-3.5" /> Official Career Site{" "}
-                    <ExternalLink className="size-2.5" />
+                    <Globe className="size-3.5" /> Career Site <ExternalLink className="size-2.5" />
                   </a>
                 )}
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 self-start md:self-auto">
-            <div className="rounded-lg border border-border bg-slate-50/70 px-4 py-2.5 text-center dark:bg-slate-900/40 min-w-32">
+          {/* Quick Metrics KPI Strip */}
+          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4 lg:grid-cols-2 lg:w-80">
+            <div className="rounded-lg border border-border/80 bg-slate-50/70 p-3 text-center dark:bg-slate-900/40">
               <span className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
                 DSA Difficulty
               </span>
@@ -157,16 +159,40 @@ function Profile() {
                 <DifficultyTag level={c.dsa_difficulty} />
               </div>
             </div>
+            <div className="rounded-lg border border-border/80 bg-slate-50/70 p-3 text-center dark:bg-slate-900/40">
+              <span className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                Min. CGPA
+              </span>
+              <span className="mt-1 block font-mono text-xs font-bold text-foreground">
+                {cur?.min_cgpa != null ? cur.min_cgpa : "No cut-off"}
+              </span>
+            </div>
+            <div className="rounded-lg border border-border/80 bg-slate-50/70 p-3 text-center dark:bg-slate-900/40">
+              <span className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                Interview Stages
+              </span>
+              <span className="mt-1 block font-mono text-xs font-bold text-foreground">
+                {rounds.length} Rounds
+              </span>
+            </div>
+            <div className="rounded-lg border border-border/80 bg-slate-50/70 p-3 text-center dark:bg-slate-900/40">
+              <span className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                Logged Roles
+              </span>
+              <span className="mt-1 block font-mono text-xs font-bold text-foreground">
+                {c.job_roles?.length ?? 0} Roles
+              </span>
+            </div>
           </div>
         </div>
 
         {c.is_demo && (
-          <div className="mt-5 rounded-lg border border-amber-500/30 bg-amber-500/10 p-3.5 text-xs text-amber-900 dark:text-amber-200 flex items-start gap-2.5">
-            <AlertCircle className="size-4 shrink-0 text-amber-600 mt-0.5" />
+          <div className="mt-5 rounded-md border border-amber-500/25 bg-amber-500/8 p-3 text-xs text-amber-900 dark:text-amber-200 flex items-start gap-2.5">
+            <AlertCircle className="size-4 shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" />
             <span className="leading-relaxed">
-              <strong>Sample Profile:</strong> This profile is sample demo data to illustrate how
-              companies are organized in the placement portal. Eligibility requirements, selection
-              rounds, and questions shown here are for demonstration purposes.
+              <strong>Demonstration Profile:</strong> This profile illustrates how recruiters are
+              structured in the placement portal. Eligibility criteria, round formats, and previous
+              questions shown are for demonstration.
             </span>
           </div>
         )}
@@ -174,7 +200,7 @@ function Profile() {
 
       {/* Tabs Section */}
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="h-auto w-full flex-wrap justify-start gap-1 rounded-xl border border-border bg-card p-1.5 shadow-xs">
+        <TabsList className="h-auto w-full flex-wrap justify-start gap-1 rounded-xl border border-border bg-card p-1.5 shadow-2xs">
           {[
             { id: "overview", label: "Overview & Roles", icon: Briefcase },
             { id: "eligibility", label: "Eligibility", icon: ShieldCheck },
@@ -187,7 +213,7 @@ function Profile() {
             <TabsTrigger
               key={t.id}
               value={t.id}
-              className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-muted-foreground transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-xs"
+              className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-muted-foreground transition-all data-[state=active]:bg-slate-900 data-[state=active]:text-white dark:data-[state=active]:bg-slate-800 dark:data-[state=active]:text-white data-[state=active]:shadow-2xs data-[state=active]:font-semibold"
             >
               <t.icon className="size-3.5" />
               <span>{t.label}</span>
@@ -198,30 +224,34 @@ function Profile() {
         {/* Overview Tab */}
         <TabsContent value="overview" className="mt-0 grid gap-6 lg:grid-cols-[1fr_320px]">
           <div className="space-y-6">
-            <div className="rounded-xl border border-border bg-card p-6 shadow-xs">
-              <h2 className="text-base font-bold text-foreground">About the Recruiter</h2>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+            <div className="rounded-xl border border-border bg-card p-6 shadow-2xs">
+              <h2 className="text-base font-bold tracking-tight text-foreground">
+                About the Recruiter
+              </h2>
+              <p className="mt-3 text-xs sm:text-sm leading-relaxed text-muted-foreground">
                 {c.overview || "No detailed overview recorded by the placement office."}
               </p>
             </div>
 
-            <div className="rounded-xl border border-border bg-card p-6 shadow-xs">
+            <div className="rounded-xl border border-border bg-card p-6 shadow-2xs">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-base font-bold text-foreground">Campus Job Roles</h2>
+                  <h2 className="text-base font-bold tracking-tight text-foreground">
+                    Campus Job Roles
+                  </h2>
                   <p className="text-xs text-muted-foreground">
                     Engineering positions offered during campus placement drives
                   </p>
                 </div>
-                <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                <span className="rounded-[4px] border border-border bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-700 dark:bg-slate-800 dark:text-slate-300">
                   {c.job_roles?.length ?? 0} {c.job_roles?.length === 1 ? "Role" : "Roles"}
                 </span>
               </div>
 
               {c.job_roles?.length ? (
                 <div className="mt-4 overflow-hidden rounded-lg border border-border">
-                  <table className="w-full text-left text-sm">
-                    <thead className="border-b border-border bg-slate-50 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground dark:bg-slate-900/60">
+                  <table className="w-full text-left text-xs">
+                    <thead className="border-b border-border bg-slate-50/80 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground dark:bg-slate-900/60">
                       <tr>
                         <th className="px-4 py-3">Role Title</th>
                         <th className="px-4 py-3">Hiring Year</th>
@@ -229,17 +259,20 @@ function Profile() {
                         <th className="px-4 py-3">Compensation / Package Note</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-border">
+                    <tbody className="divide-y divide-border/60">
                       {c.job_roles.map((r) => (
-                        <tr key={r.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-900/40">
+                        <tr
+                          key={r.id}
+                          className="hover:bg-slate-50/70 dark:hover:bg-slate-900/40 transition-colors"
+                        >
                           <td className="px-4 py-3 font-semibold text-foreground">{r.title}</td>
-                          <td className="px-4 py-3 text-xs tabular-nums text-muted-foreground">
+                          <td className="px-4 py-3 font-mono tabular-nums text-muted-foreground">
                             {r.hiring_year}
                           </td>
-                          <td className="px-4 py-3 text-xs text-muted-foreground">
+                          <td className="px-4 py-3 text-muted-foreground">
                             {r.location || "Multiple Locations"}
                           </td>
-                          <td className="px-4 py-3 text-xs font-medium text-slate-700 dark:text-slate-300">
+                          <td className="px-4 py-3 font-medium text-slate-700 dark:text-slate-300">
                             {r.ctc_note || "As per placement cell policy"}
                           </td>
                         </tr>
@@ -259,14 +292,14 @@ function Profile() {
           </div>
 
           {/* Quick Snapshot Card */}
-          <aside className="h-fit rounded-xl border border-border bg-card p-5 shadow-xs">
+          <aside className="h-fit rounded-xl border border-border bg-card p-5 shadow-2xs">
             <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
               <Award className="size-3.5 text-primary" /> Drive At A Glance
             </h3>
             <dl className="mt-4 divide-y divide-border/60 text-xs">
               <div className="flex justify-between py-2.5">
                 <dt className="text-muted-foreground">Min. CGPA Cut-off</dt>
-                <dd className="font-semibold text-foreground">
+                <dd className="font-mono font-bold text-foreground">
                   {cur?.min_cgpa ?? "Not Specified"}
                 </dd>
               </div>
@@ -290,7 +323,7 @@ function Profile() {
               </div>
               <div className="flex justify-between py-2.5">
                 <dt className="text-muted-foreground">Selection Stages</dt>
-                <dd className="font-semibold text-foreground">{rounds.length} Rounds</dd>
+                <dd className="font-mono font-bold text-foreground">{rounds.length} Rounds</dd>
               </div>
               <div className="flex justify-between py-2.5">
                 <dt className="text-muted-foreground">Verification</dt>
@@ -304,8 +337,8 @@ function Profile() {
 
         {/* Eligibility Tab */}
         <TabsContent value="eligibility" className="mt-0">
-          <div className="rounded-xl border border-border bg-card p-6 shadow-xs">
-            <h2 className="text-base font-bold text-foreground">
+          <div className="rounded-xl border border-border bg-card p-6 shadow-2xs">
+            <h2 className="text-base font-bold tracking-tight text-foreground">
               Current Drive Eligibility Criteria
             </h2>
             <p className="text-xs text-muted-foreground">
@@ -314,19 +347,19 @@ function Profile() {
 
             {cur ? (
               <div className="mt-5 max-w-2xl overflow-hidden rounded-xl border border-border">
-                <div className="border-b border-border bg-slate-50 px-5 py-3 text-xs font-bold uppercase tracking-wider text-muted-foreground dark:bg-slate-900/60 flex items-center justify-between">
+                <div className="border-b border-border bg-slate-50/80 px-5 py-3 text-xs font-bold uppercase tracking-wider text-muted-foreground dark:bg-slate-900/60 flex items-center justify-between">
                   <span>Drive Year: {cur.year}</span>
                   {cur.is_current && (
-                    <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">
+                    <span className="rounded-[4px] border border-emerald-500/25 bg-emerald-500/8 px-2 py-0.5 text-[10px] font-semibold text-emerald-800 dark:text-emerald-300">
                       Active Criteria
                     </span>
                   )}
                 </div>
-                <dl className="divide-y divide-border text-sm">
+                <dl className="divide-y divide-border/60 text-xs sm:text-sm">
                   <Row
                     k="Minimum CGPA Cut-off"
                     v={
-                      <span className="font-semibold text-foreground">
+                      <span className="font-mono font-bold text-foreground">
                         {cur.min_cgpa ?? "No cut-off specified"}
                       </span>
                     }
@@ -367,10 +400,10 @@ function Profile() {
 
         {/* DSA Requirements Tab */}
         <TabsContent value="dsa" className="mt-0 space-y-6">
-          <div className="rounded-xl border border-border bg-card p-6 shadow-xs">
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div className="rounded-xl border border-border bg-card p-6 shadow-2xs">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-border/80 pb-4">
               <div>
-                <h2 className="text-base font-bold text-foreground">
+                <h2 className="text-base font-bold tracking-tight text-foreground">
                   Data Structures & Algorithms Scope
                 </h2>
                 <p className="text-xs text-muted-foreground">
@@ -392,7 +425,7 @@ function Profile() {
                     : []),
                 ].map((g) => (
                   <div key={g.cat} className="space-y-3">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-teal-800 dark:text-teal-400">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                       {g.cat === "basic"
                         ? "Basic Fundamentals"
                         : g.cat === "intermediate"
@@ -402,8 +435,8 @@ function Profile() {
                             : "General Topics"}
                     </h3>
                     <div className="overflow-hidden rounded-lg border border-border">
-                      <table className="w-full text-left text-sm">
-                        <thead className="border-b border-border bg-slate-50 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground dark:bg-slate-900/60">
+                      <table className="w-full text-left text-xs">
+                        <thead className="border-b border-border bg-slate-50/80 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground dark:bg-slate-900/60">
                           <tr>
                             <th className="px-4 py-2.5 w-32">Priority</th>
                             <th className="px-4 py-2.5 w-1/3">Topic</th>
@@ -411,23 +444,27 @@ function Profile() {
                             <th className="px-4 py-2.5">Preparation Notes</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-border">
+                        <tbody className="divide-y divide-border/60">
                           {g.items.map((t) => (
                             <tr
                               key={t.id}
-                              className="hover:bg-slate-50/70 dark:hover:bg-slate-900/40"
+                              className="hover:bg-slate-50/70 dark:hover:bg-slate-900/40 transition-colors"
                             >
                               <td className="px-4 py-2.5">
                                 <span
-                                  className={`rounded px-1.5 py-0.5 text-[11px] font-bold uppercase ${
+                                  className={`rounded-[4px] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider border ${
                                     t.priority === 1
-                                      ? "bg-rose-50 text-rose-700 dark:bg-rose-950 dark:text-rose-300"
+                                      ? "border-rose-500/25 bg-rose-500/8 text-rose-700 dark:border-rose-400/30 dark:bg-rose-950/40 dark:text-rose-300"
                                       : t.priority === 2
-                                        ? "bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300"
-                                        : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
+                                        ? "border-amber-500/25 bg-amber-500/8 text-amber-700 dark:border-amber-400/30 dark:bg-amber-950/40 dark:text-amber-300"
+                                        : "border-border bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
                                   }`}
                                 >
-                                  {t.priority === 1 ? "High" : t.priority === 2 ? "Medium" : "Low"}
+                                  {t.priority === 1
+                                    ? "High Priority"
+                                    : t.priority === 2
+                                      ? "Medium"
+                                      : "Low"}
                                 </span>
                               </td>
                               <td className="px-4 py-2.5 font-semibold text-foreground">
@@ -460,18 +497,20 @@ function Profile() {
 
         {/* CS Fundamentals Tab */}
         <TabsContent value="fundamentals" className="mt-0">
-          <div className="rounded-xl border border-border bg-card p-6 shadow-xs">
-            <h2 className="text-base font-bold text-foreground">
-              Core Computer Science Fundamentals
-            </h2>
-            <p className="text-xs text-muted-foreground">
-              Subjects tested in technical assessments and face-to-face interviews
-            </p>
+          <div className="rounded-xl border border-border bg-card p-6 shadow-2xs">
+            <div className="border-b border-border/80 pb-4">
+              <h2 className="text-base font-bold tracking-tight text-foreground">
+                Core Computer Science Fundamentals
+              </h2>
+              <p className="text-xs text-muted-foreground">
+                Subjects tested in technical assessments and face-to-face interviews
+              </p>
+            </div>
 
             {fundamentals.length ? (
               <div className="mt-4 overflow-hidden rounded-lg border border-border">
-                <table className="w-full text-left text-sm">
-                  <thead className="border-b border-border bg-slate-50 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground dark:bg-slate-900/60">
+                <table className="w-full text-left text-xs">
+                  <thead className="border-b border-border bg-slate-50/80 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground dark:bg-slate-900/60">
                     <tr>
                       <th className="px-4 py-2.5 w-28">Priority</th>
                       <th className="px-4 py-2.5 w-1/4">Subject</th>
@@ -479,17 +518,20 @@ function Profile() {
                       <th className="px-4 py-2.5">Notes</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-border">
+                  <tbody className="divide-y divide-border/60">
                     {fundamentals.map((f) => (
-                      <tr key={f.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-900/40">
+                      <tr
+                        key={f.id}
+                        className="hover:bg-slate-50/70 dark:hover:bg-slate-900/40 transition-colors"
+                      >
                         <td className="px-4 py-2.5">
                           <span
-                            className={`rounded px-1.5 py-0.5 text-[11px] font-bold uppercase ${
+                            className={`rounded-[4px] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider border ${
                               f.priority === 1
-                                ? "bg-rose-50 text-rose-700 dark:bg-rose-950 dark:text-rose-300"
+                                ? "border-rose-500/25 bg-rose-500/8 text-rose-700 dark:border-rose-400/30 dark:bg-rose-950/40 dark:text-rose-300"
                                 : f.priority === 2
-                                  ? "bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300"
-                                  : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
+                                  ? "border-amber-500/25 bg-amber-500/8 text-amber-700 dark:border-amber-400/30 dark:bg-amber-950/40 dark:text-amber-300"
+                                  : "border-border bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
                             }`}
                           >
                             {f.priority === 1 ? "High" : f.priority === 2 ? "Med" : "Low"}
@@ -520,9 +562,11 @@ function Profile() {
 
         {/* Selection Rounds Tab */}
         <TabsContent value="rounds" className="mt-0">
-          <div className="rounded-xl border border-border bg-card p-6 shadow-xs">
-            <div className="mb-6">
-              <h2 className="text-base font-bold text-foreground">Ordered Selection Stages</h2>
+          <div className="rounded-xl border border-border bg-card p-6 shadow-2xs">
+            <div className="mb-6 border-b border-border/80 pb-4">
+              <h2 className="text-base font-bold tracking-tight text-foreground">
+                Ordered Selection Stages
+              </h2>
               <p className="text-xs text-muted-foreground">
                 Follow each round in sequence with dedicated preparation strategies
               </p>
@@ -541,17 +585,17 @@ function Profile() {
 
         {/* DSA Sheet & Questions Tab */}
         <TabsContent value="questions" className="mt-0">
-          <div className="rounded-xl border border-border bg-card p-6 shadow-xs">
-            <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+          <div className="rounded-xl border border-border bg-card p-6 shadow-2xs">
+            <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center border-b border-border/80 pb-4">
               <div>
-                <h2 className="text-base font-bold text-foreground">
+                <h2 className="text-base font-bold tracking-tight text-foreground">
                   Company Questions & DSA Problems
                 </h2>
                 <p className="text-xs text-muted-foreground">
                   Authentic questions asked during recent recruitment drives
                 </p>
               </div>
-              <Button asChild variant="outline" size="sm" className="text-xs">
+              <Button asChild variant="outline" size="sm" className="text-xs font-medium">
                 <Link to="/questions">
                   <FileCode2 className="size-3.5 mr-1.5 text-primary" /> Open Day-Wise DSA Sheet
                 </Link>
@@ -569,7 +613,7 @@ function Profile() {
                       {items.map((x) => (
                         <div
                           key={x.id}
-                          className="rounded-lg border border-border bg-slate-50/50 p-4 transition-colors hover:border-slate-300 dark:bg-slate-900/40"
+                          className="rounded-lg border border-border bg-card p-4 shadow-2xs transition-colors hover:border-slate-300 dark:hover:border-slate-700"
                         >
                           <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                             <span className="font-semibold text-foreground">
@@ -585,7 +629,7 @@ function Profile() {
                           <p className="mt-2 text-sm font-semibold text-foreground">{x.question}</p>
 
                           {x.experience && (
-                            <p className="mt-2 text-xs text-muted-foreground leading-relaxed bg-background p-2.5 rounded border border-border/50">
+                            <p className="mt-2 text-xs text-muted-foreground leading-relaxed bg-slate-50/70 p-3 rounded-md border border-border/60 dark:bg-slate-900/40">
                               <span className="font-semibold text-foreground">
                                 Candidate debrief:
                               </span>{" "}
@@ -614,16 +658,20 @@ function Profile() {
 
         {/* Criteria History Tab */}
         <TabsContent value="history" className="mt-0">
-          <div className="rounded-xl border border-border bg-card p-6 shadow-xs">
-            <h2 className="text-base font-bold text-foreground">Historical Criteria Evolution</h2>
-            <p className="text-xs text-muted-foreground">
-              Audit trail of cut-offs and backlog allowances across past years
-            </p>
+          <div className="rounded-xl border border-border bg-card p-6 shadow-2xs">
+            <div className="border-b border-border/80 pb-4">
+              <h2 className="text-base font-bold tracking-tight text-foreground">
+                Historical Criteria Evolution
+              </h2>
+              <p className="text-xs text-muted-foreground">
+                Audit trail of cut-offs and backlog allowances across past recruitment seasons
+              </p>
+            </div>
 
             {criteria.length ? (
               <div className="mt-4 overflow-hidden rounded-lg border border-border">
-                <table className="w-full text-left text-sm">
-                  <thead className="border-b border-border bg-slate-50 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground dark:bg-slate-900/60">
+                <table className="w-full text-left text-xs">
+                  <thead className="border-b border-border bg-slate-50/80 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground dark:bg-slate-900/60">
                     <tr>
                       <th className="px-4 py-2.5">Drive Year</th>
                       <th className="px-4 py-2.5">Min. CGPA</th>
@@ -632,21 +680,24 @@ function Profile() {
                       <th className="px-4 py-2.5">Policy Changes & Notes</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-border">
+                  <tbody className="divide-y divide-border/60">
                     {criteria.map((e) => (
-                      <tr key={e.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-900/40">
-                        <td className="px-4 py-2.5 font-medium text-foreground">
+                      <tr
+                        key={e.id}
+                        className="hover:bg-slate-50/70 dark:hover:bg-slate-900/40 transition-colors"
+                      >
+                        <td className="px-4 py-2.5 font-semibold text-foreground">
                           {e.year}{" "}
                           {e.is_current && (
-                            <span className="ml-1 rounded-sm bg-teal-100 px-1.5 py-0.5 text-[10px] font-bold uppercase text-teal-800 dark:bg-teal-950 dark:text-teal-300">
+                            <span className="ml-1 rounded-[4px] border border-blue-500/20 bg-blue-500/8 px-1.5 py-0.5 text-[9px] font-bold uppercase text-blue-700 dark:text-blue-300">
                               Current
                             </span>
                           )}
                         </td>
-                        <td className="px-4 py-2.5 tabular-nums text-foreground">
+                        <td className="px-4 py-2.5 font-mono font-bold tabular-nums text-foreground">
                           {e.min_cgpa ?? "—"}
                         </td>
-                        <td className="px-4 py-2.5 tabular-nums text-foreground">
+                        <td className="px-4 py-2.5 font-mono tabular-nums text-foreground">
                           {e.max_backlogs ?? "—"}
                         </td>
                         <td className="px-4 py-2.5 text-xs text-muted-foreground">{e.branches}</td>

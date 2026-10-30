@@ -182,13 +182,13 @@ export function AdminHome() {
               <div className="grid gap-4 sm:grid-cols-3">
                 <Link
                   to="/admin/sources"
-                  className="group rounded-xl border border-border bg-slate-50/70 p-4 transition-all hover:border-amber-400 hover:bg-slate-100 dark:bg-slate-900/40"
+                  className="group rounded-lg border border-border bg-muted/30 p-4 transition-all hover:border-amber-400 hover:bg-muted/50"
                 >
                   <p className="text-xs font-medium text-muted-foreground">
                     Sources Pending Review
                   </p>
                   <div className="mt-2 flex items-baseline justify-between">
-                    <span className="font-serif text-3xl font-bold tabular-nums text-foreground">
+                    <span className="font-mono text-3xl font-bold tabular-nums text-foreground">
                       {q.data.pending}
                     </span>
                     <span className="text-xs font-semibold text-amber-700 dark:text-amber-400 flex items-center gap-1">
@@ -200,13 +200,13 @@ export function AdminHome() {
 
                 <Link
                   to="/admin/companies"
-                  className="group rounded-xl border border-border bg-slate-50/70 p-4 transition-all hover:border-primary/50 hover:bg-slate-100 dark:bg-slate-900/40"
+                  className="group rounded-lg border border-border bg-muted/30 p-4 transition-all hover:border-primary/50 hover:bg-muted/50"
                 >
                   <p className="text-xs font-medium text-muted-foreground">
                     Unpublished Drafts (Hidden)
                   </p>
                   <div className="mt-2 flex items-baseline justify-between">
-                    <span className="font-serif text-3xl font-bold tabular-nums text-foreground">
+                    <span className="font-mono text-3xl font-bold tabular-nums text-foreground">
                       {q.data.unpub}
                     </span>
                     <span className="text-xs font-semibold text-primary flex items-center gap-1">
@@ -218,13 +218,13 @@ export function AdminHome() {
 
                 <Link
                   to="/admin/companies"
-                  className="group rounded-xl border border-border bg-slate-50/70 p-4 transition-all hover:border-teal-500/50 hover:bg-slate-100 dark:bg-slate-900/40"
+                  className="group rounded-lg border border-border bg-muted/30 p-4 transition-all hover:border-teal-500/50 hover:bg-muted/50"
                 >
                   <p className="text-xs font-medium text-muted-foreground">
                     Sample / Demo Profiles
                   </p>
                   <div className="mt-2 flex items-baseline justify-between">
-                    <span className="font-serif text-3xl font-bold tabular-nums text-foreground">
+                    <span className="font-mono text-3xl font-bold tabular-nums text-foreground">
                       {q.data.demo}
                     </span>
                     <span className="text-xs font-semibold text-teal-700 dark:text-teal-400 flex items-center gap-1">
@@ -262,14 +262,14 @@ export function AdminHome() {
                   >
                     <div>
                       <div className="flex items-center justify-between">
-                        <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                        <div className="flex size-8 items-center justify-center rounded-md bg-primary/10 text-primary">
                           <item.icon className="size-4" />
                         </div>
-                        <span className="font-serif text-2xl font-bold tabular-nums text-foreground">
+                        <span className="font-mono text-2xl font-bold tabular-nums text-foreground">
                           {q.data.counts[i]}
                         </span>
                       </div>
-                      <h3 className="mt-3.5 font-bold text-foreground group-hover:text-primary transition-colors">
+                      <h3 className="mt-3.5 font-bold text-foreground group-hover:text-primary transition-colors text-sm">
                         {item.label}
                       </h3>
                       <p className="mt-1 text-xs text-muted-foreground leading-relaxed">

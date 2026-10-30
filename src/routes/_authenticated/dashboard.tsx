@@ -89,35 +89,35 @@ function Dashboard() {
   return (
     <div className="space-y-8">
       {/* Welcome Banner */}
-      <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-xs sm:p-8">
+      <div className="relative overflow-hidden rounded-xl border border-border bg-card p-6 shadow-xs sm:p-8">
         <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 rounded-full border border-teal-500/20 bg-teal-500/10 px-3 py-1 text-[11px] font-semibold text-teal-800 dark:text-teal-300">
+            <div className="inline-flex items-center gap-2 rounded-[4px] border border-blue-500/20 bg-blue-500/8 px-2.5 py-0.5 text-[11px] font-semibold text-blue-800 dark:text-blue-300">
               <Calendar className="size-3.5" />
               <span>Drive Season 2025–2026</span>
             </div>
-            <h1 className="font-serif text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
               Welcome, {firstName}
             </h1>
-            <p className="max-w-xl text-xs leading-relaxed text-muted-foreground sm:text-sm">
+            <p className="max-w-xl text-xs sm:text-sm leading-relaxed text-muted-foreground">
               Prepare systematically from your first semester onwards. Track recruiter expectations,
               master tested topics, and follow round-by-round selection guidelines.
             </p>
           </div>
 
           {/* Quick Eligibility Tool */}
-          <div className="rounded-xl border border-border/80 bg-slate-50/70 p-4 shadow-xs dark:bg-slate-900/50 lg:w-84">
+          <div className="rounded-lg border border-border bg-slate-50/70 p-4 shadow-2xs dark:bg-slate-900/50 lg:w-84">
             <div className="flex items-center justify-between">
               <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
                 Quick Eligibility Calculator
               </p>
-              <span className="font-mono text-[10px] text-teal-700 dark:text-teal-400 font-medium">
+              <span className="font-mono text-[10px] text-blue-700 dark:text-blue-400 font-medium">
                 Live Matching
               </span>
             </div>
             <div className="mt-3 grid grid-cols-2 gap-2">
               <select
-                className="h-9 rounded-lg border border-input bg-background px-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                className="h-9 rounded-md border border-input bg-background px-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary shadow-2xs"
                 value={myBranch}
                 onChange={(e) => setMyBranch(e.target.value)}
                 aria-label="Select your engineering branch"
@@ -137,13 +137,13 @@ function Dashboard() {
                 placeholder="My CGPA (e.g. 7.5)"
                 value={myCgpa}
                 onChange={(e) => setMyCgpa(e.target.value)}
-                className="h-9 text-xs"
+                className="h-9 text-xs shadow-2xs"
                 aria-label="Your CGPA"
               />
             </div>
             <div className="mt-3 flex items-center justify-between border-t border-border/60 pt-2.5 text-xs">
               <span className="text-muted-foreground">Eligible Opportunities:</span>
-              <span className="font-mono text-sm font-bold text-teal-700 dark:text-teal-400">
+              <span className="font-mono text-sm font-bold text-blue-700 dark:text-blue-400">
                 {eligibleCount} / {companies.data?.length ?? 0}
               </span>
             </div>
@@ -152,35 +152,33 @@ function Dashboard() {
 
         {/* Real Data Metrics Bar */}
         <div className="mt-6 grid grid-cols-2 gap-3 border-t border-border/70 pt-6 sm:grid-cols-4">
-          <div className="rounded-xl border border-border/50 bg-background/50 p-3">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+          <div className="rounded-lg border border-border/60 bg-background/60 p-3.5 shadow-2xs">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
               Active Recruiters
             </span>
-            <p className="mt-1 font-serif text-xl font-bold tabular-nums text-foreground sm:text-2xl">
+            <p className="mt-1 text-2xl font-bold tabular-nums tracking-tight text-foreground">
               {companies.data?.length ?? 0}
             </p>
           </div>
-          <div className="rounded-xl border border-border/50 bg-background/50 p-3">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+          <div className="rounded-lg border border-border/60 bg-background/60 p-3.5 shadow-2xs">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
               Total Job Roles
             </span>
-            <p className="mt-1 font-serif text-xl font-bold tabular-nums text-foreground sm:text-2xl">
+            <p className="mt-1 text-2xl font-bold tabular-nums tracking-tight text-foreground">
               {totalRolesCount}
             </p>
           </div>
-          <div className="rounded-xl border border-border/50 bg-background/50 p-3">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+          <div className="rounded-lg border border-border/60 bg-background/60 p-3.5 shadow-2xs">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
               Preparation Modules
             </span>
-            <p className="mt-1 font-serif text-xl font-bold tabular-nums text-foreground sm:text-2xl">
-              4
-            </p>
+            <p className="mt-1 text-2xl font-bold tabular-nums tracking-tight text-foreground">4</p>
           </div>
-          <div className="rounded-xl border border-border/50 bg-background/50 p-3">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+          <div className="rounded-lg border border-border/60 bg-background/60 p-3.5 shadow-2xs">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
               Active Circulars
             </span>
-            <p className="mt-1 font-serif text-xl font-bold tabular-nums text-foreground sm:text-2xl">
+            <p className="mt-1 text-2xl font-bold tabular-nums tracking-tight text-foreground">
               {ann.data?.length ?? 0}
             </p>
           </div>
@@ -191,7 +189,10 @@ function Dashboard() {
       <section aria-labelledby="roadmap-heading">
         <div className="mb-4 flex items-center justify-between">
           <div>
-            <h2 id="roadmap-heading" className="text-lg font-bold tracking-tight text-foreground">
+            <h2
+              id="roadmap-heading"
+              className="text-base font-bold tracking-tight text-foreground sm:text-lg"
+            >
               Your Placement Journey
             </h2>
             <p className="text-xs text-muted-foreground">
@@ -199,12 +200,12 @@ function Dashboard() {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <Button asChild variant="outline" size="sm" className="text-xs">
+            <Button asChild variant="outline" size="sm" className="text-xs font-medium">
               <Link to="/questions">
                 <FileCode2 className="size-3.5 mr-1 text-primary" /> DSA Sheet
               </Link>
             </Button>
-            <Button asChild variant="ghost" size="sm" className="text-xs text-primary">
+            <Button asChild variant="ghost" size="sm" className="text-xs text-primary font-medium">
               <Link to="/prep">Year Guide →</Link>
             </Button>
           </div>
@@ -215,24 +216,24 @@ function Dashboard() {
             <Link
               key={j.to}
               to={j.to}
-              className="group flex flex-col justify-between rounded-lg border border-border bg-card p-5 shadow-sm transition-all hover:border-primary/50 hover:shadow-md"
+              className="group flex flex-col justify-between rounded-xl border border-border bg-card p-5 shadow-2xs transition-all hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-xs"
             >
               <div>
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-xs font-bold text-teal-700 dark:text-teal-400">
+                  <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-blue-700 dark:text-blue-400">
                     STEP {j.step}
                   </span>
-                  <div className="flex size-8 items-center justify-center rounded-md bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                  <div className="flex size-8 items-center justify-center rounded-md bg-slate-100 text-foreground dark:bg-slate-800 transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
                     <j.icon className="size-4" strokeWidth={1.8} />
                   </div>
                 </div>
-                <h3 className="mt-3 font-semibold text-foreground group-hover:text-primary">
+                <h3 className="mt-3 text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
                   {j.title}
                 </h3>
                 <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{j.body}</p>
               </div>
 
-              <div className="mt-4 flex items-center gap-1 text-xs font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
+              <div className="mt-4 flex items-center gap-1 text-xs font-semibold text-primary opacity-0 transition-opacity group-hover:opacity-100">
                 <span>View module</span>
                 <ArrowRight className="size-3" />
               </div>
@@ -247,14 +248,14 @@ function Dashboard() {
         <section className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-bold tracking-tight text-foreground">
+              <h2 className="text-base font-bold tracking-tight text-foreground sm:text-lg">
                 Recruiting Companies
               </h2>
               <p className="text-xs text-muted-foreground">
                 Recruiters currently published by the Placement Office
               </p>
             </div>
-            <Button asChild variant="outline" size="sm" className="text-xs">
+            <Button asChild variant="outline" size="sm" className="text-xs font-medium">
               <Link to="/companies">View all ({companies.data?.length ?? 0})</Link>
             </Button>
           </div>
@@ -269,10 +270,10 @@ function Dashboard() {
               body="The Placement Office has not published active company profiles for this season."
             />
           ) : (
-            <div className="overflow-hidden rounded-xl border border-border bg-card shadow-xs">
+            <div className="overflow-hidden rounded-xl border border-border bg-card shadow-2xs">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="border-b border-border bg-slate-50 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground dark:bg-slate-900/60">
+                  <thead className="border-b border-border bg-slate-50/80 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground dark:bg-slate-900/60">
                     <tr>
                       <th className="px-4 py-3">Recruiter</th>
                       <th className="px-4 py-3">Roles Offered</th>
@@ -301,7 +302,7 @@ function Dashboard() {
                         >
                           <td className="px-4 py-3">
                             <div className="flex items-center gap-3">
-                              <div className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-border bg-slate-100 font-mono text-[11px] font-bold text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                              <div className="flex size-8 shrink-0 items-center justify-center rounded-md border border-border bg-slate-100 font-mono text-[11px] font-bold text-slate-700 dark:bg-slate-800 dark:text-slate-200">
                                 {initialText}
                               </div>
                               <div className="min-w-0">
@@ -362,7 +363,12 @@ function Dashboard() {
               </h2>
               <p className="text-xs text-muted-foreground">Official TPO announcements</p>
             </div>
-            <Button asChild variant="ghost" size="sm" className="h-8 text-xs text-primary">
+            <Button
+              asChild
+              variant="ghost"
+              size="sm"
+              className="h-8 text-xs text-primary font-medium"
+            >
               <Link to="/announcements">All circulars →</Link>
             </Button>
           </div>
@@ -378,13 +384,13 @@ function Dashboard() {
               {ann.data.slice(0, 5).map((a) => (
                 <div
                   key={a.id}
-                  className="rounded-xl border border-border/80 bg-card p-4 shadow-xs transition-colors hover:border-slate-300 dark:hover:border-slate-700"
+                  className="rounded-xl border border-border/80 bg-card p-4 shadow-2xs transition-colors hover:border-slate-300 dark:hover:border-slate-700"
                 >
                   <div className="flex items-center justify-between text-xs text-muted-foreground">
                     <span className="font-mono text-[10px]">{fmtDate(a.published_at)}</span>
                     {a.is_demo && <DemoTag />}
                   </div>
-                  <h3 className="mt-1 font-serif text-sm font-semibold text-foreground">
+                  <h3 className="mt-1 text-sm font-semibold tracking-tight text-foreground">
                     {a.title}
                   </h3>
                   <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground">
@@ -395,7 +401,7 @@ function Dashboard() {
                       <Link
                         to="/companies/$id"
                         params={{ id: a.companies.id }}
-                        className="font-medium text-teal-700 hover:underline dark:text-teal-400"
+                        className="font-medium text-primary hover:underline"
                       >
                         Company: {a.companies.name} →
                       </Link>

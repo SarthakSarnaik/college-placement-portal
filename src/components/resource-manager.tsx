@@ -60,7 +60,7 @@ export type Field = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const db = supabase as any;
 const selCls =
-  "h-9 w-full rounded-lg border border-input bg-background px-3 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary shadow-2xs font-medium";
+  "h-9 w-full rounded-md border border-input bg-background px-3 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary shadow-2xs font-medium";
 
 function useLookup(table: string, label: string, enabled: boolean) {
   return useQuery({
@@ -268,11 +268,11 @@ export function ResourceManager({
     const v = r[f.name];
     if (f.type === "boolean")
       return v ? (
-        <span className="inline-flex items-center rounded-md bg-emerald-500/10 px-2 py-0.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
+        <span className="inline-flex items-center rounded-[4px] border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">
           Yes
         </span>
       ) : (
-        <span className="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-400">
+        <span className="inline-flex items-center rounded-[4px] border border-border bg-muted/50 px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
           No
         </span>
       );
@@ -448,7 +448,7 @@ export function ResourceManager({
           <div className="hidden sm:block overflow-hidden rounded-xl border border-border bg-card shadow-xs">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
-                <thead className="border-b border-border bg-slate-50 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground dark:bg-slate-900/60">
+                <thead className="border-b border-border bg-muted/40 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                   <tr>
                     {tableFields.map((f) => (
                       <th key={f.name} className="whitespace-nowrap px-4 py-3">
@@ -460,10 +460,7 @@ export function ResourceManager({
                 </thead>
                 <tbody className="divide-y divide-border">
                   {paginatedRows.map((r) => (
-                    <tr
-                      key={r.id}
-                      className="align-top transition-colors hover:bg-slate-50/70 dark:hover:bg-slate-900/40"
-                    >
+                    <tr key={r.id} className="align-top transition-colors hover:bg-muted/30">
                       {tableFields.map((f) => (
                         <td
                           key={f.name}
@@ -601,7 +598,7 @@ export function ResourceManager({
       <Dialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)}>
         <DialogContent className="max-h-[90vh] overflow-y-auto rounded-xl sm:max-w-xl">
           <DialogHeader>
-            <DialogTitle className="font-serif text-lg font-bold">
+            <DialogTitle className="text-lg font-bold tracking-tight text-foreground">
               {editing?.id ? "Edit Record" : "Add New Record"} — {title}
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground">
@@ -629,7 +626,7 @@ export function ResourceManager({
                     className={`space-y-1.5 ${isFull ? "sm:col-span-2" : "sm:col-span-1"}`}
                   >
                     {f.type === "boolean" ? (
-                      <div className="rounded-lg border border-border bg-slate-50/70 p-3 dark:bg-slate-900/40">
+                      <div className="rounded-md border border-border bg-muted/20 p-3">
                         <div className="flex items-center gap-2.5">
                           {input(f)}
                           <Label htmlFor={f.name} className="cursor-pointer font-semibold text-xs">
@@ -693,7 +690,7 @@ export function ResourceManager({
           <AlertDialogHeader>
             <div className="flex items-center gap-2 text-rose-600">
               <AlertTriangle className="size-5" />
-              <AlertDialogTitle className="font-serif text-lg font-bold">
+              <AlertDialogTitle className="text-lg font-bold tracking-tight text-foreground">
                 Delete this record permanently?
               </AlertDialogTitle>
             </div>

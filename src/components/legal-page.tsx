@@ -13,13 +13,15 @@ export function LegalPage({
 }) {
   return (
     <div className="min-h-screen">
-      <header className="border-b">
+      <header className="border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-40">
         <div className="mx-auto flex h-14 max-w-3xl items-center gap-2 px-4">
           <Link to="/" className="flex items-center gap-2.5">
-            <div className="flex size-7 items-center justify-center rounded bg-teal-600 text-white shadow-sm">
+            <div className="flex size-7 items-center justify-center rounded-md bg-primary text-primary-foreground shadow-2xs">
               <GraduationCap className="size-4" />
             </div>
-            <span className="font-serif text-lg font-semibold">Placement Portal</span>
+            <span className="text-base font-bold tracking-tight text-foreground">
+              Placement Portal
+            </span>
           </Link>
         </div>
       </header>

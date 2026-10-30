@@ -578,13 +578,13 @@ function CompanyBadge({ name }: { name: string }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-[11px] font-semibold transition-colors",
+        "inline-flex items-center gap-1 rounded-[4px] border px-2 py-0.5 text-[11px] font-semibold transition-colors",
         style.bg,
         style.text,
       )}
       title={`Asked at ${name}`}
     >
-      <span className="flex size-3.5 items-center justify-center rounded-full bg-black/10 dark:bg-white/20 text-[9px] font-bold">
+      <span className="flex size-3.5 items-center justify-center rounded-[3px] bg-black/10 dark:bg-white/20 text-[9px] font-bold font-mono">
         {style.initial.slice(0, 2)}
       </span>
       <span>{name}</span>
@@ -593,7 +593,7 @@ function CompanyBadge({ name }: { name: string }) {
 }
 
 const sel =
-  "h-9 rounded-lg border border-input bg-background px-3 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary shadow-2xs font-medium";
+  "h-9 rounded-md border border-input bg-background px-3 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary shadow-2xs font-medium";
 
 function DsaSheetPage() {
   const q = useQuery(questionsQuery);
@@ -953,15 +953,15 @@ function DsaSheetPage() {
   return (
     <div className="space-y-8">
       {/* Header Banner */}
-      <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-xs sm:p-8">
+      <div className="relative overflow-hidden rounded-xl border border-border bg-card p-6 shadow-xs sm:p-8">
         <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 rounded-full border border-teal-500/20 bg-teal-500/10 px-3 py-1 text-[11px] font-semibold text-teal-800 dark:text-teal-300">
-              <Sparkles className="size-3.5" />
-              <span>Drive Season 2025–26 · Curated Preparation Sheet</span>
+            <div className="inline-flex items-center gap-2 rounded-[4px] border border-primary/20 bg-primary/10 px-2.5 py-1 text-[11px] font-semibold text-primary">
+              <span className="size-1.5 rounded-full bg-primary animate-pulse" />
+              <span>Campus Drive Season 2025–26 · Curated Preparation Sheet</span>
             </div>
-            <h1 className="font-serif text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-              DSA Sheet
+            <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+              DSA Sheet & Practice Hub
             </h1>
             <p className="max-w-2xl text-xs leading-relaxed text-muted-foreground sm:text-sm">
               Comprehensive day-wise coding questions covering Arrays, Strings, Binary Search,
@@ -971,29 +971,27 @@ function DsaSheetPage() {
           </div>
 
           {/* Quick Solved Ratio Card */}
-          <div className="rounded-xl border border-border/80 bg-slate-50/70 p-4 shadow-xs dark:bg-slate-900/50 lg:w-80">
+          <div className="rounded-lg border border-border bg-muted/40 p-4 shadow-2xs lg:w-80">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
                 Your Progress
               </span>
-              <span className="font-mono text-xs font-bold text-teal-700 dark:text-teal-400">
-                {percentage}% Done
-              </span>
+              <span className="font-mono text-xs font-bold text-primary">{percentage}% Done</span>
             </div>
-            <div className="mt-2.5 h-2.5 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
+            <div className="mt-2.5 h-2 w-full overflow-hidden rounded-[2px] bg-muted">
               <div
-                className="h-full rounded-full bg-teal-600 transition-all duration-300"
+                className="h-full rounded-[2px] bg-primary transition-all duration-300"
                 style={{ width: `${percentage}%` }}
               />
             </div>
             <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
               <span>
-                <strong className="text-foreground">{solvedCuratedCount}</strong> of{" "}
-                {totalCuratedCount} Solved
+                <strong className="text-foreground font-mono">{solvedCuratedCount}</strong> of{" "}
+                <span className="font-mono">{totalCuratedCount}</span> Solved
               </span>
               <span className="flex items-center gap-1 font-medium text-amber-600 dark:text-amber-400">
                 <Bookmark className="size-3 fill-amber-500 text-amber-500" />
-                {bookmarkedCuratedCount} Saved
+                <span className="font-mono">{bookmarkedCuratedCount}</span> Saved
               </span>
             </div>
           </div>
@@ -1001,37 +999,37 @@ function DsaSheetPage() {
 
         {/* Difficulty Breakdown Metrics */}
         <div className="mt-6 grid grid-cols-2 gap-3 border-t border-border/70 pt-6 sm:grid-cols-4">
-          <div className="rounded-xl border border-border/50 bg-background/50 p-3">
+          <div className="rounded-lg border border-border/60 bg-background/60 p-3 shadow-2xs">
             <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
               Total Questions
             </span>
-            <p className="mt-1 font-serif text-xl font-bold tabular-nums text-foreground sm:text-2xl">
+            <p className="mt-1 font-mono text-xl font-bold tabular-nums text-foreground sm:text-2xl">
               {totalCuratedCount + (q.data?.length ?? 0)}
             </p>
           </div>
-          <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3">
+          <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-3 shadow-2xs">
             <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">
               Easy Solved
             </span>
-            <p className="mt-1 font-serif text-xl font-bold tabular-nums text-emerald-700 dark:text-emerald-400 sm:text-2xl">
+            <p className="mt-1 font-mono text-xl font-bold tabular-nums text-emerald-700 dark:text-emerald-400 sm:text-2xl">
               {easySolved}{" "}
               <span className="text-xs font-normal text-muted-foreground">/ {easyTotal}</span>
             </p>
           </div>
-          <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-3">
+          <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-3 shadow-2xs">
             <span className="text-[10px] font-semibold uppercase tracking-wider text-amber-800 dark:text-amber-300">
               Medium Solved
             </span>
-            <p className="mt-1 font-serif text-xl font-bold tabular-nums text-amber-700 dark:text-amber-400 sm:text-2xl">
+            <p className="mt-1 font-mono text-xl font-bold tabular-nums text-amber-700 dark:text-amber-400 sm:text-2xl">
               {medSolved}{" "}
               <span className="text-xs font-normal text-muted-foreground">/ {medTotal}</span>
             </p>
           </div>
-          <div className="rounded-xl border border-rose-500/20 bg-rose-500/5 p-3">
+          <div className="rounded-lg border border-rose-500/20 bg-rose-500/5 p-3 shadow-2xs">
             <span className="text-[10px] font-semibold uppercase tracking-wider text-rose-800 dark:text-rose-300">
               Hard Solved
             </span>
-            <p className="mt-1 font-serif text-xl font-bold tabular-nums text-rose-700 dark:text-rose-400 sm:text-2xl">
+            <p className="mt-1 font-mono text-xl font-bold tabular-nums text-rose-700 dark:text-rose-400 sm:text-2xl">
               {hardSolved}{" "}
               <span className="text-xs font-normal text-muted-foreground">/ {hardTotal}</span>
             </p>
@@ -1040,7 +1038,7 @@ function DsaSheetPage() {
       </div>
 
       {/* Topic Filter Tabs */}
-      <div className="flex flex-wrap items-center gap-1.5 rounded-xl border border-border bg-card p-1.5 shadow-xs">
+      <div className="flex flex-wrap items-center gap-1.5 rounded-lg border border-border bg-card p-1.5 shadow-2xs">
         {[
           { id: "All", label: "All Days & Topics" },
           { id: "Arrays", label: "Day 1: Arrays" },
@@ -1054,10 +1052,10 @@ function DsaSheetPage() {
             key={tab.id}
             onClick={() => setSelectedTopic(tab.id)}
             className={cn(
-              "rounded-lg px-3 py-1.5 text-xs font-semibold transition-all",
+              "rounded-md px-3 py-1.5 text-xs font-medium transition-all",
               selectedTopic === tab.id
-                ? "bg-primary text-primary-foreground shadow-xs font-bold"
-                : "text-muted-foreground hover:bg-slate-100 hover:text-foreground dark:hover:bg-slate-800",
+                ? "bg-primary text-primary-foreground shadow-xs font-semibold"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground",
             )}
           >
             {tab.label}
@@ -1158,19 +1156,21 @@ function DsaSheetPage() {
                 className="overflow-hidden rounded-xl border border-border bg-card shadow-xs"
               >
                 {/* Day Header */}
-                <div className="flex flex-col justify-between gap-2 border-b border-border bg-slate-50/70 p-4 dark:bg-slate-900/60 sm:flex-row sm:items-center sm:px-6">
+                <div className="flex flex-col justify-between gap-2 border-b border-border bg-muted/40 p-4 sm:flex-row sm:items-center sm:px-6">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs font-bold text-teal-700 dark:text-teal-400">
+                      <span className="font-mono text-[11px] font-bold text-primary tracking-wider uppercase rounded-[4px] border border-primary/20 bg-primary/10 px-2 py-0.5">
                         DAY 0{day.day}
                       </span>
-                      <h2 className="text-base font-bold text-foreground">{day.title}</h2>
+                      <h2 className="text-base font-semibold text-foreground tracking-tight">
+                        {day.title}
+                      </h2>
                     </div>
                     <p className="mt-0.5 text-xs text-muted-foreground">{day.desc}</p>
                   </div>
 
                   <div className="flex items-center gap-2 text-xs">
-                    <span className="rounded-full bg-slate-200/80 px-2.5 py-0.5 text-[11px] font-semibold text-slate-800 dark:bg-slate-800 dark:text-slate-300">
+                    <span className="rounded-[4px] border border-border bg-background px-2.5 py-0.5 font-mono text-[11px] font-semibold text-foreground shadow-2xs">
                       {daySolvedCount} / {dayItems.length} Solved
                     </span>
                   </div>
@@ -1186,8 +1186,8 @@ function DsaSheetPage() {
                       <div
                         key={item.id}
                         className={cn(
-                          "group p-4 transition-colors sm:p-5 hover:bg-slate-50/60 dark:hover:bg-slate-900/30",
-                          isSolved && "bg-slate-50/40 dark:bg-slate-900/20",
+                          "group p-4 transition-colors sm:p-5 hover:bg-muted/30",
+                          isSolved && "bg-muted/20",
                         )}
                       >
                         <div className="flex items-start justify-between gap-4">
@@ -1196,14 +1196,10 @@ function DsaSheetPage() {
                             <button
                               type="button"
                               onClick={() => toggleSolved(item.id, item.title)}
-                              className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded border transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 border-slate-300 text-white dark:border-slate-600 hover:border-teal-600"
+                              className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-[4px] border transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 border-input text-white hover:border-primary"
                               style={{
-                                backgroundColor: isSolved
-                                  ? "var(--color-teal-600, #0d9488)"
-                                  : "transparent",
-                                borderColor: isSolved
-                                  ? "var(--color-teal-600, #0d9488)"
-                                  : undefined,
+                                backgroundColor: isSolved ? "var(--primary)" : "transparent",
+                                borderColor: isSolved ? "var(--primary)" : undefined,
                               }}
                               aria-label={isSolved ? "Mark as unsolved" : "Mark as solved"}
                             >
@@ -1228,12 +1224,12 @@ function DsaSheetPage() {
                                 <DifficultyTag level={item.difficulty} />
 
                                 {item.verified ? (
-                                  <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-800 dark:text-emerald-300">
-                                    <CheckCircle2 className="size-2.5" /> Verified
+                                  <span className="inline-flex items-center gap-1 rounded-[4px] border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-800 dark:text-emerald-300">
+                                    <span className="size-1 rounded-full bg-emerald-500" /> Verified
                                   </span>
                                 ) : (
-                                  <span className="inline-flex items-center gap-1 rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold text-amber-800 dark:text-amber-300">
-                                    <AlertCircle className="size-2.5" /> Unverified
+                                  <span className="inline-flex items-center gap-1 rounded-[4px] border border-amber-500/20 bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold text-amber-800 dark:text-amber-300">
+                                    <span className="size-1 rounded-full bg-amber-500" /> Unverified
                                   </span>
                                 )}
                               </div>
@@ -1344,12 +1340,12 @@ function DsaSheetPage() {
           {(selectedTopic === "All" || selectedTopic === "Database") &&
             filteredDbQuestions.length > 0 && (
               <section className="overflow-hidden rounded-xl border border-border bg-card shadow-xs">
-                <div className="border-b border-border bg-slate-50/70 p-4 dark:bg-slate-900/60 sm:px-6">
+                <div className="border-b border-border bg-muted/40 p-4 sm:px-6">
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-xs font-bold text-teal-700 dark:text-teal-400">
+                    <span className="font-mono text-[11px] font-bold text-primary tracking-wider uppercase rounded-[4px] border border-primary/20 bg-primary/10 px-2 py-0.5">
                       CAMPUS ARCHIVE
                     </span>
-                    <h2 className="text-base font-bold text-foreground">
+                    <h2 className="text-base font-semibold text-foreground tracking-tight">
                       Direct Campus Placement Drive Debriefs
                     </h2>
                   </div>
@@ -1369,8 +1365,8 @@ function DsaSheetPage() {
                       <div
                         key={x.id}
                         className={cn(
-                          "group p-4 transition-colors sm:p-5 hover:bg-slate-50/60 dark:hover:bg-slate-900/30",
-                          isSolved && "bg-slate-50/40 dark:bg-slate-900/20",
+                          "group p-4 transition-colors sm:p-5 hover:bg-muted/30",
+                          isSolved && "bg-muted/20",
                         )}
                       >
                         <div className="flex items-start justify-between gap-4">
@@ -1378,14 +1374,10 @@ function DsaSheetPage() {
                             <button
                               type="button"
                               onClick={() => toggleSolved(dbId, x.question)}
-                              className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded border transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 border-slate-300 text-white dark:border-slate-600 hover:border-teal-600"
+                              className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-[4px] border transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 border-input text-white hover:border-primary"
                               style={{
-                                backgroundColor: isSolved
-                                  ? "var(--color-teal-600, #0d9488)"
-                                  : "transparent",
-                                borderColor: isSolved
-                                  ? "var(--color-teal-600, #0d9488)"
-                                  : undefined,
+                                backgroundColor: isSolved ? "var(--primary)" : "transparent",
+                                borderColor: isSolved ? "var(--primary)" : undefined,
                               }}
                               aria-label={isSolved ? "Mark as unsolved" : "Mark as solved"}
                             >
@@ -1405,11 +1397,11 @@ function DsaSheetPage() {
                                 )}
                                 {x.companies?.is_demo && <DemoTag />}
                                 <span>·</span>
-                                <span className="font-semibold text-slate-700 dark:text-slate-300">
+                                <span className="font-semibold text-foreground">
                                   {x.interview_rounds?.name ?? "Technical Assessment"}
                                 </span>
                                 <span>·</span>
-                                <span className="rounded bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                                <span className="rounded-[4px] border border-border bg-muted/50 px-2 py-0.5 text-[11px] font-medium text-foreground">
                                   {x.topic || "Problem Solving"}
                                 </span>
                                 <DifficultyTag level={x.difficulty} />
@@ -1426,7 +1418,7 @@ function DsaSheetPage() {
                               </p>
 
                               {x.experience && (
-                                <div className="mt-2.5 rounded-lg border border-border/50 bg-slate-50/70 p-3 text-xs leading-relaxed text-slate-700 dark:bg-slate-900/40 dark:text-slate-300">
+                                <div className="mt-2.5 rounded-md border border-border/70 border-l-2 border-l-primary bg-muted/20 p-3 text-xs leading-relaxed text-foreground">
                                   <span className="font-bold text-foreground">
                                     Candidate Debrief:
                                   </span>{" "}

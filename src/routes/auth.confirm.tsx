@@ -223,14 +223,14 @@ function ConfirmEmailPage() {
         {/* Header Branding */}
         <div className="flex flex-col items-center text-center">
           <Link to="/" className="flex items-center gap-2.5">
-            <div className="flex size-10 items-center justify-center rounded-lg bg-teal-600 text-white shadow-sm ring-1 ring-white/20">
-              <GraduationCap className="size-6" />
+            <div className="flex size-10 items-center justify-center rounded-md bg-primary text-primary-foreground shadow-2xs">
+              <GraduationCap className="size-5" />
             </div>
             <div className="text-left">
-              <span className="font-serif text-lg font-bold tracking-tight text-foreground">
+              <span className="text-lg font-bold tracking-tight text-foreground">
                 Placement Portal
               </span>
-              <span className="block text-[10px] uppercase tracking-widest text-muted-foreground">
+              <span className="block text-[10px] uppercase tracking-widest text-muted-foreground font-mono">
                 Training & Placement Office
               </span>
             </div>
@@ -238,11 +238,11 @@ function ConfirmEmailPage() {
         </div>
 
         {/* Main Card */}
-        <div className="rounded-xl border border-border bg-card p-8 shadow-sm">
+        <div className="rounded-xl border border-border bg-card p-8 shadow-xs">
           {status === "verifying" && (
             <div className="space-y-4 text-center">
-              <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-teal-500/10 text-teal-600 dark:bg-teal-500/20">
-                <Loader2 className="size-7 animate-spin" />
+              <div className="mx-auto flex size-12 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary">
+                <Loader2 className="size-6 animate-spin" />
               </div>
               <h1 className="text-xl font-bold tracking-tight text-foreground">
                 Verifying Your Email
@@ -255,8 +255,8 @@ function ConfirmEmailPage() {
 
           {status === "success" && (
             <div className="space-y-4 text-center">
-              <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20">
-                <CheckCircle2 className="size-7" />
+              <div className="mx-auto flex size-12 items-center justify-center rounded-lg border border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                <CheckCircle2 className="size-6" />
               </div>
               <h1 className="text-xl font-bold tracking-tight text-foreground">
                 Email Verified Successfully!
@@ -270,8 +270,8 @@ function ConfirmEmailPage() {
           {status === "error" && (
             <div className="space-y-5">
               <div className="space-y-2 text-center">
-                <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-amber-500/10 text-amber-600 dark:bg-amber-500/20">
-                  <AlertTriangle className="size-7" />
+                <div className="mx-auto flex size-12 items-center justify-center rounded-lg border border-amber-500/20 bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                  <AlertTriangle className="size-6" />
                 </div>
                 <h1 className="text-xl font-bold tracking-tight text-foreground">
                   Verification Link Expired or Invalid
@@ -283,8 +283,8 @@ function ConfirmEmailPage() {
               </div>
 
               {/* Resend Card */}
-              <div className="rounded-lg border border-border bg-muted/40 p-4 space-y-3">
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <div className="rounded-lg border border-border bg-muted/30 p-4 space-y-3">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                   Request a Fresh Confirmation Link
                 </p>
                 <form onSubmit={handleResend} className="space-y-3">
@@ -300,14 +300,14 @@ function ConfirmEmailPage() {
                         value={resendEmail}
                         onChange={(e) => setResendEmail(e.target.value)}
                         placeholder="student@college.edu"
-                        className="pl-9 text-sm"
+                        className="pl-9 text-xs"
                         required
                       />
                     </div>
                   </div>
                   <Button
                     type="submit"
-                    className="w-full bg-teal-600 hover:bg-teal-700 text-white"
+                    className="w-full text-xs font-semibold shadow-xs"
                     disabled={resending || resendCooldown > 0}
                   >
                     {resending ? (
@@ -327,7 +327,7 @@ function ConfirmEmailPage() {
               <div className="pt-2 text-center">
                 <Link
                   to="/auth"
-                  className="inline-flex items-center text-xs text-primary hover:underline"
+                  className="inline-flex items-center text-xs text-primary hover:underline font-medium"
                 >
                   <ArrowLeft className="size-3 mr-1" />
                   Back to Student Sign In
@@ -339,8 +339,8 @@ function ConfirmEmailPage() {
           {status === "idle" && (
             <div className="space-y-5">
               <div className="space-y-2 text-center">
-                <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-teal-500/10 text-teal-600 dark:bg-teal-500/20">
-                  <Mail className="size-7" />
+                <div className="mx-auto flex size-12 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary">
+                  <Mail className="size-6" />
                 </div>
                 <h1 className="text-xl font-bold tracking-tight text-foreground">
                   Confirm Your Student Email
@@ -363,14 +363,14 @@ function ConfirmEmailPage() {
                       value={resendEmail}
                       onChange={(e) => setResendEmail(e.target.value)}
                       placeholder="student@college.edu"
-                      className="pl-9 text-sm"
+                      className="pl-9 text-xs"
                       required
                     />
                   </div>
                 </div>
                 <Button
                   type="submit"
-                  className="w-full bg-teal-600 hover:bg-teal-700 text-white"
+                  className="w-full text-xs font-semibold shadow-xs"
                   disabled={resending || resendCooldown > 0}
                 >
                   {resending ? (
@@ -389,7 +389,7 @@ function ConfirmEmailPage() {
               <div className="pt-2 text-center">
                 <Link
                   to="/auth"
-                  className="inline-flex items-center text-xs text-primary hover:underline"
+                  className="inline-flex items-center text-xs text-primary hover:underline font-medium"
                 >
                   <ArrowLeft className="size-3 mr-1" />
                   Back to Student Sign In

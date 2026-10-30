@@ -142,27 +142,26 @@ function AdminLoginPage() {
       <div className="hidden flex-col justify-between border-r border-border bg-slate-900 p-12 text-white lg:flex">
         <div>
           <div className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-lg bg-primary text-white shadow-sm ring-1 ring-white/20">
+            <div className="flex size-10 items-center justify-center rounded-md bg-white/10 text-white shadow-2xs ring-1 ring-white/20">
               <ShieldCheck className="size-6" />
             </div>
             <div>
-              <span className="font-serif text-xl font-bold tracking-tight text-white">
-                Placement Portal
-              </span>
-              <span className="block text-xs uppercase tracking-widest text-slate-400">
+              <span className="text-lg font-bold tracking-tight text-white">Placement Portal</span>
+              <span className="block text-[10px] font-semibold uppercase tracking-widest text-slate-400">
                 Training & Placement Office
               </span>
             </div>
           </div>
 
           <div className="mt-20 max-w-md">
-            <div className="inline-flex items-center gap-2 rounded-full border border-teal-500/30 bg-teal-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-teal-300">
-              <Lock className="size-3" /> Staff & Coordinator Console
+            <div className="inline-flex items-center gap-1.5 rounded-[4px] border border-blue-400/20 bg-blue-400/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-blue-300">
+              <Lock className="size-3" />
+              <span>Staff & Coordinator Console</span>
             </div>
-            <h2 className="mt-5 font-serif text-3xl font-semibold leading-snug tracking-tight text-white">
+            <h2 className="mt-5 text-3xl font-bold leading-tight tracking-tight text-white">
               Official Placement Administration & Recruiter Management
             </h2>
-            <p className="mt-4 text-sm leading-relaxed text-slate-300">
+            <p className="mt-4 text-xs sm:text-sm leading-relaxed text-slate-300">
               Securely manage campus recruitment drives, publish verified eligibility criteria,
               maintain interview round structures, and track student placement data.
             </p>
@@ -171,11 +170,11 @@ function AdminLoginPage() {
 
         <div className="space-y-4 border-t border-slate-800 pt-6">
           <div className="flex items-center gap-3 text-xs text-slate-400">
-            <CheckCircle2 className="size-4 text-teal-400" />
+            <CheckCircle2 className="size-4 text-emerald-400 shrink-0" />
             <span>End-to-end Row Level Security & server-enforced role management</span>
           </div>
           <div className="flex items-center gap-3 text-xs text-slate-400">
-            <CheckCircle2 className="size-4 text-teal-400" />
+            <CheckCircle2 className="size-4 text-emerald-400 shrink-0" />
             <span>Audit-ready historical criteria versions & verified question bank</span>
           </div>
           <p className="pt-2 text-[11px] text-slate-500">
@@ -196,9 +195,9 @@ function AdminLoginPage() {
             <ArrowLeft className="size-3.5" /> Back to Student Portal
           </Link>
 
-          <div className="rounded-xl border border-border bg-card p-8 shadow-sm">
+          <div className="rounded-xl border border-border bg-card p-8 shadow-xs">
             <div className="mb-6 flex items-center gap-2.5">
-              <div className="flex size-9 items-center justify-center rounded-md bg-primary/10 text-primary">
+              <div className="flex size-9 items-center justify-center rounded-md bg-slate-100 dark:bg-slate-800 text-foreground">
                 <ShieldCheck className="size-5" />
               </div>
               <div>
@@ -214,7 +213,7 @@ function AdminLoginPage() {
             </div>
 
             {/* Security Notice */}
-            <div className="mb-6 rounded-md border border-amber-500/20 bg-amber-500/5 p-3 text-xs text-amber-800 dark:text-amber-300 flex items-start gap-2.5">
+            <div className="mb-6 rounded-md border border-amber-500/25 bg-amber-500/8 p-3 text-xs text-amber-800 dark:text-amber-300 flex items-start gap-2.5">
               <AlertCircle className="size-4 shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
               <div>
                 <span className="font-semibold">Restricted Access:</span> This portal is strictly

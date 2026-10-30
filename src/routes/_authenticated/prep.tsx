@@ -88,18 +88,16 @@ function Prep() {
           >
             <div>
               <div className="flex items-center justify-between border-b border-border/60 pb-3.5">
-                <span className="rounded-full bg-teal-50 px-2.5 py-0.5 font-mono text-xs font-bold text-teal-800 dark:bg-teal-950 dark:text-teal-300">
+                <span className="rounded-[4px] border border-primary/20 bg-primary/10 px-2.5 py-0.5 font-mono text-[11px] font-bold text-primary">
                   {s.badge}
                 </span>
-                <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <div className="flex size-8 items-center justify-center rounded-md bg-primary/10 text-primary">
                   <s.icon className="size-4" />
                 </div>
               </div>
 
-              <h2 className="mt-4 font-serif text-lg font-bold text-foreground">{s.year}</h2>
-              <p className="text-xs font-semibold text-teal-700 dark:text-teal-400 mt-0.5">
-                {s.focus}
-              </p>
+              <h2 className="mt-4 text-lg font-bold tracking-tight text-foreground">{s.year}</h2>
+              <p className="text-xs font-semibold text-primary mt-0.5">{s.focus}</p>
 
               <ul className="mt-4 space-y-2.5 text-xs text-muted-foreground">
                 {s.items.map((i) => (
@@ -121,10 +119,10 @@ function Prep() {
         ))}
       </div>
 
-      <div className="rounded-xl border border-border bg-slate-50/70 p-6 dark:bg-slate-900/40 shadow-xs">
+      <div className="rounded-xl border border-border bg-card p-6 shadow-xs">
         <div className="flex items-center gap-2">
           <Compass className="size-4 text-primary" />
-          <h3 className="font-serif text-base font-bold text-foreground">
+          <h3 className="text-base font-bold tracking-tight text-foreground">
             Next Steps in Your Preparation
           </h3>
         </div>
@@ -133,18 +131,18 @@ function Prep() {
           by past candidates and verified by the TPO.
         </p>
         <div className="mt-4 flex flex-wrap gap-2.5">
-          <Button asChild size="sm" className="text-xs">
+          <Button asChild size="sm" className="text-xs font-semibold">
             <Link to="/companies">
               Explore Active Recruiters <ArrowRight className="size-3 ml-1" />
             </Link>
           </Button>
-          <Button asChild variant="outline" size="sm" className="text-xs">
+          <Button asChild variant="outline" size="sm" className="text-xs font-medium">
             <Link to="/dsa">Review DSA Requirements</Link>
           </Button>
-          <Button asChild variant="outline" size="sm" className="text-xs">
+          <Button asChild variant="outline" size="sm" className="text-xs font-medium">
             <Link to="/questions">Solve DSA Sheet</Link>
           </Button>
-          <Button asChild variant="outline" size="sm" className="text-xs">
+          <Button asChild variant="outline" size="sm" className="text-xs font-medium">
             <Link to="/rounds">View Interview Rounds</Link>
           </Button>
         </div>

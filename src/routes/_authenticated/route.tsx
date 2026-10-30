@@ -110,10 +110,10 @@ function NavItem({
       to={to}
       onClick={onClick}
       activeOptions={{ exact: to === "/admin" || to === "/admin/dashboard" || to === "/dashboard" }}
-      className="group flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium text-slate-600 transition-all duration-150 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/70 dark:hover:text-white"
+      className="group flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium text-slate-600 transition-all duration-150 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/70 dark:hover:text-white"
       activeProps={{
         className:
-          "!bg-slate-900 !text-white shadow-xs dark:!bg-primary dark:!text-primary-foreground font-semibold",
+          "!bg-slate-900 !text-white shadow-2xs dark:!bg-slate-800 dark:!text-white font-semibold",
       }}
     >
       <Icon
@@ -157,7 +157,7 @@ function AppShell() {
 
   const sidebarContent = (
     <nav
-      className="flex h-full flex-col justify-between overflow-y-auto px-3.5 py-4"
+      className="flex h-full flex-col justify-between overflow-y-auto px-3 py-4"
       aria-label="Main Navigation"
     >
       <div className="space-y-6">
@@ -171,14 +171,14 @@ function AppShell() {
         ) : me?.isAdmin ? (
           <div>
             <div className="mb-2.5 flex items-center justify-between px-3">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                TPO / Administration
+              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">
+                TPO Administration
               </span>
-              <span className="rounded-full border border-teal-500/20 bg-teal-500/10 px-2 py-0.5 text-[9px] font-bold text-teal-800 dark:text-teal-300">
-                Staff
+              <span className="rounded-[4px] border border-slate-900/20 bg-slate-900/5 px-1.5 py-0.5 text-[9px] font-bold text-slate-800 dark:border-slate-400/20 dark:bg-slate-400/10 dark:text-slate-300">
+                STAFF
               </span>
             </div>
-            <div className="space-y-1">
+            <div className="space-y-0.5">
               {adminNav.map((n) => (
                 <NavItem key={n.to} {...n} onClick={close} />
               ))}
@@ -187,14 +187,14 @@ function AppShell() {
         ) : (
           <div>
             <div className="mb-2.5 flex items-center justify-between px-3">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                Student Navigation
+              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">
+                Student Portal
               </span>
-              <span className="rounded-full border border-border bg-slate-100 px-2 py-0.5 text-[9px] font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300">
-                Student
+              <span className="rounded-[4px] border border-border bg-slate-100 px-1.5 py-0.5 text-[9px] font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                STUDENT
               </span>
             </div>
-            <div className="space-y-1">
+            <div className="space-y-0.5">
               {studentNav.map((n) => (
                 <NavItem key={n.to} {...n} onClick={close} />
               ))}
@@ -206,8 +206,8 @@ function AppShell() {
       <div className="space-y-3 border-t border-border/80 pt-4">
         {/* User Profile Summary */}
         {me && (
-          <div className="flex items-center gap-3 rounded-lg border border-border/60 bg-slate-50/70 p-2.5 dark:bg-slate-900/40">
-            <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-slate-900 text-[11px] font-bold text-white shadow-xs dark:bg-primary dark:text-primary-foreground">
+          <div className="flex items-center gap-3 rounded-lg border border-border/70 bg-slate-50/70 p-2.5 dark:bg-slate-900/40 shadow-2xs">
+            <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-slate-900 text-[11px] font-bold text-white shadow-2xs dark:bg-primary dark:text-primary-foreground">
               {getInitials(me.fullName, me.email)}
             </div>
             <div className="min-w-0 flex-1">
@@ -221,7 +221,7 @@ function AppShell() {
 
         <button
           onClick={signOut}
-          className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-destructive transition-colors hover:bg-destructive/10"
+          className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-xs font-medium text-destructive transition-colors hover:bg-destructive/10"
         >
           <LogOut className="size-3.5 shrink-0" strokeWidth={1.8} />
           <span>Sign Out</span>
@@ -248,7 +248,7 @@ function AppShell() {
       <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-card/95 px-4 backdrop-blur-md sm:px-6">
         <div className="flex items-center gap-3">
           <button
-            className="flex size-9 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden"
+            className="flex size-9 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden"
             onClick={() => setOpen((o) => !o)}
             aria-label="Toggle navigation"
           >
@@ -258,15 +258,15 @@ function AppShell() {
             to={me?.isAdmin ? "/admin/dashboard" : "/dashboard"}
             className="flex items-center gap-2.5 transition-opacity hover:opacity-90"
           >
-            <div className="flex size-8 items-center justify-center rounded-lg bg-slate-900 text-white shadow-xs dark:bg-primary dark:text-primary-foreground">
+            <div className="flex size-8 items-center justify-center rounded-md bg-slate-900 text-white shadow-2xs dark:bg-primary dark:text-primary-foreground">
               <GraduationCap className="size-4" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-serif text-base font-bold tracking-tight text-foreground sm:text-lg">
+                <span className="text-base font-bold tracking-tight text-foreground sm:text-lg">
                   Placement Portal
                 </span>
-                <span className="hidden items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[9px] font-semibold text-emerald-800 dark:text-emerald-300 md:inline-flex">
+                <span className="hidden items-center gap-1.5 rounded-[4px] border border-emerald-500/25 bg-emerald-500/8 px-2 py-0.5 text-[10px] font-semibold text-emerald-800 dark:text-emerald-300 md:inline-flex">
                   <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
                   Drive Season 2025–26
                 </span>
@@ -286,18 +286,18 @@ function AppShell() {
           {me && (
             <span
               className={cn(
-                "rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider",
+                "rounded-[4px] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider border",
                 me.isAdmin
-                  ? "border border-slate-900 bg-slate-900 text-white dark:border-slate-700 dark:bg-slate-800"
-                  : "border border-teal-500/30 bg-teal-500/10 text-teal-800 dark:text-teal-300",
+                  ? "border-slate-900 bg-slate-900 text-white dark:border-slate-700 dark:bg-slate-800"
+                  : "border-border bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300",
               )}
             >
-              {me.isAdmin ? "TPO Staff" : "Student"}
+              {me.isAdmin ? "Staff" : "Student"}
             </span>
           )}
           <button
             onClick={signOut}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground shadow-2xs transition-colors hover:border-slate-300 hover:bg-slate-50 hover:text-foreground dark:hover:bg-slate-800"
+            className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground shadow-2xs transition-colors hover:border-slate-300 hover:bg-slate-50 hover:text-foreground dark:hover:bg-slate-800"
           >
             <LogOut className="size-3.5" /> <span className="hidden sm:inline">Sign out</span>
           </button>

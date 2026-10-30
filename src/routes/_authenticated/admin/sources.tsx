@@ -35,10 +35,20 @@ function Sources() {
       rowActions={(r) =>
         r.status === "pending" ? (
           <>
-            <Button size="sm" variant="outline" onClick={() => setStatus(r.id, "verified")}>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setStatus(r.id, "verified")}
+              className="h-7 px-2 text-xs font-semibold text-emerald-700 hover:bg-emerald-50 hover:text-emerald-800 dark:text-emerald-400 dark:hover:bg-emerald-950/40"
+            >
               Verify
             </Button>
-            <Button size="sm" variant="ghost" onClick={() => setStatus(r.id, "rejected")}>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => setStatus(r.id, "rejected")}
+              className="h-7 px-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 hover:text-rose-700 dark:hover:bg-rose-950/40"
+            >
               Reject
             </Button>
           </>

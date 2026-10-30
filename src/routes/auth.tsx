@@ -304,30 +304,28 @@ function StudentAuthPage() {
   return (
     <div className="grid min-h-screen bg-background lg:grid-cols-[1.1fr_1fr]">
       {/* Left panel - Student Hero */}
-      <div className="hidden flex-col justify-between border-r border-border bg-gradient-to-b from-slate-900 to-slate-950 p-12 text-white lg:flex">
+      <div className="hidden flex-col justify-between border-r border-border bg-slate-900 p-12 text-white lg:flex">
         <div>
           <Link to="/" className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-lg bg-teal-600 text-white shadow-sm ring-1 ring-white/20">
+            <div className="flex size-10 items-center justify-center rounded-md bg-white/10 text-white shadow-2xs ring-1 ring-white/20">
               <GraduationCap className="size-6" />
             </div>
             <div>
-              <span className="font-serif text-xl font-bold tracking-tight text-white">
-                Placement Portal
-              </span>
-              <span className="block text-xs uppercase tracking-widest text-slate-400">
+              <span className="text-lg font-bold tracking-tight text-white">Placement Portal</span>
+              <span className="block text-[10px] font-semibold uppercase tracking-widest text-slate-400">
                 Training & Placement Office
               </span>
             </div>
           </Link>
 
           <div className="mt-20 max-w-md">
-            <div className="inline-flex items-center gap-2 rounded-full border border-teal-500/30 bg-teal-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-teal-300">
-              Student Career Network
+            <div className="inline-flex items-center gap-2 rounded-[4px] border border-blue-400/20 bg-blue-400/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-blue-300">
+              <span>Student Career Network</span>
             </div>
-            <h2 className="mt-5 font-serif text-3xl font-semibold leading-snug tracking-tight text-white">
+            <h2 className="mt-5 text-3xl font-bold leading-tight tracking-tight text-white">
               Prepare for campus recruitment drives from day one.
             </h2>
-            <p className="mt-4 text-sm leading-relaxed text-slate-300">
+            <p className="mt-4 text-xs sm:text-sm leading-relaxed text-slate-300">
               Access verified eligibility cut-offs, company-specific DSA roadmaps, ordered interview
               round structures, and genuine interview questions from previous campus drives.
             </p>
@@ -336,15 +334,17 @@ function StudentAuthPage() {
 
         <div className="space-y-4 border-t border-slate-800/80 pt-6">
           <div className="grid grid-cols-2 gap-4">
-            <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-3.5">
-              <p className="text-xs text-slate-400">Company Requirements</p>
-              <p className="mt-1 font-serif text-lg font-semibold text-white">Curated by TPO</p>
-            </div>
-            <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-3.5">
-              <p className="text-xs text-slate-400">DSA Sheet</p>
-              <p className="mt-1 font-serif text-lg font-semibold text-white">
-                Day-Wise & Verified
+            <div className="rounded-lg border border-slate-800 bg-slate-900/60 p-3.5">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                Company Criteria
               </p>
+              <p className="mt-1 text-base font-bold text-white">Curated by TPO</p>
+            </div>
+            <div className="rounded-lg border border-slate-800 bg-slate-900/60 p-3.5">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                DSA Sheet
+              </p>
+              <p className="mt-1 text-base font-bold text-white">Day-Wise & Verified</p>
             </div>
           </div>
           <p className="text-xs text-slate-400">
@@ -360,13 +360,13 @@ function StudentAuthPage() {
           <div className="mb-8 flex items-center justify-between lg:hidden">
             <Link to="/" className="flex items-center gap-2">
               <GraduationCap className="size-6 text-primary" />
-              <span className="font-serif text-lg font-bold">Placement Portal</span>
+              <span className="text-lg font-bold tracking-tight">Placement Portal</span>
             </Link>
           </div>
 
-          <div className="rounded-xl border border-border bg-card p-8 shadow-sm">
+          <div className="rounded-xl border border-border bg-card p-8 shadow-xs">
             <div className="mb-6">
-              <h1 className="text-2xl font-bold tracking-tight text-foreground">{titles[mode]}</h1>
+              <h1 className="text-xl font-bold tracking-tight text-foreground">{titles[mode]}</h1>
               <p className="mt-1.5 text-xs text-muted-foreground">
                 {mode === "signin"
                   ? "Access your student placement dashboard and company profiles."

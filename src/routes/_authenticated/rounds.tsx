@@ -80,18 +80,18 @@ function RoundsPage() {
                   <button
                     key={c.id}
                     onClick={() => navigate({ search: { company: c.id } })}
-                    className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-xs transition-all ${
+                    className={`flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-xs transition-all ${
                       isCur
-                        ? "bg-primary font-semibold text-primary-foreground shadow-xs"
-                        : "text-muted-foreground hover:bg-slate-100 hover:text-foreground dark:hover:bg-slate-800"
+                        ? "bg-slate-900 font-semibold text-white shadow-2xs dark:bg-slate-800"
+                        : "text-muted-foreground hover:bg-slate-100 hover:text-foreground dark:hover:bg-slate-800/60"
                     }`}
                   >
-                    <div className="flex items-center gap-2 truncate">
+                    <div className="flex items-center gap-2.5 truncate">
                       <div
-                        className={`flex size-6 shrink-0 items-center justify-center rounded text-[10px] font-bold ${
+                        className={`flex size-6 shrink-0 items-center justify-center rounded-[4px] text-[10px] font-mono font-bold ${
                           isCur
                             ? "bg-white/20 text-white"
-                            : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                            : "border border-border bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200"
                         }`}
                       >
                         {c.name.slice(0, 2).toUpperCase()}
@@ -108,23 +108,25 @@ function RoundsPage() {
               })}
               {!filteredCompanies.length && (
                 <p className="p-4 text-center text-xs text-muted-foreground">
-                  No matching companies
+                  No matching recruiters found
                 </p>
               )}
             </div>
           </div>
 
           {/* Rounds Main Timeline */}
-          <div className="rounded-xl border border-border bg-card p-6 shadow-xs">
+          <div className="rounded-xl border border-border bg-card p-6 shadow-2xs">
             {comp && (
               <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-border pb-5">
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="font-serif text-2xl font-bold text-foreground">{comp.name}</h2>
+                    <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+                      {comp.name}
+                    </h2>
                     {comp.is_demo && <DemoTag />}
                     <VerifyTag status={comp.verification_status} />
                   </div>
-                  <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                  <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
                     <span>{comp.sector || "Campus Recruiter"}</span>
                     <span>·</span>
                     <span className="flex items-center gap-1.5">
@@ -137,7 +139,7 @@ function RoundsPage() {
                   asChild
                   variant="outline"
                   size="sm"
-                  className="text-xs self-start sm:self-auto"
+                  className="text-xs font-medium self-start sm:self-auto"
                 >
                   <Link to="/companies/$id" params={{ id: comp.id }}>
                     Company Profile <ArrowUpRight className="size-3 ml-1" />

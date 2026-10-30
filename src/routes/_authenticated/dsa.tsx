@@ -69,10 +69,10 @@ function DsaPage() {
             <button
               key={d}
               onClick={() => setDiff(d)}
-              className={`rounded-lg px-3 py-1.5 text-xs capitalize transition-colors ${
+              className={`rounded-md px-3 py-1.5 text-xs capitalize transition-colors ${
                 diff === d
                   ? "bg-primary font-semibold text-primary-foreground shadow-xs"
-                  : "border border-border bg-background font-medium text-muted-foreground hover:bg-slate-100 hover:text-foreground dark:hover:bg-slate-800"
+                  : "border border-border bg-background font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
               }`}
             >
               {d || "All levels"}
@@ -94,7 +94,7 @@ function DsaPage() {
         <div className="overflow-hidden rounded-xl border border-border bg-card shadow-xs">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-border bg-slate-50 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground dark:bg-slate-900/60">
+              <thead className="border-b border-border bg-muted/40 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                 <tr>
                   <th className="px-5 py-3 w-1/4">Topic Category</th>
                   <th className="px-5 py-3 w-32">Company Count</th>
@@ -103,18 +103,15 @@ function DsaPage() {
               </thead>
               <tbody className="divide-y divide-border">
                 {grouped.map((g) => (
-                  <tr
-                    key={g.topic}
-                    className="transition-colors hover:bg-slate-50/70 dark:hover:bg-slate-900/40"
-                  >
+                  <tr key={g.topic} className="transition-colors hover:bg-muted/30">
                     <td className="px-5 py-3.5 font-semibold text-foreground">
                       <div className="flex items-center gap-2">
-                        <Code2 className="size-4 text-teal-600 dark:text-teal-400 shrink-0" />
+                        <Code2 className="size-4 text-primary shrink-0" />
                         <span>{g.topic}</span>
                       </div>
                     </td>
                     <td className="px-5 py-3.5 tabular-nums text-foreground">
-                      <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-800 dark:bg-slate-800 dark:text-slate-200">
+                      <span className="inline-flex items-center rounded-[4px] border border-border bg-muted/50 px-2 py-0.5 text-xs font-mono font-semibold text-foreground">
                         {g.companies.length} {g.companies.length === 1 ? "Company" : "Companies"}
                       </span>
                     </td>
@@ -125,7 +122,7 @@ function DsaPage() {
                             key={c.id}
                             to="/companies/$id"
                             params={{ id: c.id }}
-                            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 py-1 text-xs font-medium text-foreground transition-all hover:border-primary/50 hover:bg-slate-50 dark:hover:bg-slate-800 shadow-2xs"
+                            className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-2.5 py-1 text-xs font-medium text-foreground transition-all hover:border-primary/40 hover:bg-muted/40 shadow-2xs"
                           >
                             <span>{c.name}</span>
                             <DifficultyTag level={c.difficulty} />
@@ -139,7 +136,7 @@ function DsaPage() {
               </tbody>
             </table>
           </div>
-          <div className="border-t border-border bg-slate-50/50 px-5 py-2.5 text-xs font-medium text-muted-foreground dark:bg-slate-900/40">
+          <div className="border-t border-border bg-muted/20 px-5 py-2.5 text-xs font-medium text-muted-foreground">
             Displaying {grouped.length} topic categories across campus drives.
           </div>
         </div>

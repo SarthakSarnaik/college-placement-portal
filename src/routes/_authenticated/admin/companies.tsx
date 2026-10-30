@@ -60,11 +60,11 @@ export const Route = createFileRoute("/_authenticated/admin/companies")({
           hint: "When checked, this recruiter and all associated interview rounds, DSA topics, CS fundamentals, and questions become visible to students in the directory and dashboard. When unchecked, it is kept as an unpublished draft hidden from students.",
           render: (r) =>
             r.is_published ? (
-              <span className="inline-flex items-center rounded-md bg-emerald-500/10 px-2 py-0.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
+              <span className="inline-flex items-center rounded-[4px] border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">
                 Published
               </span>
             ) : (
-              <span className="inline-flex items-center rounded-md bg-amber-500/10 px-2 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-400">
+              <span className="inline-flex items-center rounded-[4px] border border-amber-500/20 bg-amber-500/10 px-2 py-0.5 text-[11px] font-medium text-amber-700 dark:text-amber-400">
                 Draft (Hidden)
               </span>
             ),

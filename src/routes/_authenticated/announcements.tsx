@@ -34,15 +34,16 @@ function AnnouncementsPage() {
           {q.data.map((a) => (
             <article
               key={a.id}
-              className="rounded-xl border border-border bg-card p-6 shadow-xs transition-colors hover:border-slate-300 dark:hover:border-slate-700"
+              className="rounded-xl border border-border bg-card p-6 shadow-xs transition-colors hover:border-primary/40"
             >
               <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/60 pb-3.5">
                 <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1.5 font-medium font-mono text-slate-700 dark:text-slate-300">
-                    <Calendar className="size-3.5 text-slate-400" /> {fmtDate(a.published_at)}
+                  <span className="flex items-center gap-1.5 font-medium font-mono text-foreground">
+                    <Calendar className="size-3.5 text-muted-foreground" />{" "}
+                    {fmtDate(a.published_at)}
                   </span>
                   {a.is_demo && <DemoTag />}
-                  <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-slate-600 dark:bg-slate-800 dark:text-slate-400">
+                  <span className="rounded-[4px] border border-border bg-muted/50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                     Official Notice
                   </span>
                 </div>
@@ -51,15 +52,15 @@ function AnnouncementsPage() {
                   <Link
                     to="/companies/$id"
                     params={{ id: a.companies.id }}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-slate-50 px-2.5 py-1 text-xs font-medium text-primary hover:bg-slate-100 dark:bg-slate-900 transition-colors"
+                    className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-2.5 py-1 text-xs font-medium text-foreground hover:border-primary/40 hover:bg-muted/40 transition-colors shadow-2xs"
                   >
-                    <Building2 className="size-3" /> {a.companies.name}{" "}
+                    <Building2 className="size-3 text-primary" /> {a.companies.name}{" "}
                     <ChevronRight className="size-3 opacity-60" />
                   </Link>
                 )}
               </div>
 
-              <h2 className="mt-3.5 font-serif text-lg font-bold text-foreground sm:text-xl">
+              <h2 className="mt-3.5 text-lg font-bold tracking-tight text-foreground sm:text-xl">
                 {a.title}
               </h2>
 
@@ -68,7 +69,7 @@ function AnnouncementsPage() {
               </p>
 
               <div className="mt-4 pt-3 border-t border-border/40 flex items-center justify-between text-xs text-muted-foreground">
-                <span className="flex items-center gap-1 text-[11px] text-slate-400">
+                <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
                   <ShieldCheck className="size-3 text-emerald-600 dark:text-emerald-400" /> Issued
                   by Training & Placement Cell
                 </span>

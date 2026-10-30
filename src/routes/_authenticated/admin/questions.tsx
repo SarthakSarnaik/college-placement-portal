@@ -63,10 +63,10 @@ function AdminQuestionsPage() {
       render: (r) => (
         <span
           className={cn(
-            "inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider",
+            "inline-flex items-center rounded-[4px] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider",
             r.question_type === "interview_question"
-              ? "bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/20"
-              : "bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/20",
+              ? "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200 border border-border"
+              : "bg-primary/10 text-primary border border-primary/20",
           )}
         >
           {r.question_type === "interview_question" ? "Campus Interview" : "DSA Sheet"}
@@ -150,7 +150,7 @@ function AdminQuestionsPage() {
       render: (r) => (
         <span
           className={cn(
-            "inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-semibold border",
+            "inline-flex items-center rounded-[4px] px-2 py-0.5 text-[11px] font-semibold border",
             r.is_published !== false
               ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20"
               : "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20",
