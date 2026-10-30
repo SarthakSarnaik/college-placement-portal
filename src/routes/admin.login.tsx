@@ -142,8 +142,12 @@ function AdminLoginPage() {
       <div className="hidden flex-col justify-between border-r border-border bg-slate-900 p-12 text-white lg:flex">
         <div>
           <div className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-md bg-white/10 text-white shadow-2xs ring-1 ring-white/20">
-              <ShieldCheck className="size-6" />
+            <div className="flex h-11 w-auto items-center justify-center rounded-md border border-white/20 bg-white px-2 py-1 shadow-2xs shrink-0">
+              <img
+                src="/kkwagh-logo.png"
+                alt="K K Wagh Logo"
+                className="h-9 w-auto object-contain"
+              />
             </div>
             <div>
               <span className="text-lg font-bold tracking-tight text-white">Placement Portal</span>

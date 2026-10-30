@@ -64,9 +64,13 @@ function LandingPage() {
       {/* College Placement Cell Header */}
       <header className="sticky top-0 z-30 border-b border-border bg-card/95 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-          <Link to="/" className="flex items-center gap-2.5">
-            <div className="flex size-9 items-center justify-center rounded-md bg-slate-900 text-white shadow-2xs dark:bg-primary dark:text-primary-foreground">
-              <GraduationCap className="size-5" />
+          <Link to="/" className="flex items-center gap-3">
+            <div className="flex h-10 w-auto items-center justify-center rounded-md border border-border/80 bg-white px-1.5 py-1 shadow-2xs shrink-0">
+              <img
+                src="/kkwagh-logo.png"
+                alt="K K Wagh Logo"
+                className="h-8 w-auto object-contain"
+              />
             </div>
             <div>
               <span className="text-base font-bold tracking-tight text-foreground sm:text-lg">

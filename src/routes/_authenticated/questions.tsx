@@ -23,7 +23,7 @@ import {
 import { fmtDate, questionsQuery, studentProgressQuery } from "@/lib/queries";
 import { useMe } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
-import { PageHeader, DemoTag, DifficultyTag, VerifyTag } from "@/components/labels";
+import { PageHeader, DifficultyTag, VerifyTag } from "@/components/labels";
 import { EmptyState, ErrorState, LoadingState } from "@/components/states";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -1375,7 +1375,6 @@ function DsaSheetPage() {
                                     <CompanyBadge name={x.companies.name} />
                                   </Link>
                                 )}
-                                {x.companies?.is_demo && <DemoTag />}
                                 <span>·</span>
                                 <span className="font-semibold text-foreground">
                                   {x.interview_rounds?.name ?? "Technical Assessment"}

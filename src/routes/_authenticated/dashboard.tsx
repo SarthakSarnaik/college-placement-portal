@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { useMe } from "@/lib/auth";
 import { announcementsQuery, companiesQuery, fmtDate } from "@/lib/queries";
-import { PageHeader, DemoTag, DifficultyTag, VerifyTag } from "@/components/labels";
+import { PageHeader, DifficultyTag, VerifyTag } from "@/components/labels";
 import { EmptyState, ErrorState, LoadingState } from "@/components/states";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -315,7 +315,6 @@ function Dashboard() {
                                 </Link>
                                 <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-[10px] text-muted-foreground">
                                   <span>{c.sector}</span>
-                                  {c.is_demo && <DemoTag />}
                                   <VerifyTag status={c.verification_status} />
                                 </div>
                               </div>
@@ -388,7 +387,6 @@ function Dashboard() {
                 >
                   <div className="flex items-center justify-between text-xs text-muted-foreground">
                     <span className="font-mono text-[10px]">{fmtDate(a.published_at)}</span>
-                    {a.is_demo && <DemoTag />}
                   </div>
                   <h3 className="mt-1 text-sm font-semibold tracking-tight text-foreground">
                     {a.title}

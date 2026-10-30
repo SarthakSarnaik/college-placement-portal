@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { z } from "zod";
 import { Search, Building2, ChevronRight, ListOrdered, ArrowUpRight } from "lucide-react";
 import { companiesQuery, roundsQuery } from "@/lib/queries";
-import { PageHeader, DemoTag, DifficultyTag, VerifyTag } from "@/components/labels";
+import { PageHeader, DifficultyTag, VerifyTag } from "@/components/labels";
 import { EmptyState, ErrorState, LoadingState } from "@/components/states";
 import { RoundSteps } from "@/components/round-steps";
 import { Input } from "@/components/ui/input";
@@ -123,7 +123,6 @@ function RoundsPage() {
                     <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
                       {comp.name}
                     </h2>
-                    {comp.is_demo && <DemoTag />}
                     <VerifyTag status={comp.verification_status} />
                   </div>
                   <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">

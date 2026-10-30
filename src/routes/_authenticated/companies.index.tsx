@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { Search, RotateCcw, ChevronRight, Building2, LayoutGrid, List, MapPin } from "lucide-react";
 import { companiesQuery } from "@/lib/queries";
-import { PageHeader, DemoTag, DifficultyTag, VerifyTag } from "@/components/labels";
+import { PageHeader, DifficultyTag, VerifyTag } from "@/components/labels";
 import { EmptyState, ErrorState, LoadingState } from "@/components/states";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -220,7 +220,6 @@ function Directory() {
                   </div>
 
                   <div className="flex flex-wrap items-center gap-1.5">
-                    {c.is_demo && <DemoTag />}
                     <VerifyTag status={c.verification_status} />
                   </div>
 
@@ -346,7 +345,6 @@ function Directory() {
 
                       <td className="px-4 py-3.5">
                         <div className="flex flex-wrap gap-1">
-                          {c.is_demo && <DemoTag />}
                           <VerifyTag status={c.verification_status} />
                         </div>
                       </td>

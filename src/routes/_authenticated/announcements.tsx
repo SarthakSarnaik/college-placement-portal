@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Megaphone, Calendar, Building2, ChevronRight, ShieldCheck } from "lucide-react";
+import { Calendar } from "lucide-react";
 import { announcementsQuery, fmtDate } from "@/lib/queries";
-import { PageHeader, DemoTag } from "@/components/labels";
+import { PageHeader } from "@/components/labels";
 import { EmptyState, ErrorState, LoadingState } from "@/components/states";
 
 export const Route = createFileRoute("/_authenticated/announcements")({
@@ -42,7 +42,6 @@ function AnnouncementsPage() {
                     <Calendar className="size-3.5 text-muted-foreground" />{" "}
                     {fmtDate(a.published_at)}
                   </span>
-                  {a.is_demo && <DemoTag />}
                   <span className="rounded-[4px] border border-border bg-muted/50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                     Official Notice
                   </span>

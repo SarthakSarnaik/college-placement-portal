@@ -307,8 +307,12 @@ function StudentAuthPage() {
       <div className="hidden flex-col justify-between border-r border-border bg-slate-900 p-12 text-white lg:flex">
         <div>
           <Link to="/" className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-md bg-white/10 text-white shadow-2xs ring-1 ring-white/20">
-              <GraduationCap className="size-6" />
+            <div className="flex h-11 w-auto items-center justify-center rounded-md border border-white/20 bg-white px-2 py-1 shadow-2xs shrink-0">
+              <img
+                src="/kkwagh-logo.png"
+                alt="K K Wagh Logo"
+                className="h-9 w-auto object-contain"
+              />
             </div>
             <div>
               <span className="text-lg font-bold tracking-tight text-white">Placement Portal</span>
@@ -358,8 +362,14 @@ function StudentAuthPage() {
         <div className="w-full max-w-md">
           {/* Top Brand Link on Mobile */}
           <div className="mb-8 flex items-center justify-between lg:hidden">
-            <Link to="/" className="flex items-center gap-2">
-              <GraduationCap className="size-6 text-primary" />
+            <Link to="/" className="flex items-center gap-2.5">
+              <div className="flex h-9 w-auto items-center justify-center rounded-md border border-border bg-white px-1.5 py-0.5 shadow-2xs shrink-0">
+                <img
+                  src="/kkwagh-logo.png"
+                  alt="K K Wagh Logo"
+                  className="h-7 w-auto object-contain"
+                />
+              </div>
               <span className="text-lg font-bold tracking-tight">Placement Portal</span>
             </Link>
           </div>

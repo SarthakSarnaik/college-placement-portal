@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { Code2, Search, ArrowRight, Layers, Sparkles } from "lucide-react";
 import { dsaQuery } from "@/lib/queries";
-import { PageHeader, DemoTag, DifficultyTag } from "@/components/labels";
+import { PageHeader, DifficultyTag } from "@/components/labels";
 import { EmptyState, ErrorState, LoadingState } from "@/components/states";
 import { Input } from "@/components/ui/input";
 
@@ -126,7 +126,6 @@ function DsaPage() {
                           >
                             <span>{c.name}</span>
                             <DifficultyTag level={c.difficulty} />
-                            {c.demo && <DemoTag />}
                           </Link>
                         ))}
                       </div>

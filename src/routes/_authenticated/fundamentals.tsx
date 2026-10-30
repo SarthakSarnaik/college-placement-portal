@@ -10,7 +10,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { csQuery } from "@/lib/queries";
-import { PageHeader, DemoTag } from "@/components/labels";
+import { PageHeader } from "@/components/labels";
 import { EmptyState, ErrorState, LoadingState } from "@/components/states";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -483,7 +483,6 @@ function FundamentalsPage() {
                                 >
                                   {c.priority === 1 ? "High" : c.priority === 2 ? "Med" : "Low"}
                                 </span>
-                                {c.demo && <DemoTag />}
                               </Link>
                             ))}
                           </div>

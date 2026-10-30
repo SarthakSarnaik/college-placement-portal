@@ -22,7 +22,7 @@ import {
   Award,
 } from "lucide-react";
 import { companyQuery, fmtDate } from "@/lib/queries";
-import { DemoTag, DifficultyTag, VerifyTag } from "@/components/labels";
+import { DifficultyTag, VerifyTag } from "@/components/labels";
 import { EmptyState, ErrorState, LoadingState } from "@/components/states";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RoundSteps } from "@/components/round-steps";
@@ -112,7 +112,6 @@ function Profile() {
 
             <div className="space-y-1.5">
               <div className="flex flex-wrap items-center gap-2">
-                {c.is_demo && <DemoTag />}
                 <VerifyTag status={c.verification_status} />
                 <span className="rounded-[4px] border border-border bg-slate-100/70 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground dark:bg-slate-800">
                   {c.sector || "Recruiter"}
@@ -185,17 +184,6 @@ function Profile() {
             </div>
           </div>
         </div>
-
-        {c.is_demo && (
-          <div className="mt-5 rounded-md border border-amber-500/25 bg-amber-500/8 p-3 text-xs text-amber-900 dark:text-amber-200 flex items-start gap-2.5">
-            <AlertCircle className="size-4 shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" />
-            <span className="leading-relaxed">
-              <strong>Demonstration Profile:</strong> This profile illustrates how recruiters are
-              structured in the placement portal. Eligibility criteria, round formats, and previous
-              questions shown are for demonstration.
-            </span>
-          </div>
-        )}
       </div>
 
       {/* Tabs Section */}

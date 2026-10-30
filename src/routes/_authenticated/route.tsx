@@ -160,7 +160,23 @@ function AppShell() {
       className="flex h-full flex-col justify-between overflow-y-auto px-3 py-4"
       aria-label="Main Navigation"
     >
-      <div className="space-y-6">
+      <div className="space-y-5">
+        {/* K K Wagh Official College Branding */}
+        <div className="flex items-center gap-2.5 rounded-lg border border-border/80 bg-white p-2 shadow-2xs">
+          <img
+            src="/kkwagh-logo.png"
+            alt="K K Wagh Logo"
+            className="h-8 w-auto object-contain shrink-0"
+          />
+          <div className="min-w-0">
+            <p className="truncate text-xs font-bold leading-tight tracking-tight text-slate-900">
+              K. K. Wagh
+            </p>
+            <p className="truncate text-[10px] font-semibold text-primary uppercase tracking-wider">
+              Placement Cell
+            </p>
+          </div>
+        </div>
         {isLoading ? (
           <div className="space-y-2 p-2">
             <div className="h-4 w-28 animate-pulse rounded bg-slate-200 dark:bg-slate-800" />
@@ -256,10 +272,14 @@ function AppShell() {
           </button>
           <Link
             to={me?.isAdmin ? "/admin/dashboard" : "/dashboard"}
-            className="flex items-center gap-2.5 transition-opacity hover:opacity-90"
+            className="flex items-center gap-3 transition-opacity hover:opacity-90"
           >
-            <div className="flex size-8 items-center justify-center rounded-md bg-slate-900 text-white shadow-2xs dark:bg-primary dark:text-primary-foreground">
-              <GraduationCap className="size-4" />
+            <div className="flex h-10 w-auto items-center justify-center rounded-md border border-border/80 bg-white px-1.5 py-1 shadow-2xs shrink-0">
+              <img
+                src="/kkwagh-logo.png"
+                alt="K K Wagh Logo"
+                className="h-8 w-auto object-contain"
+              />
             </div>
             <div>
               <div className="flex items-center gap-2">
