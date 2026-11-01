@@ -10,7 +10,6 @@ import {
   BookOpen,
   Megaphone,
   ShieldCheck,
-  Briefcase,
   History,
   Users,
   FileCheck2,
@@ -81,7 +80,6 @@ const studentNav = [
 const adminNav = [
   { to: "/admin/dashboard", label: "Admin Dashboard", icon: ShieldCheck },
   { to: "/admin/companies", label: "Manage Companies", icon: Building2 },
-  { to: "/admin/roles", label: "Job Roles", icon: Briefcase },
   { to: "/admin/dsa", label: "DSA Topics", icon: Code2 },
   { to: "/admin/fundamentals", label: "CS Fundamentals", icon: GraduationCap },
   { to: "/admin/rounds", label: "Interview Rounds", icon: ListChecks },

@@ -788,5 +788,224 @@ describe("Full Placement Workflow: End-to-End Recruitment Data & Visibility", ()
       expect(formatPercentage(null)).toBe("Not specified");
       expect(formatPercentage(undefined)).toBe("Not specified");
     });
+
+    it("job roles integration under company: supports multiple roles linked by company_id without overwriting criteria", () => {
+      const companyId = "company-nexus-ai";
+      const criteriaState = [
+        {
+          id: "crit-1",
+          company_id: companyId,
+          year: 2026,
+          min_cgpa: 7.5,
+          is_current: true,
+        },
+      ];
+
+      let rolesState = [
+        {
+          id: "role-1",
+          company_id: companyId,
+          title: "Graduate Software Engineer",
+          hiring_year: 2026,
+          location: "Pune",
+          ctc_note: "10 LPA",
+        },
+      ];
+
+      // Admin adds a second role under the company
+      const newRole = {
+        id: "role-2",
+        company_id: companyId,
+        title: "Cloud Associate",
+        hiring_year: 2026,
+        location: "Bengaluru",
+        ctc_note: "12 LPA",
+      };
+      rolesState.push(newRole);
+
+      // Verify multiple roles exist under the company
+      expect(rolesState.filter((r) => r.company_id === companyId)).toHaveLength(2);
+
+      // Admin updates role-1
+      rolesState = rolesState.map((r) =>
+        r.id === "role-1" ? { ...r, title: "Lead SDE-1", ctc_note: "14 LPA" } : r,
+      );
+
+      // Verify criteria remains intact and unaltered
+      expect(criteriaState).toHaveLength(1);
+      expect(criteriaState[0]?.min_cgpa).toBe(7.5);
+
+      // Admin deletes role-2
+      rolesState = rolesState.filter((r) => r.id !== "role-2");
+      expect(rolesState.filter((r) => r.company_id === companyId)).toHaveLength(1);
+      expect(rolesState[0]?.title).toBe("Lead SDE-1");
+      expect(criteriaState[0]?.min_cgpa).toBe(7.5);
+    });
+
+    it("student interactive eligibility calculator: evaluates branch, CGPA, 10th/12th cutoffs, backlogs and attaches eligible roles", () => {
+      const companies = [
+        {
+          id: "comp-alpha",
+          name: "Alpha Corp",
+          is_published: true,
+          eligibility_criteria: [
+            {
+              id: "crit-a",
+              year: 2026,
+              branches: "CSE, IT, AIDS",
+              min_cgpa: 7.0,
+              min_10th_percentage: 60.0,
+              min_12th_percentage: 60.0,
+              max_backlogs: 0,
+              is_current: true,
+            },
+          ],
+          job_roles: [
+            {
+              id: "r1",
+              title: "Software Engineer",
+              hiring_year: 2026,
+              location: "Pune",
+              ctc_note: "12 LPA",
+            },
+            {
+              id: "r2",
+              title: "QA Analyst",
+              hiring_year: 2026,
+              location: "Pune",
+              ctc_note: "8 LPA",
+            },
+          ],
+        },
+        {
+          id: "comp-beta",
+          name: "Beta High-Bar",
+          is_published: true,
+          eligibility_criteria: [
+            {
+              id: "crit-b",
+              year: 2026,
+              branches: "CSE",
+              min_cgpa: 8.5,
+              min_10th_percentage: 75.0,
+              min_12th_percentage: 75.0,
+              max_backlogs: 0,
+              is_current: true,
+            },
+          ],
+          job_roles: [
+            {
+              id: "r3",
+              title: "R&D Scientist",
+              hiring_year: 2026,
+              location: "Bangalore",
+              ctc_note: "24 LPA",
+            },
+          ],
+        },
+        {
+          id: "comp-gamma-draft",
+          name: "Gamma Unpublished",
+          is_published: false,
+          eligibility_criteria: [
+            {
+              id: "crit-g",
+              year: 2026,
+              branches: "CSE, IT",
+              min_cgpa: 6.0,
+              is_current: true,
+            },
+          ],
+          job_roles: [
+            { id: "r4", title: "Intern", hiring_year: 2026, location: "Remote", ctc_note: "5 LPA" },
+          ],
+        },
+      ];
+
+      const evaluateEligibility = (candidate: {
+        branch: string;
+        cgpa: number;
+        tenth?: number;
+        twelfth?: number;
+        backlogs?: number;
+      }) => {
+        return companies
+          .filter((c) => c.is_published)
+          .filter((c) => {
+            const crit = c.eligibility_criteria[0]!;
+            const branches = crit.branches.split(",").map((b) => b.trim().toUpperCase());
+            if (!branches.includes(candidate.branch.toUpperCase())) return false;
+            if (candidate.cgpa < crit.min_cgpa) return false;
+            if (
+              crit.min_10th_percentage != null &&
+              (candidate.tenth == null || candidate.tenth < crit.min_10th_percentage)
+            )
+              return false;
+            if (
+              crit.min_12th_percentage != null &&
+              (candidate.twelfth == null || candidate.twelfth < crit.min_12th_percentage)
+            )
+              return false;
+            if (
+              crit.max_backlogs != null &&
+              candidate.backlogs != null &&
+              candidate.backlogs > crit.max_backlogs
+            )
+              return false;
+            return true;
+          })
+          .map((c) => ({
+            companyName: c.name,
+            roles: c.job_roles,
+          }));
+      };
+
+      // Candidate 1: CSE student with 7.5 CGPA, 70% 10th/12th, 0 backlogs -> Qualifies for Alpha Corp (2 roles), but NOT Beta (requires 8.5 CGPA)
+      const res1 = evaluateEligibility({
+        branch: "CSE",
+        cgpa: 7.5,
+        tenth: 70,
+        twelfth: 70,
+        backlogs: 0,
+      });
+      expect(res1).toHaveLength(1);
+      expect(res1[0]?.companyName).toBe("Alpha Corp");
+      expect(res1[0]?.roles).toHaveLength(2);
+
+      // Candidate 2: High performer (CSE, 9.0 CGPA, 85% 10th/12th, 0 backlogs) -> Qualifies for Alpha & Beta
+      const res2 = evaluateEligibility({
+        branch: "CSE",
+        cgpa: 9.0,
+        tenth: 85,
+        twelfth: 85,
+        backlogs: 0,
+      });
+      expect(res2).toHaveLength(2);
+
+      // Candidate 3: IT student with 9.0 CGPA -> Beta only accepts CSE, so only Alpha matches
+      const res3 = evaluateEligibility({
+        branch: "IT",
+        cgpa: 9.0,
+        tenth: 85,
+        twelfth: 85,
+        backlogs: 0,
+      });
+      expect(res3).toHaveLength(1);
+      expect(res3[0]?.companyName).toBe("Alpha Corp");
+
+      // Candidate 4: Has 1 active backlog -> Disqualified from Alpha Corp (0 backlogs policy)
+      const res4 = evaluateEligibility({
+        branch: "CSE",
+        cgpa: 7.5,
+        tenth: 70,
+        twelfth: 70,
+        backlogs: 1,
+      });
+      expect(res4).toHaveLength(0);
+
+      // Verify Unpublished draft companies (Gamma) are NEVER included
+      expect(res1.some((m) => m.companyName === "Gamma Unpublished")).toBe(false);
+      expect(res2.some((m) => m.companyName === "Gamma Unpublished")).toBe(false);
+    });
   });
 });

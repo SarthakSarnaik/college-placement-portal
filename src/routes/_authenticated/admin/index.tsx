@@ -22,6 +22,7 @@ import {
   Sparkles,
   Layers,
   ChevronRight,
+  MapPin,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
@@ -54,7 +55,7 @@ type UpcomingCompany = {
   eligibility_criteria: UpcomingCriteria[];
 };
 
-type RelationalCompany = { name: string };
+type RelationalCompany = { id?: string; name: string; sector?: string };
 
 type AnnouncementItem = {
   id: string;
@@ -75,6 +76,16 @@ type CriteriaActivityItem = {
   max_backlogs: number | null;
   branches: string;
   is_current: boolean;
+  created_at: string;
+  companies: RelationalCompany | RelationalCompany[] | null;
+};
+
+type RecentJobRoleItem = {
+  id: string;
+  title: string;
+  hiring_year: number;
+  location: string | null;
+  ctc_note: string | null;
   created_at: string;
   companies: RelationalCompany | RelationalCompany[] | null;
 };
@@ -148,18 +159,22 @@ export function AdminHome() {
         .order("created_at", { ascending: false })
         .limit(5);
 
-      // 3. Latest Placement Announcements (Latest 4)
-      const { data: latestAnnouncements } = await supabase
-        .from("announcements")
-        .select("id, title, body, published_at, category, is_priority, companies(name)")
-        .order("published_at", { ascending: false })
-        .limit(4);
+      // 3. Upcoming Recruitment Drives (Published Recruiters)
+      const { data: upcomingDrives } = await supabase
+        .from("companies")
+        .select(
+          "id, name, sector, headquarters, first_visit_year, dsa_difficulty, is_published, eligibility_criteria(year, min_cgpa, min_10th_percentage, min_12th_percentage, branches, is_current)",
+        )
+        .eq("is_published", true)
+        .order("name", { ascending: true })
+        .limit(5);
 
-      // 4. Pending Source Verifications (Latest 5 pending)
-      const { data: pendingSourcesList } = await supabase
-        .from("sources")
-        .select("id, title, source_type, author_name, created_at, status")
-        .eq("status", "pending")
+      // 4. Recently Added Job Roles (Latest 5)
+      const { data: recentRoles } = await supabase
+        .from("job_roles")
+        .select(
+          "id, title, hiring_year, location, ctc_note, created_at, companies(id, name, sector)",
+        )
         .order("created_at", { ascending: false })
         .limit(5);
 
@@ -172,20 +187,24 @@ export function AdminHome() {
         .order("created_at", { ascending: false })
         .limit(5);
 
-      // 6. Upcoming Recruitment Drives (Published Recruiters)
-      const { data: upcomingDrives } = await supabase
-        .from("companies")
-        .select(
-          "id, name, sector, headquarters, first_visit_year, dsa_difficulty, is_published, eligibility_criteria(year, min_cgpa, min_10th_percentage, min_12th_percentage, branches, is_current)",
-        )
-        .eq("is_published", true)
-        .order("name", { ascending: true })
+      // 6. Latest Placement Announcements (Latest 4)
+      const { data: latestAnnouncements } = await supabase
+        .from("announcements")
+        .select("id, title, body, published_at, category, is_priority, companies(name)")
+        .order("published_at", { ascending: false })
+        .limit(4);
+
+      // 7. Pending Source Verifications (Latest 5 pending)
+      const { data: pendingSourcesList } = await supabase
+        .from("sources")
+        .select("id, title, source_type, author_name, created_at, status")
+        .eq("status", "pending")
+        .order("created_at", { ascending: false })
         .limit(5);
 
-      // 7. Table counts for all database modules
+      // 8. Table counts for all database modules
       const moduleTables = [
-        { key: "companies", label: "Companies", to: "/admin/companies", icon: Building2 },
-        { key: "job_roles", label: "Job Roles", to: "/admin/roles", icon: Briefcase },
+        { key: "companies", label: "Companies & Roles", to: "/admin/companies", icon: Building2 },
         { key: "dsa_topics", label: "DSA Topics", to: "/admin/dsa", icon: Code2 },
         {
           key: "cs_fundamentals",
@@ -228,10 +247,11 @@ export function AdminHome() {
           pendingSources,
         },
         recentCompanies: recentCompanies || [],
+        upcomingDrives: (upcomingDrives as unknown as UpcomingCompany[]) || [],
+        recentRoles: (recentRoles as unknown as RecentJobRoleItem[]) || [],
+        recentCriteria: (recentCriteria as unknown as CriteriaActivityItem[]) || [],
         latestAnnouncements: (latestAnnouncements as unknown as AnnouncementItem[]) || [],
         pendingSourcesList: pendingSourcesList || [],
-        recentCriteria: (recentCriteria as unknown as CriteriaActivityItem[]) || [],
-        upcomingDrives: (upcomingDrives as unknown as UpcomingCompany[]) || [],
         moduleCounts: moduleTables.map((m, idx) => ({
           ...m,
           count: moduleCounts[idx]?.count ?? 0,
@@ -244,7 +264,7 @@ export function AdminHome() {
     <>
       <PageHeader
         title="Training & Placement Office Management"
-        description="Official administrative console for campus recruitment operations, company verification, academic cut-offs, student intelligence, and drive notices."
+        description="Official administrative console for campus recruitment operations, recruiter verification, multi-year academic cut-offs, student intelligence, and drive notices."
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <Button asChild size="sm" className="font-semibold text-xs rounded-md shadow-xs">
@@ -380,15 +400,17 @@ export function AdminHome() {
               </Link>
 
               <Link
-                to="/admin/roles"
+                to="/admin/companies"
                 className="group flex flex-col justify-between rounded-lg border border-border bg-muted/20 p-3 transition-colors hover:border-slate-800 hover:bg-muted/40"
               >
                 <div className="flex items-center gap-2">
                   <Briefcase className="size-4 text-primary" />
-                  <span className="font-semibold text-foreground text-xs">Manage Job Roles</span>
+                  <span className="font-semibold text-foreground text-xs">
+                    Manage Companies & Roles
+                  </span>
                 </div>
                 <span className="mt-2 text-[10px] text-muted-foreground flex items-center justify-between">
-                  Packages & titles
+                  Integrated view
                   <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" />
                 </span>
               </Link>
@@ -428,7 +450,7 @@ export function AdminHome() {
                 <div className="flex items-center gap-2">
                   <GraduationCap className="size-4 text-primary" />
                   <span className="font-semibold text-foreground text-xs">
-                    Eligibility Criteria
+                    Eligibility Cut-offs
                   </span>
                 </div>
                 <span className="mt-2 text-[10px] text-primary font-medium flex items-center justify-between">
@@ -440,7 +462,7 @@ export function AdminHome() {
           </section>
 
           {/* ================================================================= */}
-          {/* 3. CORE OPERATIONAL SECTIONS GRID                                */}
+          {/* 3. ROW 1: RECENT COMPANIES & UPCOMING DRIVES                     */}
           {/* ================================================================= */}
           <div className="grid gap-6 lg:grid-cols-2">
             {/* SECTION A: RECENT COMPANY REGISTRATIONS */}
@@ -597,24 +619,178 @@ export function AdminHome() {
           </div>
 
           {/* ================================================================= */}
-          {/* 4. ANNOUNCEMENTS, SOURCE AUDIT & RECENT CRITERIA ACTIVITY        */}
+          {/* 4. ROW 2: RECENTLY ADDED JOB ROLES & RECENT CRITERIA UPDATES     */}
           {/* ================================================================= */}
-          <div className="grid gap-6 lg:grid-cols-3">
-            {/* COLUMN 1: LATEST PLACEMENT ANNOUNCEMENTS */}
+          <div className="grid gap-6 lg:grid-cols-2">
+            {/* SECTION C: RECENTLY ADDED JOB ROLES */}
             <div className="rounded-xl border border-border bg-card p-5 shadow-xs flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between pb-3 border-b border-border">
                   <div className="flex items-center gap-2">
-                    <Megaphone className="size-4 text-primary" />
-                    <h2 className="text-xs font-bold uppercase tracking-wider text-foreground">
-                      Placement Notices
+                    <Briefcase className="size-4 text-indigo-600" />
+                    <h2 className="text-sm font-bold text-foreground">Recently Added Job Roles</h2>
+                  </div>
+                  <Button
+                    asChild
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 text-xs font-semibold px-2"
+                  >
+                    <Link to="/admin/companies">
+                      View In Companies <ChevronRight className="size-3 ml-0.5" />
+                    </Link>
+                  </Button>
+                </div>
+
+                <div className="mt-3 divide-y divide-border/60">
+                  {data.recentRoles.length === 0 ? (
+                    <p className="text-xs text-muted-foreground py-4 text-center">
+                      No job roles recorded yet.
+                    </p>
+                  ) : (
+                    data.recentRoles.map((role) => {
+                      const compName = getCompanyName(role.companies) || "Recruiter";
+
+                      return (
+                        <div
+                          key={role.id}
+                          className="py-2.5 flex items-center justify-between gap-3"
+                        >
+                          <div className="space-y-0.5 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className="font-semibold text-foreground text-xs truncate">
+                                {role.title}
+                              </span>
+                              <span className="font-mono rounded bg-muted/60 px-1.5 py-0.2 text-[10px] text-muted-foreground">
+                                {role.hiring_year} Batch
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-muted-foreground truncate">
+                              <strong className="text-primary font-medium">{compName}</strong>
+                              {role.location && ` · ${role.location}`}
+                              {role.ctc_note && ` · ${role.ctc_note}`}
+                            </p>
+                          </div>
+
+                          <span className="text-[10px] font-mono text-muted-foreground shrink-0">
+                            {formatDate(role.created_at)}
+                          </span>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-border mt-3">
+                <Link
+                  to="/admin/companies"
+                  className="text-xs font-semibold text-primary hover:underline flex items-center gap-1"
+                >
+                  Manage all recruiter roles inside Manage Companies{" "}
+                  <ArrowRight className="size-3" />
+                </Link>
+              </div>
+            </div>
+
+            {/* SECTION D: RECENT CRITERIA UPDATES */}
+            <div className="rounded-xl border border-border bg-card p-5 shadow-xs flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between pb-3 border-b border-border">
+                  <div className="flex items-center gap-2">
+                    <Clock className="size-4 text-primary" />
+                    <h2 className="text-sm font-bold text-foreground">
+                      Recent Eligibility Criteria Updates
                     </h2>
                   </div>
                   <Button
                     asChild
                     variant="ghost"
                     size="sm"
-                    className="h-6 text-[11px] font-semibold px-1.5"
+                    className="h-7 text-xs font-semibold px-2"
+                  >
+                    <Link to="/admin/history">Audit Trail</Link>
+                  </Button>
+                </div>
+
+                <div className="mt-3 divide-y divide-border/60">
+                  {data.recentCriteria.length === 0 ? (
+                    <p className="text-xs text-muted-foreground py-4 text-center">
+                      No criteria activity recorded yet.
+                    </p>
+                  ) : (
+                    data.recentCriteria.map((crit) => {
+                      const compName = getCompanyName(crit.companies) || "Recruiter";
+
+                      return (
+                        <div
+                          key={crit.id}
+                          className="py-2.5 flex items-center justify-between gap-3"
+                        >
+                          <div className="space-y-0.5 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className="font-semibold text-foreground text-xs truncate">
+                                {compName}
+                              </span>
+                              <span className="font-mono rounded bg-muted/60 px-1.5 py-0.2 text-[10px] text-muted-foreground">
+                                {crit.year} Drive
+                              </span>
+                              {crit.is_current && (
+                                <span className="rounded bg-emerald-500/10 px-1.5 py-0.2 text-[9px] font-semibold text-emerald-700 dark:text-emerald-400">
+                                  Active
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-[11px] font-mono text-muted-foreground truncate">
+                              Min CGPA: {crit.min_cgpa ?? "N/A"} · 10th:{" "}
+                              {crit.min_10th_percentage != null
+                                ? `${crit.min_10th_percentage}%`
+                                : "N/A"}{" "}
+                              · 12th:{" "}
+                              {crit.min_12th_percentage != null
+                                ? `${crit.min_12th_percentage}%`
+                                : "N/A"}
+                            </div>
+                          </div>
+
+                          <span className="text-[10px] font-mono text-muted-foreground shrink-0">
+                            {formatDate(crit.created_at)}
+                          </span>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-border mt-3">
+                <Link
+                  to="/admin/companies"
+                  className="text-xs font-semibold text-primary hover:underline flex items-center gap-1"
+                >
+                  Edit company criteria cut-offs <ArrowRight className="size-3" />
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* ================================================================= */}
+          {/* 5. ROW 3: ANNOUNCEMENTS & PENDING VERIFICATION QUEUE             */}
+          {/* ================================================================= */}
+          <div className="grid gap-6 lg:grid-cols-2">
+            {/* COLUMN 1: LATEST PLACEMENT ANNOUNCEMENTS */}
+            <div className="rounded-xl border border-border bg-card p-5 shadow-xs flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between pb-3 border-b border-border">
+                  <div className="flex items-center gap-2">
+                    <Megaphone className="size-4 text-primary" />
+                    <h2 className="text-sm font-bold text-foreground">Latest Placement Notices</h2>
+                  </div>
+                  <Button
+                    asChild
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 text-xs font-semibold px-2"
                   >
                     <Link to="/admin/announcements">All Notices</Link>
                   </Button>
@@ -671,83 +847,14 @@ export function AdminHome() {
               </div>
             </div>
 
-            {/* COLUMN 2: RECENT CRITERIA UPDATES / ADMIN ACTIVITY */}
-            <div className="rounded-xl border border-border bg-card p-5 shadow-xs flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between pb-3 border-b border-border">
-                  <div className="flex items-center gap-2">
-                    <Clock className="size-4 text-primary" />
-                    <h2 className="text-xs font-bold uppercase tracking-wider text-foreground">
-                      Recent Criteria Activity
-                    </h2>
-                  </div>
-                  <Button
-                    asChild
-                    variant="ghost"
-                    size="sm"
-                    className="h-6 text-[11px] font-semibold px-1.5"
-                  >
-                    <Link to="/admin/history">Audit Trail</Link>
-                  </Button>
-                </div>
-
-                <div className="mt-3 space-y-2.5">
-                  {data.recentCriteria.length === 0 ? (
-                    <p className="text-xs text-muted-foreground py-3 text-center">
-                      No criteria activity recorded yet.
-                    </p>
-                  ) : (
-                    data.recentCriteria.map((crit) => {
-                      const companyName = getCompanyName(crit.companies) || "Company";
-
-                      return (
-                        <div
-                          key={crit.id}
-                          className="rounded-lg border border-border/70 bg-muted/20 p-2.5 space-y-1"
-                        >
-                          <div className="flex items-center justify-between gap-2 text-[10px]">
-                            <span className="font-semibold text-foreground">{companyName}</span>
-                            <span className="font-mono rounded-[3px] border border-border bg-card px-1 py-0.2">
-                              {crit.year} Drive
-                            </span>
-                          </div>
-                          <div className="text-[11px] font-mono text-muted-foreground">
-                            CGPA: {crit.min_cgpa ?? "N/A"} · 10th:{" "}
-                            {crit.min_10th_percentage != null
-                              ? `${crit.min_10th_percentage}%`
-                              : "N/A"}{" "}
-                            · 12th:{" "}
-                            {crit.min_12th_percentage != null
-                              ? `${crit.min_12th_percentage}%`
-                              : "N/A"}
-                          </div>
-                          <div className="text-[10px] text-muted-foreground truncate">
-                            Branches: {crit.branches}
-                          </div>
-                        </div>
-                      );
-                    })
-                  )}
-                </div>
-              </div>
-
-              <div className="pt-3 border-t border-border mt-3">
-                <Button asChild variant="outline" size="sm" className="w-full text-xs rounded-md">
-                  <Link to="/admin/companies">
-                    <Building2 className="size-3 mr-1" /> Manage in Companies
-                  </Link>
-                </Button>
-              </div>
-            </div>
-
-            {/* COLUMN 3: PENDING SOURCE VERIFICATION QUEUE */}
+            {/* COLUMN 2: PENDING SOURCE VERIFICATION QUEUE */}
             <div className="rounded-xl border border-border bg-card p-5 shadow-xs flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between pb-3 border-b border-border">
                   <div className="flex items-center gap-2">
                     <FileCheck2 className="size-4 text-amber-600" />
-                    <h2 className="text-xs font-bold uppercase tracking-wider text-foreground">
-                      Pending Verification
+                    <h2 className="text-sm font-bold text-foreground">
+                      Pending Source Verifications
                     </h2>
                   </div>
                   <span className="font-mono text-xs font-bold text-amber-700 dark:text-amber-400">
@@ -803,7 +910,7 @@ export function AdminHome() {
           </div>
 
           {/* ================================================================= */}
-          {/* 5. DATABASE REPOSITORY MODULES GRID                              */}
+          {/* 6. DATABASE REPOSITORY MODULES GRID                              */}
           {/* ================================================================= */}
           <section className="space-y-4">
             <div className="flex items-center justify-between">
@@ -821,7 +928,7 @@ export function AdminHome() {
               </div>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {data.moduleCounts.map((m) => (
                 <Link
                   key={m.to}
