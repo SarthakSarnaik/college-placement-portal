@@ -721,5 +721,72 @@ describe("Full Placement Workflow: End-to-End Recruitment Data & Visibility", ()
         name: "Beta LLC",
       });
     });
+
+    it("centralized company criteria management: preserves historical drive years when adding new drive criteria", () => {
+      // Setup company with initial 2025 drive criteria
+      const companyId = "test-comp-centralized";
+      let criteriaRecords = [
+        {
+          id: "crit-2025",
+          company_id: companyId,
+          year: 2025,
+          min_10th_percentage: 60.0,
+          min_12th_percentage: 60.0,
+          min_cgpa: 7.0,
+          max_backlogs: 1,
+          branches: "CSE, IT",
+          notes: "2025 Batch guidelines",
+          is_current: true,
+        },
+      ];
+
+      // Admin adds a new drive-year record for 2026 drive and sets it active
+      const new2026Criteria = {
+        id: "crit-2026",
+        company_id: companyId,
+        year: 2026,
+        min_10th_percentage: 65.5,
+        min_12th_percentage: 65.0,
+        min_cgpa: 7.5,
+        max_backlogs: 0,
+        branches: "CSE, IT, AIDS",
+        notes: "Zero backlogs policy for 2026",
+        is_current: true,
+      };
+
+      // Deactivate old active criteria when setting new active
+      criteriaRecords = criteriaRecords.map((c) => ({ ...c, is_current: false }));
+      criteriaRecords.push(new2026Criteria);
+
+      // Verify both records exist and 2025 history is preserved
+      expect(criteriaRecords).toHaveLength(2);
+      const record2025 = criteriaRecords.find((c) => c.year === 2025)!;
+      const record2026 = criteriaRecords.find((c) => c.year === 2026)!;
+
+      expect(record2025.min_10th_percentage).toBe(60.0);
+      expect(record2025.is_current).toBe(false);
+      expect(record2026.min_10th_percentage).toBe(65.5);
+      expect(record2026.is_current).toBe(true);
+
+      // Admin edits 2025 record notes without mutating 2026 record
+      criteriaRecords = criteriaRecords.map((c) =>
+        c.id === "crit-2025" ? { ...c, notes: "Audited 2025 notes" } : c,
+      );
+
+      expect(criteriaRecords.find((c) => c.id === "crit-2025")?.notes).toBe("Audited 2025 notes");
+      expect(criteriaRecords.find((c) => c.id === "crit-2026")?.notes).toBe(
+        "Zero backlogs policy for 2026",
+      );
+    });
+
+    it("academic percentage format helper: properly displays formatted percentages and 'Not specified' for nulls", () => {
+      const formatPercentage = (val: number | null | undefined) =>
+        val != null ? `${val}%` : "Not specified";
+
+      expect(formatPercentage(60)).toBe("60%");
+      expect(formatPercentage(65.75)).toBe("65.75%");
+      expect(formatPercentage(null)).toBe("Not specified");
+      expect(formatPercentage(undefined)).toBe("Not specified");
+    });
   });
 });

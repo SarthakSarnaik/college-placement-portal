@@ -1,75 +1,2054 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ResourceManager, difficultyOptions } from "@/components/resource-manager";
-import { DemoTag, VerifyTag } from "@/components/labels";
+import { useState, useMemo, type FormEvent } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  Building2,
+  Plus,
+  Search,
+  ExternalLink,
+  Pencil,
+  Trash2,
+  CheckCircle2,
+  Clock,
+  Layers,
+  ChevronRight,
+  Filter,
+  Check,
+  X,
+  AlertCircle,
+  HelpCircle,
+  History,
+  ShieldCheck,
+  FileText,
+  Calendar,
+  GraduationCap,
+} from "lucide-react";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
+import { PageHeader, DemoTag, VerifyTag, DifficultyTag } from "@/components/labels";
+import { LoadingState, ErrorState, EmptyState } from "@/components/states";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+type Company = Database["public"]["Tables"]["companies"]["Row"];
+type EligibilityCriteria = Database["public"]["Tables"]["eligibility_criteria"]["Row"];
+type CompanyWithCriteria = Company & {
+  eligibility_criteria: EligibilityCriteria[];
+};
+
+type CriteriaFormState = {
+  id?: string;
+  year: number | "";
+  min_10th_percentage: number | "";
+  min_12th_percentage: number | "";
+  min_cgpa: number | "";
+  max_backlogs: number | "";
+  branches: string;
+  notes: string;
+  is_current: boolean;
+};
+
+const initialCriteriaForm: CriteriaFormState = {
+  year: new Date().getFullYear(),
+  min_10th_percentage: "",
+  min_12th_percentage: "",
+  min_cgpa: "",
+  max_backlogs: "",
+  branches: "Computer Engineering, Information Technology, AI & Data Science",
+  notes: "",
+  is_current: true,
+};
+
+type CompanyFormState = {
+  id?: string;
+  name: string;
+  sector: string;
+  headquarters: string;
+  website: string;
+  first_visit_year: number | "";
+  overview: string;
+  dsa_difficulty: Database["public"]["Enums"]["difficulty"];
+  verification_status: "unverified" | "pending" | "verified";
+  is_published: boolean;
+  is_demo: boolean;
+  // Optional initial criteria on creation
+  include_criteria?: boolean;
+  criteria?: CriteriaFormState;
+};
+
+const initialCompanyForm: CompanyFormState = {
+  name: "",
+  sector: "",
+  headquarters: "",
+  website: "",
+  first_visit_year: new Date().getFullYear(),
+  overview: "",
+  dsa_difficulty: "medium",
+  verification_status: "unverified",
+  is_published: false,
+  is_demo: false,
+  include_criteria: false,
+  criteria: { ...initialCriteriaForm },
+};
 
 export const Route = createFileRoute("/_authenticated/admin/companies")({
   head: () => ({ meta: [{ title: "Manage Companies — Placement Portal" }] }),
-  component: () => (
-    <ResourceManager
-      title="Manage Companies"
-      description="Only published companies are visible to students. Untick “Demo data” and set status to Verified only after checking official sources."
-      table="companies"
-      order={{ column: "name", ascending: true }}
-      searchKeys={["name", "sector"]}
-      defaults={{
-        is_demo: false,
-        is_published: false,
-        dsa_difficulty: "medium",
-        verification_status: "unverified",
-      }}
-      fields={[
-        { name: "name", label: "Name", required: true },
-        { name: "sector", label: "Sector" },
-        { name: "headquarters", label: "Headquarters", hideInTable: true },
-        { name: "overview", label: "Overview", type: "textarea", hideInTable: true },
-        { name: "website", label: "Website", hideInTable: true },
-        {
-          name: "first_visit_year",
-          label: "First campus visit",
-          type: "number",
-          hideInTable: true,
-        },
-        {
-          name: "dsa_difficulty",
-          label: "DSA difficulty",
-          type: "select",
-          options: difficultyOptions,
-        },
-        {
-          name: "verification_status",
-          label: "Verification",
-          type: "select",
-          options: [
-            { value: "unverified", label: "Unverified" },
-            { value: "pending", label: "Pending" },
-            { value: "verified", label: "Verified" },
-          ],
-          render: (r) => <VerifyTag status={r.verification_status} />,
-        },
-        {
-          name: "is_demo",
-          label: "Demo data",
-          type: "boolean",
-          hint: "Mark as demo data if this is a sample profile rather than an active campus drive recruiter.",
-          render: (r) => (r.is_demo ? <DemoTag /> : "No"),
-        },
-        {
-          name: "is_published",
-          label: "Published (Visible to Students)",
-          type: "boolean",
-          hint: "When checked, this recruiter and all associated interview rounds, DSA topics, CS fundamentals, and questions become visible to students in the directory and dashboard. When unchecked, it is kept as an unpublished draft hidden from students.",
-          render: (r) =>
-            r.is_published ? (
-              <span className="inline-flex items-center rounded-[4px] border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">
-                Published
-              </span>
-            ) : (
-              <span className="inline-flex items-center rounded-[4px] border border-amber-500/20 bg-amber-500/10 px-2 py-0.5 text-[11px] font-medium text-amber-700 dark:text-amber-400">
-                Draft (Hidden)
-              </span>
-            ),
-        },
-      ]}
-    />
-  ),
+  component: ManageCompaniesPage,
 });
+
+export function ManageCompaniesPage() {
+  const qc = useQueryClient();
+
+  // Dialog & Selection States
+  const [isAddCompanyOpen, setIsAddCompanyOpen] = useState(false);
+  const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(null);
+  const [companyModalTab, setCompanyModalTab] = useState<"details" | "criteria">("details");
+  const [companyToDelete, setCompanyToDelete] = useState<Company | null>(null);
+
+  // Criteria Sub-Dialog States
+  const [isCriteriaDialogOpen, setIsCriteriaDialogOpen] = useState(false);
+  const [criteriaForm, setCriteriaForm] = useState<CriteriaFormState>(initialCriteriaForm);
+  const [criteriaToDelete, setCriteriaToDelete] = useState<EligibilityCriteria | null>(null);
+  const [criteriaErrors, setCriteriaErrors] = useState<Record<string, string>>({});
+
+  // Company Edit Form State
+  const [companyEditForm, setCompanyEditForm] = useState<CompanyFormState>(initialCompanyForm);
+  const [companyFormErrors, setCompanyFormErrors] = useState<Record<string, string>>({});
+
+  // Add Company Form State
+  const [newCompanyForm, setNewCompanyForm] = useState<CompanyFormState>(initialCompanyForm);
+  const [newCompanyErrors, setNewCompanyErrors] = useState<Record<string, string>>({});
+
+  // Filtering & Search
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"all" | "published" | "draft" | "demo">("all");
+
+  // Query: Companies with nested Eligibility Criteria
+  const {
+    data: companies,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["admin", "companies_with_criteria"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("companies")
+        .select("*, eligibility_criteria(*)")
+        .order("name", { ascending: true });
+      if (error) throw error;
+
+      // Ensure criteria arrays are sorted by year desc
+      return (data as CompanyWithCriteria[]).map((c) => ({
+        ...c,
+        eligibility_criteria: [...(c.eligibility_criteria || [])].sort((a, b) => b.year - a.year),
+      }));
+    },
+  });
+
+  const selectedCompany = useMemo(() => {
+    if (!selectedCompanyId || !companies) return null;
+    return companies.find((c) => c.id === selectedCompanyId) ?? null;
+  }, [selectedCompanyId, companies]);
+
+  // Sync selected company into edit form
+  const openCompanyManager = (
+    company: CompanyWithCriteria,
+    defaultTab: "details" | "criteria" = "details",
+  ) => {
+    setSelectedCompanyId(company.id);
+    setCompanyModalTab(defaultTab);
+    setCompanyEditForm({
+      id: company.id,
+      name: company.name,
+      sector: company.sector || "",
+      headquarters: company.headquarters || "",
+      website: company.website || "",
+      first_visit_year: company.first_visit_year ?? "",
+      overview: company.overview || "",
+      dsa_difficulty: company.dsa_difficulty,
+      verification_status: company.verification_status as "unverified" | "pending" | "verified",
+      is_published: company.is_published,
+      is_demo: company.is_demo,
+    });
+    setCompanyFormErrors({});
+  };
+
+  // Invalidate query caches
+  const invalidateAll = () => {
+    qc.invalidateQueries({ queryKey: ["admin", "companies_with_criteria"] });
+    qc.invalidateQueries({ queryKey: ["admin", "companies"] });
+    qc.invalidateQueries({ queryKey: ["admin", "eligibility_criteria"] });
+    qc.invalidateQueries({ queryKey: ["companies"] });
+    qc.invalidateQueries({ queryKey: ["company"] });
+    qc.invalidateQueries({ queryKey: ["admin", "dashboard_counts"] });
+    qc.invalidateQueries({ queryKey: ["admin", "dashboard_data"] });
+  };
+
+  // Mutation: Save Company Details (Update)
+  const updateCompanyMutation = useMutation({
+    mutationFn: async (form: CompanyFormState) => {
+      if (!form.id) throw new Error("Missing company ID");
+      const { error } = await supabase
+        .from("companies")
+        .update({
+          name: form.name.trim(),
+          sector: form.sector.trim(),
+          headquarters: form.headquarters.trim(),
+          website: form.website.trim() || null,
+          first_visit_year: form.first_visit_year === "" ? null : Number(form.first_visit_year),
+          overview: form.overview.trim(),
+          dsa_difficulty: form.dsa_difficulty,
+          verification_status: form.verification_status,
+          is_published: form.is_published,
+          is_demo: form.is_demo,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", form.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Company information updated successfully");
+      invalidateAll();
+    },
+    onError: (err: Error) => {
+      toast.error(err.message || "Failed to update company");
+    },
+  });
+
+  // Mutation: Create Company (+ optional criteria)
+  const createCompanyMutation = useMutation({
+    mutationFn: async (form: CompanyFormState) => {
+      const { data: newComp, error: compErr } = await supabase
+        .from("companies")
+        .insert({
+          name: form.name.trim(),
+          sector: form.sector.trim(),
+          headquarters: form.headquarters.trim(),
+          website: form.website.trim() || null,
+          first_visit_year: form.first_visit_year === "" ? null : Number(form.first_visit_year),
+          overview: form.overview.trim(),
+          dsa_difficulty: form.dsa_difficulty,
+          verification_status: form.verification_status,
+          is_published: form.is_published,
+          is_demo: form.is_demo,
+        })
+        .select()
+        .single();
+
+      if (compErr) throw compErr;
+
+      // If initial criteria is provided, insert it
+      if (form.include_criteria && form.criteria && form.criteria.year !== "") {
+        const crit = form.criteria;
+        const { error: critErr } = await supabase.from("eligibility_criteria").insert({
+          company_id: newComp.id,
+          year: Number(crit.year),
+          min_10th_percentage:
+            crit.min_10th_percentage === "" ? null : Number(crit.min_10th_percentage),
+          min_12th_percentage:
+            crit.min_12th_percentage === "" ? null : Number(crit.min_12th_percentage),
+          min_cgpa: crit.min_cgpa === "" ? null : Number(crit.min_cgpa),
+          max_backlogs: crit.max_backlogs === "" ? null : Number(crit.max_backlogs),
+          branches: crit.branches.trim(),
+          notes: crit.notes.trim() || null,
+          is_current: crit.is_current,
+        });
+        if (critErr) {
+          toast.warning("Company created, but initial eligibility criteria failed to save");
+        }
+      }
+
+      return newComp;
+    },
+    onSuccess: (data) => {
+      toast.success(`Recruiter "${data.name}" added successfully`);
+      setIsAddCompanyOpen(false);
+      setNewCompanyForm(initialCompanyForm);
+      setNewCompanyErrors({});
+      invalidateAll();
+    },
+    onError: (err: Error) => {
+      toast.error(err.message || "Failed to add company");
+    },
+  });
+
+  // Mutation: Quick Toggle Company Publication
+  const togglePublishMutation = useMutation({
+    mutationFn: async ({ id, is_published }: { id: string; is_published: boolean }) => {
+      const { error } = await supabase
+        .from("companies")
+        .update({ is_published, updated_at: new Date().toISOString() })
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: (_, vars) => {
+      toast.success(
+        vars.is_published
+          ? "Company published (visible to students)"
+          : "Company unpublished (hidden from students)",
+      );
+      invalidateAll();
+    },
+    onError: (err: Error) => {
+      toast.error(err.message || "Failed to toggle status");
+    },
+  });
+
+  // Mutation: Delete Company
+  const deleteCompanyMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("companies").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Company and all associated records deleted");
+      setCompanyToDelete(null);
+      if (selectedCompanyId === companyToDelete?.id) {
+        setSelectedCompanyId(null);
+      }
+      invalidateAll();
+    },
+    onError: (err: Error) => {
+      toast.error(err.message || "Failed to delete company");
+    },
+  });
+
+  // Mutation: Save / Update Eligibility Criteria Record
+  const saveCriteriaMutation = useMutation({
+    mutationFn: async ({
+      companyId,
+      criteria,
+    }: {
+      companyId: string;
+      criteria: CriteriaFormState;
+    }) => {
+      // If marking as current, unset other current criteria for this company first
+      if (criteria.is_current) {
+        await supabase
+          .from("eligibility_criteria")
+          .update({ is_current: false })
+          .eq("company_id", companyId);
+      }
+
+      const payload = {
+        company_id: companyId,
+        year: Number(criteria.year),
+        min_10th_percentage:
+          criteria.min_10th_percentage === "" ? null : Number(criteria.min_10th_percentage),
+        min_12th_percentage:
+          criteria.min_12th_percentage === "" ? null : Number(criteria.min_12th_percentage),
+        min_cgpa: criteria.min_cgpa === "" ? null : Number(criteria.min_cgpa),
+        max_backlogs: criteria.max_backlogs === "" ? null : Number(criteria.max_backlogs),
+        branches: criteria.branches.trim(),
+        notes: criteria.notes.trim() || null,
+        is_current: criteria.is_current,
+      };
+
+      if (criteria.id) {
+        // Edit existing record - preserves other years
+        const { error } = await supabase
+          .from("eligibility_criteria")
+          .update(payload)
+          .eq("id", criteria.id);
+        if (error) throw error;
+      } else {
+        // Insert new drive year record - preserves all previous historical records
+        const { error } = await supabase.from("eligibility_criteria").insert(payload);
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      toast.success("Eligibility criteria version saved successfully");
+      setIsCriteriaDialogOpen(false);
+      setCriteriaForm(initialCriteriaForm);
+      invalidateAll();
+    },
+    onError: (err: Error) => {
+      toast.error(err.message || "Failed to save eligibility criteria");
+    },
+  });
+
+  // Mutation: Set Active Drive Criteria
+  const setActiveCriteriaMutation = useMutation({
+    mutationFn: async ({ companyId, criteriaId }: { companyId: string; criteriaId: string }) => {
+      // Unset all for this company
+      const { error: err1 } = await supabase
+        .from("eligibility_criteria")
+        .update({ is_current: false })
+        .eq("company_id", companyId);
+      if (err1) throw err1;
+
+      // Set this one
+      const { error: err2 } = await supabase
+        .from("eligibility_criteria")
+        .update({ is_current: true })
+        .eq("id", criteriaId);
+      if (err2) throw err2;
+    },
+    onSuccess: () => {
+      toast.success("Active drive criteria updated");
+      invalidateAll();
+    },
+    onError: (err: Error) => {
+      toast.error(err.message || "Failed to update active criteria");
+    },
+  });
+
+  // Mutation: Delete Criteria Record
+  const deleteCriteriaMutation = useMutation({
+    mutationFn: async (criteriaId: string) => {
+      const { error } = await supabase.from("eligibility_criteria").delete().eq("id", criteriaId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Eligibility criteria version deleted");
+      setCriteriaToDelete(null);
+      invalidateAll();
+    },
+    onError: (err: Error) => {
+      toast.error(err.message || "Failed to delete criteria");
+    },
+  });
+
+  // Criteria validation helper
+  const validateCriteria = (form: CriteriaFormState): boolean => {
+    const errors: Record<string, string> = {};
+
+    if (form.year === "" || isNaN(Number(form.year)) || Number(form.year) < 2000) {
+      errors.year = "Valid recruitment drive year is required (e.g. 2026)";
+    }
+
+    if (form.min_10th_percentage !== "") {
+      const val = Number(form.min_10th_percentage);
+      if (isNaN(val) || val < 0 || val > 100) {
+        errors.min_10th_percentage = "10th percentage must be between 0.00% and 100.00%";
+      }
+    }
+
+    if (form.min_12th_percentage !== "") {
+      const val = Number(form.min_12th_percentage);
+      if (isNaN(val) || val < 0 || val > 100) {
+        errors.min_12th_percentage = "12th percentage must be between 0.00% and 100.00%";
+      }
+    }
+
+    if (form.min_cgpa !== "") {
+      const val = Number(form.min_cgpa);
+      if (isNaN(val) || val < 0 || val > 10) {
+        errors.min_cgpa = "CGPA must be between 0.00 and 10.00";
+      }
+    }
+
+    if (form.max_backlogs !== "") {
+      const val = Number(form.max_backlogs);
+      if (isNaN(val) || val < 0 || !Number.isInteger(val)) {
+        errors.max_backlogs = "Max backlogs must be 0 or a positive whole number";
+      }
+    }
+
+    if (!form.branches.trim()) {
+      errors.branches = "Eligible branches are required (e.g. Computer, IT, E&TC)";
+    }
+
+    setCriteriaErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  // Open criteria sub-dialog to add a new drive year
+  const handleAddNewCriteria = () => {
+    if (!selectedCompany) return;
+    const existingYears = selectedCompany.eligibility_criteria.map((c) => c.year);
+    const nextYear =
+      existingYears.length > 0 ? Math.max(...existingYears) + 1 : new Date().getFullYear();
+
+    setCriteriaForm({
+      ...initialCriteriaForm,
+      year: nextYear,
+      is_current: existingYears.length === 0, // default current if first record
+    });
+    setCriteriaErrors({});
+    setIsCriteriaDialogOpen(true);
+  };
+
+  // Open criteria sub-dialog to edit an existing drive year record
+  const handleEditCriteria = (crit: EligibilityCriteria) => {
+    setCriteriaForm({
+      id: crit.id,
+      year: crit.year,
+      min_10th_percentage: crit.min_10th_percentage ?? "",
+      min_12th_percentage: crit.min_12th_percentage ?? "",
+      min_cgpa: crit.min_cgpa ?? "",
+      max_backlogs: crit.max_backlogs ?? "",
+      branches: crit.branches,
+      notes: crit.notes ?? "",
+      is_current: crit.is_current,
+    });
+    setCriteriaErrors({});
+    setIsCriteriaDialogOpen(true);
+  };
+
+  const handleSaveCriteriaSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    if (!selectedCompanyId) return;
+    if (!validateCriteria(criteriaForm)) return;
+
+    saveCriteriaMutation.mutate({
+      companyId: selectedCompanyId,
+      criteria: criteriaForm,
+    });
+  };
+
+  // Filtered companies list
+  const filteredCompanies = useMemo(() => {
+    if (!companies) return [];
+    return companies.filter((c) => {
+      // Status filter
+      if (statusFilter === "published" && !c.is_published) return false;
+      if (statusFilter === "draft" && c.is_published) return false;
+      if (statusFilter === "demo" && !c.is_demo) return false;
+
+      // Search term
+      if (searchTerm.trim()) {
+        const term = searchTerm.toLowerCase();
+        const matchesName = c.name.toLowerCase().includes(term);
+        const matchesSector = (c.sector || "").toLowerCase().includes(term);
+        const matchesHq = (c.headquarters || "").toLowerCase().includes(term);
+        const matchesBranches = (c.eligibility_criteria || []).some((crit) =>
+          crit.branches.toLowerCase().includes(term),
+        );
+        return matchesName || matchesSector || matchesHq || matchesBranches;
+      }
+      return true;
+    });
+  }, [companies, statusFilter, searchTerm]);
+
+  return (
+    <>
+      <PageHeader
+        title="Manage Companies"
+        description="Centralized recruiter management console. Configure company profiles, publish visibility, and manage multi-year academic eligibility cut-offs directly per recruiter."
+        actions={
+          <Button
+            onClick={() => {
+              setNewCompanyForm(initialCompanyForm);
+              setNewCompanyErrors({});
+              setIsAddCompanyOpen(true);
+            }}
+            size="sm"
+            className="font-semibold text-xs shadow-xs rounded-md"
+          >
+            <Plus className="size-3.5 mr-1.5" /> Add Company
+          </Button>
+        }
+      />
+
+      {/* Toolbar: Search, Filters & Counters */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
+        <div className="relative flex-1 max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+          <Input
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search company, sector, location, branch…"
+            className="pl-9 text-xs h-9 rounded-md bg-card"
+          />
+          {searchTerm && (
+            <button
+              onClick={() => setSearchTerm("")}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground text-xs"
+            >
+              <X className="size-3.5" />
+            </button>
+          )}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="text-[11px] font-semibold text-muted-foreground mr-1">Filter:</span>
+          {[
+            { id: "all", label: "All Companies" },
+            { id: "published", label: "Published" },
+            { id: "draft", label: "Drafts (Hidden)" },
+            { id: "demo", label: "Demo Data" },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setStatusFilter(tab.id as typeof statusFilter)}
+              className={`rounded-md px-2.5 py-1 text-xs font-medium border transition-colors ${
+                statusFilter === tab.id
+                  ? "border-slate-800 bg-slate-900 text-white dark:border-slate-700 dark:bg-slate-800"
+                  : "border-border bg-card text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+          <span className="ml-2 rounded-md border border-border bg-muted/40 px-2 py-0.5 font-mono text-[11px] font-semibold text-muted-foreground">
+            {filteredCompanies.length} records
+          </span>
+        </div>
+      </div>
+
+      {/* Main Content Area */}
+      {isLoading ? (
+        <LoadingState label="Loading recruiter profiles and eligibility records…" />
+      ) : error ? (
+        <ErrorState error={error} onRetry={() => refetch()} />
+      ) : filteredCompanies.length === 0 ? (
+        <EmptyState
+          title="No companies found"
+          description={
+            searchTerm || statusFilter !== "all"
+              ? "No companies match your current search or filter criteria. Try resetting filters."
+              : "Get started by registering your first campus recruitment partner company."
+          }
+          action={
+            <Button
+              onClick={() => {
+                setSearchTerm("");
+                setStatusFilter("all");
+              }}
+              variant="outline"
+              size="sm"
+              className="text-xs rounded-md"
+            >
+              Reset Filters
+            </Button>
+          }
+        />
+      ) : (
+        <div className="overflow-hidden rounded-xl border border-border bg-card shadow-xs">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead className="border-b border-border bg-slate-50/80 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground dark:bg-slate-900/60">
+                <tr>
+                  <th className="px-4 py-3.5">Company & Industry</th>
+                  <th className="px-4 py-3.5">Location & Visit</th>
+                  <th className="px-4 py-3.5">Status & Verification</th>
+                  <th className="px-4 py-3.5">Active Academic Criteria</th>
+                  <th className="px-4 py-3.5 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border/60">
+                {filteredCompanies.map((c) => {
+                  const criteriaList = c.eligibility_criteria || [];
+                  const activeCriteria =
+                    criteriaList.find((crit) => crit.is_current) ?? criteriaList[0];
+                  const hasMultipleYears = criteriaList.length > 1;
+
+                  return (
+                    <tr
+                      key={c.id}
+                      className="group transition-colors hover:bg-muted/30 dark:hover:bg-muted/15"
+                    >
+                      {/* Recruiter & Industry */}
+                      <td className="px-4 py-3.5">
+                        <div className="flex items-start gap-3">
+                          <div className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-border bg-slate-100 font-mono text-xs font-bold text-slate-800 dark:bg-slate-800 dark:text-slate-100">
+                            {c.name.slice(0, 2).toUpperCase()}
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-1.5">
+                              <span className="font-semibold text-foreground text-sm">
+                                {c.name}
+                              </span>
+                              {c.website && (
+                                <a
+                                  href={c.website}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-muted-foreground hover:text-primary transition-colors"
+                                  title={c.website}
+                                >
+                                  <ExternalLink className="size-3" />
+                                </a>
+                              )}
+                            </div>
+                            <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                              {c.sector && (
+                                <span className="rounded-[4px] border border-border bg-muted/40 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                                  {c.sector}
+                                </span>
+                              )}
+                              <DifficultyTag level={c.dsa_difficulty} />
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* Location & Recruiting Year */}
+                      <td className="px-4 py-3.5 text-muted-foreground">
+                        <div className="space-y-0.5">
+                          <div className="font-medium text-foreground">
+                            {c.headquarters || "Location not specified"}
+                          </div>
+                          <div className="text-[11px]">
+                            {c.first_visit_year
+                              ? `Campus Visit: ${c.first_visit_year}`
+                              : "First visit not set"}
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* Status & Verification */}
+                      <td className="px-4 py-3.5">
+                        <div className="flex flex-col gap-1 items-start">
+                          <span
+                            className={`inline-flex items-center rounded-[4px] border px-2 py-0.5 text-[10px] font-semibold ${
+                              c.is_published
+                                ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+                                : "border-amber-500/25 bg-amber-500/10 text-amber-700 dark:text-amber-400"
+                            }`}
+                          >
+                            {c.is_published ? "Published (Visible)" : "Draft (Hidden)"}
+                          </span>
+                          <div className="flex items-center gap-1">
+                            <VerifyTag status={c.verification_status} />
+                            {c.is_demo && <DemoTag />}
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* Academic Eligibility Criteria Section */}
+                      <td className="px-4 py-3.5">
+                        {activeCriteria ? (
+                          <div className="space-y-1.5 max-w-sm">
+                            <div className="flex items-center gap-1.5">
+                              <span className="rounded-[4px] border border-slate-700/20 bg-slate-900/5 px-1.5 py-0.5 font-mono text-[10px] font-bold text-slate-900 dark:bg-slate-800 dark:text-slate-100">
+                                {activeCriteria.year} Drive
+                              </span>
+                              {activeCriteria.is_current ? (
+                                <span className="text-[10px] font-semibold text-emerald-700 dark:text-emerald-400 flex items-center gap-0.5">
+                                  <CheckCircle2 className="size-3" /> Active
+                                </span>
+                              ) : (
+                                <span className="text-[10px] text-muted-foreground">Latest</span>
+                              )}
+                              {hasMultipleYears && (
+                                <span className="rounded-[4px] border border-border bg-muted/50 px-1 py-0.2 text-[9px] font-medium text-muted-foreground">
+                                  +{criteriaList.length - 1} more years
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-[11px] font-mono text-muted-foreground flex flex-wrap gap-x-2.5 gap-y-0.5">
+                              <span>
+                                10th:{" "}
+                                <strong className="text-foreground font-semibold">
+                                  {activeCriteria.min_10th_percentage != null
+                                    ? `${activeCriteria.min_10th_percentage}%`
+                                    : "Not specified"}
+                                </strong>
+                              </span>
+                              <span>
+                                12th:{" "}
+                                <strong className="text-foreground font-semibold">
+                                  {activeCriteria.min_12th_percentage != null
+                                    ? `${activeCriteria.min_12th_percentage}%`
+                                    : "Not specified"}
+                                </strong>
+                              </span>
+                              <span>
+                                CGPA:{" "}
+                                <strong className="text-foreground font-semibold">
+                                  {activeCriteria.min_cgpa != null
+                                    ? activeCriteria.min_cgpa
+                                    : "Not specified"}
+                                </strong>
+                              </span>
+                              <span>
+                                Backlogs:{" "}
+                                <strong className="text-foreground font-semibold">
+                                  {activeCriteria.max_backlogs != null
+                                    ? activeCriteria.max_backlogs === 0
+                                      ? "0 permitted"
+                                      : `${activeCriteria.max_backlogs} max`
+                                    : "Not specified"}
+                                </strong>
+                              </span>
+                            </div>
+                            <div
+                              className="text-[10px] text-muted-foreground truncate max-w-xs"
+                              title={activeCriteria.branches}
+                            >
+                              Branches: {activeCriteria.branches}
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-1.5 text-muted-foreground">
+                            <AlertCircle className="size-3.5 text-amber-500" />
+                            <span className="text-[11px]">No criteria configured</span>
+                            <button
+                              onClick={() => openCompanyManager(c, "criteria")}
+                              className="text-[10px] font-semibold text-primary underline underline-offset-2 ml-1"
+                            >
+                              Add cut-offs
+                            </button>
+                          </div>
+                        )}
+                      </td>
+
+                      {/* Row Actions */}
+                      <td className="px-4 py-3.5 text-right">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => openCompanyManager(c, "details")}
+                            className="h-8 text-xs font-semibold rounded-md border-border"
+                          >
+                            <Pencil className="size-3 mr-1" /> Manage Details & Criteria
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() =>
+                              togglePublishMutation.mutate({
+                                id: c.id,
+                                is_published: !c.is_published,
+                              })
+                            }
+                            className={`h-8 text-xs font-medium rounded-md px-2 ${
+                              c.is_published
+                                ? "text-amber-700 hover:text-amber-800 hover:bg-amber-500/10 dark:text-amber-400"
+                                : "text-emerald-700 hover:text-emerald-800 hover:bg-emerald-500/10 dark:text-emerald-400"
+                            }`}
+                            title={c.is_published ? "Unpublish company" : "Publish to students"}
+                          >
+                            {c.is_published ? "Unpublish" : "Publish"}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setCompanyToDelete(c)}
+                            className="h-8 text-xs font-medium text-destructive hover:bg-destructive/10 hover:text-destructive rounded-md px-2"
+                            title="Delete company"
+                          >
+                            <Trash2 className="size-3.5" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* DIALOG 1: ADD NEW COMPANY (+ OPTIONAL CRITERIA)                            */}
+      {/* ========================================================================= */}
+      <Dialog open={isAddCompanyOpen} onOpenChange={setIsAddCompanyOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl">
+          <DialogHeader>
+            <DialogTitle className="text-base font-bold text-foreground">
+              Add New Campus Recruiter
+            </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">
+              Create a new company record. You can also configure its academic eligibility cut-offs
+              for the upcoming drive immediately.
+            </DialogDescription>
+          </DialogHeader>
+
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              const errors: Record<string, string> = {};
+              if (!newCompanyForm.name.trim()) {
+                errors.name = "Company name is required";
+              }
+              if (
+                newCompanyForm.include_criteria &&
+                newCompanyForm.criteria &&
+                !validateCriteria(newCompanyForm.criteria)
+              ) {
+                return;
+              }
+              if (Object.keys(errors).length > 0) {
+                setNewCompanyErrors(errors);
+                return;
+              }
+              createCompanyMutation.mutate(newCompanyForm);
+            }}
+            className="space-y-5 py-2 text-xs"
+          >
+            {/* Company Basic Information */}
+            <div className="space-y-4">
+              <h3 className="font-semibold text-xs text-foreground uppercase tracking-wider pb-1 border-b border-border">
+                Company Information
+              </h3>
+
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div>
+                  <Label htmlFor="new-name" className="text-xs font-medium">
+                    Company Name <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="new-name"
+                    value={newCompanyForm.name}
+                    onChange={(e) =>
+                      setNewCompanyForm((prev) => ({ ...prev, name: e.target.value }))
+                    }
+                    placeholder="e.g. Google India, TCS, Infosys"
+                    className="mt-1 h-8 text-xs rounded-md"
+                  />
+                  {newCompanyErrors.name && (
+                    <p className="mt-1 text-[11px] text-destructive">{newCompanyErrors.name}</p>
+                  )}
+                </div>
+
+                <div>
+                  <Label htmlFor="new-sector" className="text-xs font-medium">
+                    Industry / Sector
+                  </Label>
+                  <Input
+                    id="new-sector"
+                    value={newCompanyForm.sector}
+                    onChange={(e) =>
+                      setNewCompanyForm((prev) => ({ ...prev, sector: e.target.value }))
+                    }
+                    placeholder="e.g. IT Services, Product & Cloud, FinTech"
+                    className="mt-1 h-8 text-xs rounded-md"
+                  />
+                </div>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-3">
+                <div>
+                  <Label htmlFor="new-hq" className="text-xs font-medium">
+                    Location / Headquarters
+                  </Label>
+                  <Input
+                    id="new-hq"
+                    value={newCompanyForm.headquarters}
+                    onChange={(e) =>
+                      setNewCompanyForm((prev) => ({ ...prev, headquarters: e.target.value }))
+                    }
+                    placeholder="e.g. Pune / Bengaluru"
+                    className="mt-1 h-8 text-xs rounded-md"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="new-website" className="text-xs font-medium">
+                    Website URL
+                  </Label>
+                  <Input
+                    id="new-website"
+                    type="url"
+                    value={newCompanyForm.website}
+                    onChange={(e) =>
+                      setNewCompanyForm((prev) => ({ ...prev, website: e.target.value }))
+                    }
+                    placeholder="https://..."
+                    className="mt-1 h-8 text-xs rounded-md"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="new-visit-year" className="text-xs font-medium">
+                    Recruiting Year (Campus Visit)
+                  </Label>
+                  <Input
+                    id="new-visit-year"
+                    type="number"
+                    min="2000"
+                    max="2100"
+                    value={newCompanyForm.first_visit_year}
+                    onChange={(e) =>
+                      setNewCompanyForm((prev) => ({
+                        ...prev,
+                        first_visit_year: e.target.value === "" ? "" : Number(e.target.value),
+                      }))
+                    }
+                    placeholder="e.g. 2026"
+                    className="mt-1 h-8 text-xs rounded-md"
+                  />
+                </div>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div>
+                  <Label htmlFor="new-diff" className="text-xs font-medium">
+                    DSA Interview Difficulty
+                  </Label>
+                  <select
+                    id="new-diff"
+                    value={newCompanyForm.dsa_difficulty}
+                    onChange={(e) =>
+                      setNewCompanyForm((prev) => ({
+                        ...prev,
+                        dsa_difficulty: e.target.value as Database["public"]["Enums"]["difficulty"],
+                      }))
+                    }
+                    className="mt-1 h-8 w-full rounded-md border border-input bg-background px-3 text-xs"
+                  >
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                  </select>
+                </div>
+
+                <div>
+                  <Label htmlFor="new-verify" className="text-xs font-medium">
+                    Verification Status
+                  </Label>
+                  <select
+                    id="new-verify"
+                    value={newCompanyForm.verification_status}
+                    onChange={(e) =>
+                      setNewCompanyForm((prev) => ({
+                        ...prev,
+                        verification_status: e.target.value as
+                          "unverified" | "pending" | "verified",
+                      }))
+                    }
+                    className="mt-1 h-8 w-full rounded-md border border-input bg-background px-3 text-xs"
+                  >
+                    <option value="unverified">Unverified</option>
+                    <option value="pending">Pending Review</option>
+                    <option value="verified">Verified</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="new-overview" className="text-xs font-medium">
+                  Overview & Company Profile
+                </Label>
+                <Textarea
+                  id="new-overview"
+                  rows={2}
+                  value={newCompanyForm.overview}
+                  onChange={(e) =>
+                    setNewCompanyForm((prev) => ({ ...prev, overview: e.target.value }))
+                  }
+                  placeholder="Summary of company hiring focus, technologies, or hiring eligibility guidelines…"
+                  className="mt-1 text-xs rounded-md"
+                />
+              </div>
+
+              <div className="flex flex-wrap items-center gap-6 pt-1">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={newCompanyForm.is_published}
+                    onChange={(e) =>
+                      setNewCompanyForm((prev) => ({ ...prev, is_published: e.target.checked }))
+                    }
+                    className="rounded border-input text-primary focus:ring-primary size-4"
+                  />
+                  <span className="text-xs font-medium text-foreground">
+                    Publish immediately (Visible to students)
+                  </span>
+                </label>
+
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={newCompanyForm.is_demo}
+                    onChange={(e) =>
+                      setNewCompanyForm((prev) => ({ ...prev, is_demo: e.target.checked }))
+                    }
+                    className="rounded border-input text-primary focus:ring-primary size-4"
+                  />
+                  <span className="text-xs text-muted-foreground">Mark as demo data</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Optional Initial Academic Eligibility Criteria */}
+            <div className="rounded-lg border border-border bg-muted/20 p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-semibold text-xs text-foreground flex items-center gap-1.5">
+                    <GraduationCap className="size-4 text-primary" /> Initial Drive Eligibility
+                    Criteria
+                  </h4>
+                  <p className="text-[11px] text-muted-foreground">
+                    Optionally define academic cut-offs for this company's upcoming drive now.
+                  </p>
+                </div>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={newCompanyForm.include_criteria}
+                    onChange={(e) =>
+                      setNewCompanyForm((prev) => ({
+                        ...prev,
+                        include_criteria: e.target.checked,
+                      }))
+                    }
+                    className="rounded border-input text-primary focus:ring-primary size-4"
+                  />
+                  <span className="text-xs font-semibold text-foreground">Configure now</span>
+                </label>
+              </div>
+
+              {newCompanyForm.include_criteria && newCompanyForm.criteria && (
+                <div className="grid gap-3 pt-2 border-t border-border/60">
+                  <div className="grid gap-3 sm:grid-cols-3">
+                    <div>
+                      <Label className="text-[11px] font-medium">Drive Year *</Label>
+                      <Input
+                        type="number"
+                        value={newCompanyForm.criteria.year}
+                        onChange={(e) =>
+                          setNewCompanyForm((prev) => ({
+                            ...prev,
+                            criteria: {
+                              ...prev.criteria!,
+                              year: e.target.value === "" ? "" : Number(e.target.value),
+                            },
+                          }))
+                        }
+                        className="mt-1 h-8 text-xs rounded-md"
+                      />
+                      {criteriaErrors.year && (
+                        <p className="mt-0.5 text-[10px] text-destructive">{criteriaErrors.year}</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <Label className="text-[11px] font-medium">Min. 10th % (0-100)</Label>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        max="100"
+                        placeholder="Leave blank if not specified"
+                        value={newCompanyForm.criteria.min_10th_percentage}
+                        onChange={(e) =>
+                          setNewCompanyForm((prev) => ({
+                            ...prev,
+                            criteria: {
+                              ...prev.criteria!,
+                              min_10th_percentage:
+                                e.target.value === "" ? "" : Number(e.target.value),
+                            },
+                          }))
+                        }
+                        className="mt-1 h-8 text-xs rounded-md"
+                      />
+                      {criteriaErrors.min_10th_percentage && (
+                        <p className="mt-0.5 text-[10px] text-destructive">
+                          {criteriaErrors.min_10th_percentage}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <Label className="text-[11px] font-medium">Min. 12th % (0-100)</Label>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        max="100"
+                        placeholder="Leave blank if not specified"
+                        value={newCompanyForm.criteria.min_12th_percentage}
+                        onChange={(e) =>
+                          setNewCompanyForm((prev) => ({
+                            ...prev,
+                            criteria: {
+                              ...prev.criteria!,
+                              min_12th_percentage:
+                                e.target.value === "" ? "" : Number(e.target.value),
+                            },
+                          }))
+                        }
+                        className="mt-1 h-8 text-xs rounded-md"
+                      />
+                      {criteriaErrors.min_12th_percentage && (
+                        <p className="mt-0.5 text-[10px] text-destructive">
+                          {criteriaErrors.min_12th_percentage}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div>
+                      <Label className="text-[11px] font-medium">Min. CGPA (0.00 - 10.00)</Label>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        max="10"
+                        placeholder="e.g. 7.50"
+                        value={newCompanyForm.criteria.min_cgpa}
+                        onChange={(e) =>
+                          setNewCompanyForm((prev) => ({
+                            ...prev,
+                            criteria: {
+                              ...prev.criteria!,
+                              min_cgpa: e.target.value === "" ? "" : Number(e.target.value),
+                            },
+                          }))
+                        }
+                        className="mt-1 h-8 text-xs rounded-md"
+                      />
+                      {criteriaErrors.min_cgpa && (
+                        <p className="mt-0.5 text-[10px] text-destructive">
+                          {criteriaErrors.min_cgpa}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <Label className="text-[11px] font-medium">Max Backlogs</Label>
+                      <Input
+                        type="number"
+                        min="0"
+                        placeholder="0 for zero backlog policy"
+                        value={newCompanyForm.criteria.max_backlogs}
+                        onChange={(e) =>
+                          setNewCompanyForm((prev) => ({
+                            ...prev,
+                            criteria: {
+                              ...prev.criteria!,
+                              max_backlogs: e.target.value === "" ? "" : Number(e.target.value),
+                            },
+                          }))
+                        }
+                        className="mt-1 h-8 text-xs rounded-md"
+                      />
+                      {criteriaErrors.max_backlogs && (
+                        <p className="mt-0.5 text-[10px] text-destructive">
+                          {criteriaErrors.max_backlogs}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label className="text-[11px] font-medium">Eligible Branches *</Label>
+                    <Input
+                      value={newCompanyForm.criteria.branches}
+                      onChange={(e) =>
+                        setNewCompanyForm((prev) => ({
+                          ...prev,
+                          criteria: {
+                            ...prev.criteria!,
+                            branches: e.target.value,
+                          },
+                        }))
+                      }
+                      placeholder="e.g. Computer Engineering, IT, AI&DS"
+                      className="mt-1 h-8 text-xs rounded-md"
+                    />
+                    {criteriaErrors.branches && (
+                      <p className="mt-0.5 text-[10px] text-destructive">
+                        {criteriaErrors.branches}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <DialogFooter className="gap-2 sm:gap-0 pt-3 border-t border-border">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setIsAddCompanyOpen(false)}
+                className="text-xs rounded-md"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                size="sm"
+                disabled={createCompanyMutation.isPending}
+                className="text-xs font-semibold rounded-md"
+              >
+                {createCompanyMutation.isPending ? "Adding…" : "Add Recruiter"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* ========================================================================= */}
+      {/* DIALOG 2: MANAGE COMPANY & INTEGRATED ELIGIBILITY CRITERIA                 */}
+      {/* ========================================================================= */}
+      <Dialog
+        open={!!selectedCompanyId}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedCompanyId(null);
+          }
+        }}
+      >
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto rounded-xl">
+          {selectedCompany && (
+            <>
+              <DialogHeader>
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <DialogTitle className="text-base font-bold text-foreground flex items-center gap-2">
+                      <Building2 className="size-4 text-primary" />
+                      <span>{selectedCompany.name}</span>
+                    </DialogTitle>
+                    <DialogDescription className="text-xs text-muted-foreground mt-0.5">
+                      {selectedCompany.sector || "Uncategorized"} ·{" "}
+                      {selectedCompany.headquarters || "No location recorded"}
+                    </DialogDescription>
+                  </div>
+
+                  <div className="flex items-center gap-1.5">
+                    <span
+                      className={`inline-flex items-center rounded-[4px] border px-2 py-0.5 text-[10px] font-semibold ${
+                        selectedCompany.is_published
+                          ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+                          : "border-amber-500/25 bg-amber-500/10 text-amber-700 dark:text-amber-400"
+                      }`}
+                    >
+                      {selectedCompany.is_published ? "Published" : "Draft"}
+                    </span>
+                    <VerifyTag status={selectedCompany.verification_status} />
+                  </div>
+                </div>
+              </DialogHeader>
+
+              {/* Tabs: Details vs Academic Criteria */}
+              <Tabs
+                value={companyModalTab}
+                onValueChange={(v) => setCompanyModalTab(v as typeof companyModalTab)}
+                className="mt-2"
+              >
+                <TabsList className="grid w-full grid-cols-2 rounded-lg bg-muted p-1">
+                  <TabsTrigger
+                    value="details"
+                    className="text-xs font-medium data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:font-semibold rounded-md"
+                  >
+                    <FileText className="size-3.5 mr-1.5" /> Company Information
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="criteria"
+                    className="text-xs font-medium data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:font-semibold rounded-md"
+                  >
+                    <GraduationCap className="size-3.5 mr-1.5" /> Academic Eligibility Criteria (
+                    {selectedCompany.eligibility_criteria.length})
+                  </TabsTrigger>
+                </TabsList>
+
+                {/* TAB 1: COMPANY INFORMATION FORM */}
+                <TabsContent value="details" className="pt-4 space-y-4">
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      const errors: Record<string, string> = {};
+                      if (!companyEditForm.name.trim()) errors.name = "Company name is required";
+                      if (Object.keys(errors).length > 0) {
+                        setCompanyFormErrors(errors);
+                        return;
+                      }
+                      updateCompanyMutation.mutate(companyEditForm);
+                    }}
+                    className="space-y-4 text-xs"
+                  >
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <div>
+                        <Label htmlFor="edit-name" className="text-xs font-medium">
+                          Company Name <span className="text-destructive">*</span>
+                        </Label>
+                        <Input
+                          id="edit-name"
+                          value={companyEditForm.name}
+                          onChange={(e) =>
+                            setCompanyEditForm((prev) => ({ ...prev, name: e.target.value }))
+                          }
+                          className="mt-1 h-8 text-xs rounded-md"
+                        />
+                        {companyFormErrors.name && (
+                          <p className="mt-1 text-[11px] text-destructive">
+                            {companyFormErrors.name}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <Label htmlFor="edit-sector" className="text-xs font-medium">
+                          Industry / Sector
+                        </Label>
+                        <Input
+                          id="edit-sector"
+                          value={companyEditForm.sector}
+                          onChange={(e) =>
+                            setCompanyEditForm((prev) => ({ ...prev, sector: e.target.value }))
+                          }
+                          className="mt-1 h-8 text-xs rounded-md"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid gap-3 sm:grid-cols-3">
+                      <div>
+                        <Label htmlFor="edit-hq" className="text-xs font-medium">
+                          Location / Headquarters
+                        </Label>
+                        <Input
+                          id="edit-hq"
+                          value={companyEditForm.headquarters}
+                          onChange={(e) =>
+                            setCompanyEditForm((prev) => ({
+                              ...prev,
+                              headquarters: e.target.value,
+                            }))
+                          }
+                          className="mt-1 h-8 text-xs rounded-md"
+                        />
+                      </div>
+
+                      <div>
+                        <Label htmlFor="edit-website" className="text-xs font-medium">
+                          Website
+                        </Label>
+                        <Input
+                          id="edit-website"
+                          type="url"
+                          value={companyEditForm.website}
+                          onChange={(e) =>
+                            setCompanyEditForm((prev) => ({ ...prev, website: e.target.value }))
+                          }
+                          className="mt-1 h-8 text-xs rounded-md"
+                        />
+                      </div>
+
+                      <div>
+                        <Label htmlFor="edit-year" className="text-xs font-medium">
+                          Recruiting Year (First Visit)
+                        </Label>
+                        <Input
+                          id="edit-year"
+                          type="number"
+                          value={companyEditForm.first_visit_year}
+                          onChange={(e) =>
+                            setCompanyEditForm((prev) => ({
+                              ...prev,
+                              first_visit_year: e.target.value === "" ? "" : Number(e.target.value),
+                            }))
+                          }
+                          className="mt-1 h-8 text-xs rounded-md"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <div>
+                        <Label htmlFor="edit-diff" className="text-xs font-medium">
+                          DSA Difficulty
+                        </Label>
+                        <select
+                          id="edit-diff"
+                          value={companyEditForm.dsa_difficulty}
+                          onChange={(e) =>
+                            setCompanyEditForm((prev) => ({
+                              ...prev,
+                              dsa_difficulty: e.target
+                                .value as Database["public"]["Enums"]["difficulty"],
+                            }))
+                          }
+                          className="mt-1 h-8 w-full rounded-md border border-input bg-background px-3 text-xs"
+                        >
+                          <option value="easy">Easy</option>
+                          <option value="medium">Medium</option>
+                          <option value="hard">Hard</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <Label htmlFor="edit-verify" className="text-xs font-medium">
+                          Verification Status
+                        </Label>
+                        <select
+                          id="edit-verify"
+                          value={companyEditForm.verification_status}
+                          onChange={(e) =>
+                            setCompanyEditForm((prev) => ({
+                              ...prev,
+                              verification_status: e.target.value as
+                                "unverified" | "pending" | "verified",
+                            }))
+                          }
+                          className="mt-1 h-8 w-full rounded-md border border-input bg-background px-3 text-xs"
+                        >
+                          <option value="unverified">Unverified</option>
+                          <option value="pending">Pending Review</option>
+                          <option value="verified">Verified</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="edit-overview" className="text-xs font-medium">
+                        Overview & Hiring Description
+                      </Label>
+                      <Textarea
+                        id="edit-overview"
+                        rows={3}
+                        value={companyEditForm.overview}
+                        onChange={(e) =>
+                          setCompanyEditForm((prev) => ({ ...prev, overview: e.target.value }))
+                        }
+                        className="mt-1 text-xs rounded-md"
+                      />
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-6 pt-1">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={companyEditForm.is_published}
+                          onChange={(e) =>
+                            setCompanyEditForm((prev) => ({
+                              ...prev,
+                              is_published: e.target.checked,
+                            }))
+                          }
+                          className="rounded border-input text-primary focus:ring-primary size-4"
+                        />
+                        <span className="text-xs font-medium text-foreground">
+                          Published (Visible to students in directory & dashboard)
+                        </span>
+                      </label>
+
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={companyEditForm.is_demo}
+                          onChange={(e) =>
+                            setCompanyEditForm((prev) => ({
+                              ...prev,
+                              is_demo: e.target.checked,
+                            }))
+                          }
+                          className="rounded border-input text-primary focus:ring-primary size-4"
+                        />
+                        <span className="text-xs text-muted-foreground">Demo Profile</span>
+                      </label>
+                    </div>
+
+                    <div className="flex justify-end pt-3 border-t border-border">
+                      <Button
+                        type="submit"
+                        size="sm"
+                        disabled={updateCompanyMutation.isPending}
+                        className="text-xs font-semibold rounded-md shadow-xs"
+                      >
+                        {updateCompanyMutation.isPending
+                          ? "Saving Changes…"
+                          : "Save Company Profile"}
+                      </Button>
+                    </div>
+                  </form>
+                </TabsContent>
+
+                {/* TAB 2: INTEGRATED ACADEMIC ELIGIBILITY CRITERIA */}
+                <TabsContent value="criteria" className="pt-4 space-y-4">
+                  {/* Notice banner */}
+                  <div className="rounded-lg border border-border bg-muted/30 p-3 text-xs flex items-start gap-2.5">
+                    <ShieldCheck className="size-4 text-primary shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-semibold text-foreground">
+                        Independent Multi-Year Eligibility Management
+                      </p>
+                      <p className="text-muted-foreground text-[11px] leading-relaxed">
+                        Every drive year maintains isolated eligibility cut-offs. Adding a new drive
+                        year preserves all previous historical records for campus audit trails.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Header & Add Drive Button */}
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-semibold text-xs text-foreground uppercase tracking-wider">
+                        Configured Drive Years
+                      </h4>
+                      <p className="text-[11px] text-muted-foreground">
+                        {selectedCompany.eligibility_criteria.length} criteria version(s) on record
+                      </p>
+                    </div>
+
+                    <Button
+                      onClick={handleAddNewCriteria}
+                      size="sm"
+                      className="text-xs font-semibold rounded-md shadow-xs"
+                    >
+                      <Plus className="size-3.5 mr-1.5" /> Add Drive Year Criteria
+                    </Button>
+                  </div>
+
+                  {/* Criteria Records List */}
+                  {selectedCompany.eligibility_criteria.length === 0 ? (
+                    <div className="rounded-lg border border-dashed border-border p-6 text-center">
+                      <AlertCircle className="size-6 text-muted-foreground mx-auto mb-2 opacity-60" />
+                      <p className="text-xs font-semibold text-foreground">
+                        No criteria configured for this company yet
+                      </p>
+                      <p className="text-[11px] text-muted-foreground mt-0.5">
+                        Add cut-offs for the active campus placement drive.
+                      </p>
+                      <Button
+                        onClick={handleAddNewCriteria}
+                        size="sm"
+                        variant="outline"
+                        className="mt-3 text-xs rounded-md"
+                      >
+                        <Plus className="size-3.5 mr-1.5" /> Add First Drive Year
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {selectedCompany.eligibility_criteria.map((crit) => (
+                        <div
+                          key={crit.id}
+                          className={`rounded-lg border p-4 transition-all ${
+                            crit.is_current
+                              ? "border-emerald-500/40 bg-emerald-500/5 dark:bg-emerald-500/5"
+                              : "border-border bg-card"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between gap-3 pb-3 border-b border-border/50">
+                            <div className="flex items-center gap-2">
+                              <span className="font-mono text-sm font-bold text-foreground">
+                                {crit.year} Drive
+                              </span>
+                              {crit.is_current ? (
+                                <span className="inline-flex items-center gap-1 rounded-[4px] border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:text-emerald-400">
+                                  <Check className="size-3" /> Active Drive Criteria
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center rounded-[4px] border border-border bg-muted/50 px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+                                  Historical Version
+                                </span>
+                              )}
+                            </div>
+
+                            <div className="flex items-center gap-1.5">
+                              {!crit.is_current && (
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() =>
+                                    setActiveCriteriaMutation.mutate({
+                                      companyId: selectedCompany.id,
+                                      criteriaId: crit.id,
+                                    })
+                                  }
+                                  disabled={setActiveCriteriaMutation.isPending}
+                                  className="h-7 text-[11px] font-medium rounded-md px-2"
+                                >
+                                  Set as Active
+                                </Button>
+                              )}
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleEditCriteria(crit)}
+                                className="h-7 text-[11px] font-medium rounded-md px-2"
+                              >
+                                <Pencil className="size-3 mr-1" /> Edit
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setCriteriaToDelete(crit)}
+                                className="h-7 text-[11px] font-medium text-destructive hover:bg-destructive/10 rounded-md px-2"
+                              >
+                                <Trash2 className="size-3" />
+                              </Button>
+                            </div>
+                          </div>
+
+                          {/* Criteria Metrics Grid */}
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 py-3 text-xs">
+                            <div className="rounded-md border border-border/50 bg-background/50 p-2">
+                              <span className="text-[10px] font-medium text-muted-foreground block">
+                                Min. 10th Percentage
+                              </span>
+                              <span className="font-mono text-xs font-semibold text-foreground mt-0.5 block">
+                                {crit.min_10th_percentage != null
+                                  ? `${crit.min_10th_percentage}%`
+                                  : "Not specified"}
+                              </span>
+                            </div>
+
+                            <div className="rounded-md border border-border/50 bg-background/50 p-2">
+                              <span className="text-[10px] font-medium text-muted-foreground block">
+                                Min. 12th Percentage
+                              </span>
+                              <span className="font-mono text-xs font-semibold text-foreground mt-0.5 block">
+                                {crit.min_12th_percentage != null
+                                  ? `${crit.min_12th_percentage}%`
+                                  : "Not specified"}
+                              </span>
+                            </div>
+
+                            <div className="rounded-md border border-border/50 bg-background/50 p-2">
+                              <span className="text-[10px] font-medium text-muted-foreground block">
+                                Min. CGPA Cut-off
+                              </span>
+                              <span className="font-mono text-xs font-semibold text-foreground mt-0.5 block">
+                                {crit.min_cgpa != null ? crit.min_cgpa : "Not specified"}
+                              </span>
+                            </div>
+
+                            <div className="rounded-md border border-border/50 bg-background/50 p-2">
+                              <span className="text-[10px] font-medium text-muted-foreground block">
+                                Max Active Backlogs
+                              </span>
+                              <span className="font-mono text-xs font-semibold text-foreground mt-0.5 block">
+                                {crit.max_backlogs != null
+                                  ? crit.max_backlogs === 0
+                                    ? "0 (Zero backlogs)"
+                                    : `${crit.max_backlogs} allowed`
+                                  : "Not specified"}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Branches & Notes */}
+                          <div className="space-y-1.5 pt-1 text-xs">
+                            <div className="text-[11px]">
+                              <span className="font-semibold text-foreground">
+                                Eligible Branches:
+                              </span>{" "}
+                              <span className="text-muted-foreground">{crit.branches}</span>
+                            </div>
+                            {crit.notes && (
+                              <div className="text-[11px] rounded-md bg-muted/40 p-2 text-muted-foreground">
+                                <span className="font-semibold text-foreground">
+                                  Conditions / Notes:
+                                </span>{" "}
+                                {crit.notes}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </TabsContent>
+              </Tabs>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* ========================================================================= */}
+      {/* DIALOG 3: ADD / EDIT ELIGIBILITY CRITERIA SUB-MODAL                        */}
+      {/* ========================================================================= */}
+      <Dialog open={isCriteriaDialogOpen} onOpenChange={setIsCriteriaDialogOpen}>
+        <DialogContent className="max-w-lg rounded-xl">
+          <DialogHeader>
+            <DialogTitle className="text-base font-bold text-foreground">
+              {criteriaForm.id ? "Edit Drive-Year Criteria" : "Add New Drive-Year Criteria"}
+            </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">
+              {criteriaForm.id
+                ? "Updating this record modifies only this specific drive year. Other years remain untouched."
+                : "Creates a new independent drive-year record. All prior drive years are preserved."}
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleSaveCriteriaSubmit} className="space-y-3.5 py-1 text-xs">
+            <div className="grid gap-3 sm:grid-cols-3">
+              <div>
+                <Label htmlFor="sub-year" className="text-xs font-medium">
+                  Drive Year <span className="text-destructive">*</span>
+                </Label>
+                <Input
+                  id="sub-year"
+                  type="number"
+                  min="2000"
+                  max="2100"
+                  value={criteriaForm.year}
+                  onChange={(e) =>
+                    setCriteriaForm((prev) => ({
+                      ...prev,
+                      year: e.target.value === "" ? "" : Number(e.target.value),
+                    }))
+                  }
+                  className="mt-1 h-8 text-xs rounded-md"
+                />
+                {criteriaErrors.year && (
+                  <p className="mt-1 text-[10px] text-destructive">{criteriaErrors.year}</p>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="sub-10th" className="text-xs font-medium">
+                  10th Min. %
+                </Label>
+                <Input
+                  id="sub-10th"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  max="100"
+                  placeholder="Nullable"
+                  value={criteriaForm.min_10th_percentage}
+                  onChange={(e) =>
+                    setCriteriaForm((prev) => ({
+                      ...prev,
+                      min_10th_percentage: e.target.value === "" ? "" : Number(e.target.value),
+                    }))
+                  }
+                  className="mt-1 h-8 text-xs rounded-md"
+                />
+                {criteriaErrors.min_10th_percentage && (
+                  <p className="mt-1 text-[10px] text-destructive">
+                    {criteriaErrors.min_10th_percentage}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="sub-12th" className="text-xs font-medium">
+                  12th Min. %
+                </Label>
+                <Input
+                  id="sub-12th"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  max="100"
+                  placeholder="Nullable"
+                  value={criteriaForm.min_12th_percentage}
+                  onChange={(e) =>
+                    setCriteriaForm((prev) => ({
+                      ...prev,
+                      min_12th_percentage: e.target.value === "" ? "" : Number(e.target.value),
+                    }))
+                  }
+                  className="mt-1 h-8 text-xs rounded-md"
+                />
+                {criteriaErrors.min_12th_percentage && (
+                  <p className="mt-1 text-[10px] text-destructive">
+                    {criteriaErrors.min_12th_percentage}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div>
+                <Label htmlFor="sub-cgpa" className="text-xs font-medium">
+                  Min. CGPA (0.00 - 10.00)
+                </Label>
+                <Input
+                  id="sub-cgpa"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  max="10"
+                  placeholder="e.g. 7.50 (Nullable)"
+                  value={criteriaForm.min_cgpa}
+                  onChange={(e) =>
+                    setCriteriaForm((prev) => ({
+                      ...prev,
+                      min_cgpa: e.target.value === "" ? "" : Number(e.target.value),
+                    }))
+                  }
+                  className="mt-1 h-8 text-xs rounded-md"
+                />
+                {criteriaErrors.min_cgpa && (
+                  <p className="mt-1 text-[10px] text-destructive">{criteriaErrors.min_cgpa}</p>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="sub-backlogs" className="text-xs font-medium">
+                  Max Backlogs Allowed
+                </Label>
+                <Input
+                  id="sub-backlogs"
+                  type="number"
+                  min="0"
+                  placeholder="0 for zero backlog policy"
+                  value={criteriaForm.max_backlogs}
+                  onChange={(e) =>
+                    setCriteriaForm((prev) => ({
+                      ...prev,
+                      max_backlogs: e.target.value === "" ? "" : Number(e.target.value),
+                    }))
+                  }
+                  className="mt-1 h-8 text-xs rounded-md"
+                />
+                {criteriaErrors.max_backlogs && (
+                  <p className="mt-1 text-[10px] text-destructive">{criteriaErrors.max_backlogs}</p>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="sub-branches" className="text-xs font-medium">
+                Eligible Branches <span className="text-destructive">*</span>
+              </Label>
+              <Input
+                id="sub-branches"
+                value={criteriaForm.branches}
+                onChange={(e) => setCriteriaForm((prev) => ({ ...prev, branches: e.target.value }))}
+                placeholder="e.g. Computer Engineering, Information Technology, AI&DS"
+                className="mt-1 h-8 text-xs rounded-md"
+              />
+              {criteriaErrors.branches && (
+                <p className="mt-1 text-[10px] text-destructive">{criteriaErrors.branches}</p>
+              )}
+            </div>
+
+            <div>
+              <Label htmlFor="sub-notes" className="text-xs font-medium">
+                Special Conditions / Notes
+              </Label>
+              <Textarea
+                id="sub-notes"
+                rows={2}
+                value={criteriaForm.notes}
+                onChange={(e) => setCriteriaForm((prev) => ({ ...prev, notes: e.target.value }))}
+                placeholder="Any bond period, education gap criteria, or specific requirements…"
+                className="mt-1 text-xs rounded-md"
+              />
+            </div>
+
+            <div className="pt-1">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={criteriaForm.is_current}
+                  onChange={(e) =>
+                    setCriteriaForm((prev) => ({ ...prev, is_current: e.target.checked }))
+                  }
+                  className="rounded border-input text-primary focus:ring-primary size-4"
+                />
+                <span className="text-xs font-semibold text-foreground">
+                  Mark as Active Drive Criteria (enforced on student dashboard)
+                </span>
+              </label>
+            </div>
+
+            <DialogFooter className="gap-2 sm:gap-0 pt-3 border-t border-border">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setIsCriteriaDialogOpen(false)}
+                className="text-xs rounded-md"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                size="sm"
+                disabled={saveCriteriaMutation.isPending}
+                className="text-xs font-semibold rounded-md shadow-xs"
+              >
+                {saveCriteriaMutation.isPending
+                  ? "Saving…"
+                  : criteriaForm.id
+                    ? "Update Criteria"
+                    : "Add Criteria"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* ========================================================================= */}
+      {/* ALERT DIALOG: DELETE COMPANY CONFIRMATION                                  */}
+      {/* ========================================================================= */}
+      <AlertDialog
+        open={!!companyToDelete}
+        onOpenChange={(open) => {
+          if (!open) setCompanyToDelete(null);
+        }}
+      >
+        <AlertDialogContent className="rounded-xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-base font-bold text-foreground">
+              Delete Recruiter "{companyToDelete?.name}"?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-xs text-muted-foreground">
+              This action will permanently delete this company and all its associated eligibility
+              criteria, interview rounds, and job roles. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="text-xs rounded-md">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (companyToDelete) {
+                  deleteCompanyMutation.mutate(companyToDelete.id);
+                }
+              }}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 text-xs font-semibold rounded-md"
+            >
+              Delete Company
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* ========================================================================= */}
+      {/* ALERT DIALOG: DELETE CRITERIA RECORD CONFIRMATION                          */}
+      {/* ========================================================================= */}
+      <AlertDialog
+        open={!!criteriaToDelete}
+        onOpenChange={(open) => {
+          if (!open) setCriteriaToDelete(null);
+        }}
+      >
+        <AlertDialogContent className="rounded-xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-base font-bold text-foreground">
+              Delete {criteriaToDelete?.year} Criteria Version?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-xs text-muted-foreground">
+              This will remove the {criteriaToDelete?.year} academic criteria record for this
+              company. Other drive years will remain intact.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="text-xs rounded-md">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (criteriaToDelete) {
+                  deleteCriteriaMutation.mutate(criteriaToDelete.id);
+                }
+              }}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 text-xs font-semibold rounded-md"
+            >
+              Delete Criteria
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+}

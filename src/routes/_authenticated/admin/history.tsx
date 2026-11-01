@@ -6,7 +6,7 @@ export const Route = createFileRoute("/_authenticated/admin/history")({
   component: () => (
     <ResourceManager
       title="Historical Criteria Versions"
-      description="Read-only view of every eligibility version by year. Edit criteria from the Eligibility Criteria page."
+      description="Read-only audit view of every eligibility version by year. Edit and add drive criteria directly from the Manage Companies page."
       table="eligibility_criteria"
       readOnly
       order={{ column: "year", ascending: false }}
