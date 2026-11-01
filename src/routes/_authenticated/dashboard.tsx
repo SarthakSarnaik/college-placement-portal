@@ -377,36 +377,42 @@ function Dashboard() {
           ) : ann.error ? (
             <ErrorState error={ann.error} onRetry={() => ann.refetch()} />
           ) : !ann.data?.length ? (
-            <EmptyState title="No active announcements" />
+            <EmptyState
+              title="No active announcements"
+              body="The Training & Placement Office has not broadcast any circulars yet."
+            />
           ) : (
             <div className="space-y-3">
-              {ann.data.slice(0, 5).map((a) => (
-                <div
-                  key={a.id}
-                  className="rounded-xl border border-border/80 bg-card p-4 shadow-2xs transition-colors hover:border-slate-300 dark:hover:border-slate-700"
-                >
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span className="font-mono text-[10px]">{fmtDate(a.published_at)}</span>
-                  </div>
-                  <h3 className="mt-1 text-sm font-semibold tracking-tight text-foreground">
-                    {a.title}
-                  </h3>
-                  <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground">
-                    {a.body}
-                  </p>
-                  {a.companies && (
-                    <div className="mt-2.5 pt-2 border-t border-border/50 text-[11px]">
-                      <Link
-                        to="/companies/$id"
-                        params={{ id: a.companies.id }}
-                        className="font-medium text-primary hover:underline"
-                      >
-                        Company: {a.companies.name} →
-                      </Link>
+              {ann.data.slice(0, 5).map((a) => {
+                const company = Array.isArray(a.companies) ? a.companies[0] : a.companies;
+                return (
+                  <div
+                    key={a.id}
+                    className="rounded-xl border border-border/80 bg-card p-4 shadow-2xs transition-colors hover:border-slate-300 dark:hover:border-slate-700"
+                  >
+                    <div className="flex items-center justify-between text-xs text-muted-foreground">
+                      <span className="font-mono text-[10px]">{fmtDate(a.published_at)}</span>
                     </div>
-                  )}
-                </div>
-              ))}
+                    <h3 className="mt-1 text-sm font-semibold tracking-tight text-foreground">
+                      {a.title}
+                    </h3>
+                    <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+                      {a.body}
+                    </p>
+                    {company?.id && (
+                      <div className="mt-2.5 pt-2 border-t border-border/50 text-[11px]">
+                        <Link
+                          to="/companies/$id"
+                          params={{ id: company.id }}
+                          className="font-medium text-primary hover:underline"
+                        >
+                          Company: {company.name} →
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
         </section>

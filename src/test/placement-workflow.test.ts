@@ -683,5 +683,43 @@ describe("Full Placement Workflow: End-to-End Recruitment Data & Visibility", ()
         "General TPO Drive Alert",
       );
     });
+
+    it("announcements company relation resilience: safely extracts company metadata whether object, array, or null", () => {
+      const noticesWithVariousCompanyShapes = [
+        {
+          id: "1",
+          title: "Drive Notice",
+          body: "Details",
+          companies: { id: "c1", name: "Acme Corp" },
+        },
+        {
+          id: "2",
+          title: "Broadcast Notice",
+          body: "Details",
+          companies: null,
+        },
+        {
+          id: "3",
+          title: "Multiple Join Notice",
+          body: "Details",
+          companies: [{ id: "c2", name: "Beta LLC" }],
+        },
+      ];
+
+      const extractCompany = (a: (typeof noticesWithVariousCompanyShapes)[number]) => {
+        const c = Array.isArray(a.companies) ? a.companies[0] : a.companies;
+        return c?.id ? { id: c.id, name: c.name } : null;
+      };
+
+      expect(extractCompany(noticesWithVariousCompanyShapes[0])).toEqual({
+        id: "c1",
+        name: "Acme Corp",
+      });
+      expect(extractCompany(noticesWithVariousCompanyShapes[1])).toBeNull();
+      expect(extractCompany(noticesWithVariousCompanyShapes[2])).toEqual({
+        id: "c2",
+        name: "Beta LLC",
+      });
+    });
   });
 });

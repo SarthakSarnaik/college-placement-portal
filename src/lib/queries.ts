@@ -141,7 +141,10 @@ export const studentProgressQuery = (userId?: string | null) =>
     },
   });
 
-export const fmtDate = (d?: string | null) =>
-  d
-    ? new Date(d).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })
-    : "—";
+export const fmtDate = (d?: string | null) => {
+  if (!d) return "—";
+  const date = new Date(d);
+  return isNaN(date.getTime())
+    ? "—"
+    : date.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+};

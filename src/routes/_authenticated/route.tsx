@@ -160,23 +160,7 @@ function AppShell() {
       className="flex h-full flex-col justify-between overflow-y-auto px-3 py-4"
       aria-label="Main Navigation"
     >
-      <div className="space-y-5">
-        {/* K K Wagh Official College Branding */}
-        <div className="flex items-center gap-2.5 rounded-lg border border-border/80 bg-white p-2 shadow-2xs">
-          <img
-            src="/kkwagh-logo.png"
-            alt="K K Wagh Logo"
-            className="h-8 w-auto object-contain shrink-0"
-          />
-          <div className="min-w-0">
-            <p className="truncate text-xs font-bold leading-tight tracking-tight text-slate-900">
-              K. K. Wagh
-            </p>
-            <p className="truncate text-[10px] font-semibold text-primary uppercase tracking-wider">
-              Placement Cell
-            </p>
-          </div>
-        </div>
+      <div className="space-y-4">
         {isLoading ? (
           <div className="space-y-2 p-2">
             <div className="h-4 w-28 animate-pulse rounded bg-slate-200 dark:bg-slate-800" />

@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Calendar } from "lucide-react";
+import { Calendar, Building2, ChevronRight, ShieldCheck } from "lucide-react";
 import { announcementsQuery, fmtDate } from "@/lib/queries";
 import { PageHeader } from "@/components/labels";
 import { EmptyState, ErrorState, LoadingState } from "@/components/states";
@@ -47,16 +47,20 @@ function AnnouncementsPage() {
                   </span>
                 </div>
 
-                {a.companies && (
-                  <Link
-                    to="/companies/$id"
-                    params={{ id: a.companies.id }}
-                    className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-2.5 py-1 text-xs font-medium text-foreground hover:border-primary/40 hover:bg-muted/40 transition-colors shadow-2xs"
-                  >
-                    <Building2 className="size-3 text-primary" /> {a.companies.name}{" "}
-                    <ChevronRight className="size-3 opacity-60" />
-                  </Link>
-                )}
+                {(() => {
+                  const company = Array.isArray(a.companies) ? a.companies[0] : a.companies;
+                  if (!company?.id) return null;
+                  return (
+                    <Link
+                      to="/companies/$id"
+                      params={{ id: company.id }}
+                      className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-2.5 py-1 text-xs font-medium text-foreground hover:border-primary/40 hover:bg-muted/40 transition-colors shadow-2xs"
+                    >
+                      <Building2 className="size-3 text-primary" /> {company.name}{" "}
+                      <ChevronRight className="size-3 opacity-60" />
+                    </Link>
+                  );
+                })()}
               </div>
 
               <h2 className="mt-3.5 text-lg font-bold tracking-tight text-foreground sm:text-xl">
